@@ -1,0 +1,13 @@
+name = "PlutoPresentations"
+uuid = "ccaada3e-fbb3-407e-96e9-78c3ad6e4026"
+authors = ["David Métivier <david.metivier@inrae.fr>"]
+version = "1.0.0-DEV"
+
+[compat]
+julia = "1.11"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
