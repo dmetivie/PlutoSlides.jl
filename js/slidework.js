@@ -66,12 +66,23 @@
         if (current.length > 0) slides.push(current)
     }
 
-    function showSlide(index, fragmentIndex = 0) {
-        currentSlideIndex = Math.max(0, Math.min(slides.length - 1, index));
-        window.scrollTo({ top: 0 });
+    function showSlide(index, fragmentIndex = 0, shouldScroll = true) {
+        const newSlideIndex = Math.max(0, Math.min(slides.length - 1, index));
+        
+        // Only scroll to top if we're actually changing slides
+        if (shouldScroll && newSlideIndex !== currentSlideIndex) {
+            window.scrollTo({ top: 0 });
+        }
+        
+        currentSlideIndex = newSlideIndex;
 
-        allCells.forEach(cell => cell.classList.add("slide-hidden")); // use cached list
+        // Always get fresh cell references to handle re-executed cells
+        const currentCells = Array.from(document.querySelectorAll("pluto-cell"));
+        currentCells.forEach(cell => cell.classList.add("slide-hidden"));
 
+        // Re-gather slides with fresh references if needed
+        gatherSlides();
+        
         slides[currentSlideIndex].forEach(cell => cell.classList.remove("slide-hidden"));
 
         // Handle fragments (pause functionality)
@@ -154,6 +165,9 @@
             // Show footer band when re-entering slide mode
             const footerBand = document.getElementById("slide-footer-band");
             if (footerBand) footerBand.style.display = "flex";
+
+            // Start watching for DOM changes
+            mutationObserver = setupMutationObserver();
         } else {
             document.body.classList.remove("slide-mode");
             document.querySelectorAll("pluto-cell").forEach(cell =>
@@ -172,6 +186,12 @@
             // Reset notebook margin
             const notebook = document.querySelector("pluto-notebook");
             if (notebook) notebook.style.marginTop = "0";
+
+            // Stop watching for DOM changes
+            if (mutationObserver) {
+                mutationObserver.disconnect();
+                mutationObserver = null;
+            }
         }
     }
 
@@ -282,6 +302,45 @@
     //     injectSlideControls()
     //     watchPlutoToggleInput()
     // }, 500)
+
+    // Watch for DOM changes and preserve slide state
+    function setupMutationObserver() {
+        if (!inSlideMode) return
+
+        const observer = new MutationObserver((mutations) => {
+            let shouldReapplySlideState = false
+            
+            mutations.forEach((mutation) => {
+                // Check if any pluto-cell was added, removed, or its content changed
+                if (mutation.type === 'childList') {
+                    const target = mutation.target
+                    if (target.matches('pluto-cell') || target.closest('pluto-cell') || 
+                        mutation.addedNodes.length > 0 || mutation.removedNodes.length > 0) {
+                        shouldReapplySlideState = true
+                    }
+                }
+            })
+
+            if (shouldReapplySlideState && inSlideMode) {
+                // Reapply current slide state without scrolling
+                requestAnimationFrame(() => {
+                    if (inSlideMode) {
+                        showSlide(currentSlideIndex, currentFragmentIndex, false)
+                    }
+                })
+            }
+        })
+
+        // Observe the entire document for changes
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        })
+
+        return observer
+    }
+
+    let mutationObserver = null
 
     function waitForPluto() {
         if (document.querySelector("pluto-cell")) {
