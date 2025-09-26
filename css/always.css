@@ -1,0 +1,16 @@
+main {
+	margin: 0 auto;
+	max-width: 1520px;
+	transform: translate(+0%, -0%);
+	font-family: "Computer Modern Sans", "Fira Sans", "Helvetica Neue", sans-serif;
+}
+
+pluto-output>div>img {
+	margin: auto;
+	display: block;
+}
+
+.toc-row {
+	margin: 0 !important;
+	padding: 0.5 !important;
+}
