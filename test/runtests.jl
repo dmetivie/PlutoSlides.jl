@@ -1,6 +1,6 @@
-using PlutoPresentations
+using PlutoSlides
 using Test
 
-@testset "PlutoPresentations.jl" begin
+@testset "PlutoSlides.jl" begin
     # Write your tests here.
 end

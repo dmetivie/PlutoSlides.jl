@@ -1,4 +1,4 @@
-module PlutoPresentations
+module PlutoSlides
 
 using HypertextLiteral: @htl, @htl_str
 using PlutoUI

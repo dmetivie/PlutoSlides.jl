@@ -1,3 +1,3 @@
 [deps]
-PlutoPresentations = "ccaada3e-fbb3-407e-96e9-78c3ad6e4026"
+PlutoSlides = "ccaada3e-fbb3-407e-96e9-78c3ad6e4026"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"

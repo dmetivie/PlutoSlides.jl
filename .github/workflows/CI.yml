@@ -71,6 +71,6 @@ jobs:
         shell: julia --project=docs --color=yes {0}
         run: |
           using Documenter: DocMeta, doctest
-          using PlutoPresentations
-          DocMeta.setdocmeta!(PlutoPresentations, :DocTestSetup, :(using PlutoPresentations); recursive=true)
-          doctest(PlutoPresentations)
+          using PlutoSlides
+          DocMeta.setdocmeta!(PlutoSlides, :DocTestSetup, :(using PlutoSlides); recursive=true)
+          doctest(PlutoSlides)

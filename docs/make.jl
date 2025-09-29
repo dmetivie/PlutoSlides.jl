@@ -1,14 +1,14 @@
-using PlutoPresentations
+using PlutoSlides
 using Documenter
 
-DocMeta.setdocmeta!(PlutoPresentations, :DocTestSetup, :(using PlutoPresentations); recursive=true)
+DocMeta.setdocmeta!(PlutoSlides, :DocTestSetup, :(using PlutoSlides); recursive=true)
 
 makedocs(;
-    modules=[PlutoPresentations],
+    modules=[PlutoSlides],
     authors="David Métivier <david.metivier@inrae.fr>",
-    sitename="PlutoPresentations.jl",
+    sitename="PlutoSlides.jl",
     format=Documenter.HTML(;
-        canonical="https://dmetivie.github.io/PlutoPresentations.jl",
+        canonical="https://dmetivie.github.io/PlutoSlides.jl",
         edit_link="master",
         assets=String[],
     ),
@@ -18,6 +18,6 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/dmetivie/PlutoPresentations.jl",
+    repo="github.com/dmetivie/PlutoSlides.jl",
     devbranch="master",
 )

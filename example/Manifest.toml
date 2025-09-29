@@ -175,9 +175,9 @@ version = "1.11.0"
     [deps.Pkg.weakdeps]
     REPL = "3fa0cd96-eef1-5676-8a61-b3b8758bbffb"
 
-[[deps.PlutoPresentations]]
+[[deps.PlutoSlides]]
 deps = ["HypertextLiteral"]
-path = "C:\\Users\\metivier\\.julia\\dev\\PlutoPresentations"
+path = "C:\\Users\\metivier\\.julia\\dev\\PlutoSlides"
 uuid = "ccaada3e-fbb3-407e-96e9-78c3ad6e4026"
 version = "0.0.1-DEV"
 

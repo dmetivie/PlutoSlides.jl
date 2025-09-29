@@ -26,13 +26,13 @@ using PlutoLinks
 using PlutoTeachingTools
 
 # ╔═╡ ffb95f3b-7c02-47c5-ab02-a59fe9019f05
-@revise using PlutoPresentations
+@revise using PlutoSlides
 
 # ╔═╡ 538e71c7-e425-466e-b004-5e4ed4bf026c
 using HypertextLiteral
 
 # ╔═╡ ea9e8cfe-402d-4d9e-95b1-147615196a79
-PlutoPresentations.slidemode()
+PlutoSlides.slidemode()
 
 # ╔═╡ 23c6d19f-0331-4238-9f93-796a4013fd43
 empty
@@ -243,14 +243,14 @@ PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
 HypertextLiteral = "ac1192a8-f4b3-4bfe-ba22-af5b92cd3ab2"
 PlutoLinks = "0ff47ea0-7a50-410d-8455-4348d5de0420"
-PlutoPresentations = "ccaada3e-fbb3-407e-96e9-78c3ad6e4026"
+PlutoSlides = "ccaada3e-fbb3-407e-96e9-78c3ad6e4026"
 PlutoTeachingTools = "661c6b06-c737-4d37-b85c-46df65de6f69"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 
 [compat]
 HypertextLiteral = "~0.9.5"
 PlutoLinks = "~0.1.6"
-PlutoPresentations = "~0.0.1"
+PlutoSlides = "~0.0.1"
 PlutoTeachingTools = "~0.4.6"
 PlutoUI = "~0.7.71"
 """
@@ -521,9 +521,9 @@ git-tree-sha1 = "8f5fa7056e6dcfb23ac5211de38e6c03f6367794"
 uuid = "0ff47ea0-7a50-410d-8455-4348d5de0420"
 version = "0.1.6"
 
-[[deps.PlutoPresentations]]
+[[deps.PlutoSlides]]
 deps = ["HypertextLiteral", "PlutoUI"]
-path = "C:\\Users\\metivier\\.julia\\dev\\PlutoPresentations"
+path = "C:\\Users\\metivier\\.julia\\dev\\PlutoSlides"
 uuid = "ccaada3e-fbb3-407e-96e9-78c3ad6e4026"
 version = "0.0.1-DEV"
 

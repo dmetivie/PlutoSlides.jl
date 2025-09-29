@@ -1,14 +1,14 @@
 ```@meta
-CurrentModule = PlutoPresentations
+CurrentModule = PlutoSlides
 ```
 
-# PlutoPresentations
+# PlutoSlides
 
-Documentation for [PlutoPresentations](https://github.com/dmetivie/PlutoPresentations.jl).
+Documentation for [PlutoSlides](https://github.com/dmetivie/PlutoSlides.jl).
 
 ```@index
 ```
 
 ```@autodocs
-Modules = [PlutoPresentations]
+Modules = [PlutoSlides]
 ```
