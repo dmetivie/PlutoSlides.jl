@@ -34,9 +34,6 @@ using HypertextLiteral
 # ╔═╡ ea9e8cfe-402d-4d9e-95b1-147615196a79
 PlutoSlides.slidemode()
 
-# ╔═╡ 23c6d19f-0331-4238-9f93-796a4013fd43
-empty
-
 # ╔═╡ 7c4d1dd2-12bb-4905-94e5-916f6c73a9f8
 md"""
 Global Font size $(@bind fontsize_html NumberField(1:100, default=24))
@@ -54,63 +51,66 @@ notebook_font_size(fontsize_html, fontsize_md)
 button_slide_mode()
 
 # ╔═╡ 2fc6ee50-10ad-4356-a963-d646559231ae
-myTitle(title = "The Julia Programming Language", author = "David Métivier",
-		footnote = md"[^credit]: This talk was partly inspired by [Guillaume Dalle Julia talk](https://gdalle.github.io/) + [Valentin Churavy](https://vchuravy.dev/talks/Making_Dynamic_Programs_Run_Fast/) + [Tim Holy lectures](https://github.com/timholy/AdvancedScientificComputing/tree/main) + videos and link shown in the notebook", 
-		figures = [Resource("https://www.science-accueil.org/wp-content/uploads/2021/11/Logo-INRAE_Transparent-1536x406.png", :width => 450), Resource("https://github.com/dmetivie/MyJuliaIntroDocs.jl/blob/bd54deca5b4a8230ff4ddad73e7429738bba839e/figs/logos/MISTEA_inrae.png?raw=true", :with => 500)]
+myTitle(title = md"PlutoSlides.jl the Pluto slideshow!", author = "David Métivier",
+		footnote = md"[^Note]: This is not an official Pluto Project", 
+		figures = [Resource("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Flatex-beamer.com%2Fwp-content%2Fuploads%2F2021%2F08%2FBeamer-Inbuilt-themes-Berlin-blocks.png&f=1&nofb=1&ipt=6a346f2fb4ae39ef7bfa9115853e1ac4584bf814eac86ad719da7f9908504f27.png", :width => 450), Resource("https://raw.githubusercontent.com/fonsp/Pluto.jl/dd0ead4caa2d29a3a2cfa1196d31e3114782d363/frontend/img/logo_white_contour.svg", :with => 500)]
 	   )
 
 # ╔═╡ a8750d23-8b47-4314-970d-865673c82b21
 md"""
-## How did I started Julia
+# Features
 """
 
-# ╔═╡ 1d7a6946-e2a2-4352-8e74-5c077393ee49
-Columns(
-Resource("http://davidmetivier.mistea.inrae.fr/pic/research/flowchart_inrae.svg", :width => 900),
+# ╔═╡ 6d981650-6ec6-4324-8c9c-ca0fd10e0401
 md"""
-	**Coding experience**
-	
-	- Matlab/Mathematica (Internship)
-	- C (with GPU) with Gnuplot/xmgrace (School and PhD)
-	- Very few Python at (School and PhD)
-	- Julia (Los Alamos Postdoc 1 2018)
+## Slide mode
+"""
+
+# ╔═╡ e737be8e-6980-44ed-aaa9-030477561837
+Columns(
+md"""
+`PlutoSlides.slidemode()` 
+""",
+md"""
+- It will display `# Section`, `## Subsection/Slide`, and `### Subsubsection` as different slides. The convention is similar as in Pluto's presentation mode (so the original presentation mode should also work).
+- Title slide and section titles: The last title appear in a band at the top of the slide.
+- Navigation: you can navigate through the slides with the arrow keys, or with a click on the left/right part of the screen and leave slide mode.
+- Slide counter: it will display the current slide number and the total number of slides (it should be an option).
 	""";
 widths = [60,40], gap = 0
 )
 
 # ╔═╡ 620103da-14c3-43ba-8d9c-25722f18426c
 md"""
-**Package I contribute**
-- [ExpectationMaximization.jl](https://github.com/dmetivie/ExpectationMaximization.jl) (*Developer*)
-- [QuasiMonteCarlo.jl](https://github.com/SciML/QuasiMonteCarlo.jl) (*Contributor*)
-- [StochasticWeatherGenerator.jl](https://github.com/dmetivie/StochasticWeatherGenerators.jl) (*Developer*)
-- Smaller projects [RobustMeans.jl](https://github.com/dmetivie/RobustMeans.jl) + [PeriodicHiddenMarkovModels.jl](https://github.com/dmetivie/PeriodicHiddenMarkovModels.jl) (*Developer*)
+## Title slide
+"""
+
+# ╔═╡ 8fd94cb6-4df7-40a0-9069-3c606afd934e
+md"""
+You saw it already
 """
 
 # ╔═╡ c9a502d8-7856-46ca-bc47-5566c29908ed
 md"""
-## Goal of the presentation
+## TODO
 """
 
 # ╔═╡ 33bcdc05-83ed-4071-bbe9-e93753de3b92
 md"""
-!!! note ""
-	- Overviews of Julia's main features, functionalities, tools, and packages
-	- This is **NOT** a step-by-step tutorial; see the Resource section at the end for some links.
-	- You can follow: Notebooks are available
-	At the end of the day, I hope you get a feeling that this is a great modern tool for complex scientific problems and teaching, and that the language favors collaborative work.
-
-!!! tip "Ask Questions!"
+# Pause feature
 """
+
+# ╔═╡ 816aa436-b68a-4af9-8ebe-b825e3b9a7ca
+
 
 # ╔═╡ b19406af-c48c-4f39-9ae9-be79070b2d4a
 md"""
-# The Julia story
+# Example
 """
 
 # ╔═╡ 4eb97dfc-5791-41a2-b898-a9b1e2af2ff4
 md"""
-## 2012: the announcement
+## Combining with PlutoTeachingTools.jl
 """
 
 # ╔═╡ 458dd18c-1cf5-4e90-92fa-d2b15a276d0f
@@ -127,6 +127,11 @@ blockquote(
   """
 )
 
+# ╔═╡ 03fd216b-fa11-4f99-ae3a-85d33a120eed
+md"""
+## Admonitions blocks
+"""
+
 # ╔═╡ 8753bf78-4b72-4afe-b219-b87d96fa199f
 md"""
 !!! warning "Disclaimer"
@@ -137,105 +142,9 @@ md"""
 	In this talk I want to emphasize the simplicity of some features and how far they can take us.
 """
 
-# ╔═╡ 46cd0752-992e-43df-965e-1ecea6f280ff
-md"""
-## 2017: the SIAM Review article
-"""
-
-# ╔═╡ c797d46b-5a9a-4d7b-a988-d876f52e2436
-blockquote(
-  md"""
-  Julia is designed to be easy and fast and questions notions generally held to be “laws of nature” by practitioners of numerical computing:
-  1. High-level dynamic programs have to be slow.
-  2. **One must prototype in one language and then rewrite in another language for speed or deployment.**
-  3. There are parts of a system appropriate for the programmer, and other parts that are best left untouched as they have been built by the experts.
-  """, 
-  md"""
-  [Julia: A Fresh Approach to Numerical Computing](https://epubs.siam.org/doi/10.1137/141000671) -- Jeff Bezanson, Alan Edelman, Stefan Karpinski, and Viral B. Shah
-  """
-)
-
 # ╔═╡ e9643cb0-5c15-423b-8b8a-5527f9896ef5
 md"""
 ## 2018: a stable language
-"""
-
-# ╔═╡ 6757b67e-21fc-4480-b284-63cf2590ca45
-md"""
-> The single most significant new feature in Julia 1.0, of course, is a commitment to language API stability: code you write for Julia 1.0 will continue to work in Julia 1.1, 1.2, etc. **The language is “fully baked.”** The core language devs and community alike can focus on packages, tools, and new features built upon this solid foundation.
-
-[Announcing the release of Julia 1.0](https://julialang.org/blog/2018/08/one-point-zero/) -- Julia developers
-"""
-
-# ╔═╡ 8d895edb-a503-4fb2-b0e6-3c2499566eb4
-md"""
-Today v1.11 soon 1.12 (with binary compiled stuff)
-"""
-
-# ╔═╡ dbbe6add-dd22-4159-9c37-bf76f13c04a0
-md"""
-## 2022: user testimonies
-"""
-
-# ╔═╡ fcb36c30-6d2e-4bd8-b472-e12ee4a54f31
-md"""
-> With great resentment, I realized that for performance sensitive computing, there can be no such thing as a Python programmer: I could wrap my code in a Python cloak, but I would have to write all the hard stuff in C. A friend who had picked up Julia for theoretical physics taught me that **my frustration was common in scientific computing, and had a name: "The two language problem". Even better, it had a solution: Julia.** (Jakob Nissen)
-
-> I remember working on an R script that needed to loop through 33 million rows of data, doing a complicated lag/join/basket kind of computation that would take 18 hours to run. Literally during one of these 18 hour runs, I saw the Julia announcement post and was immediately desperate for the kind of simple performance it promised. **I read the initial manual over a weekend, rewrote my script the following Monday morning, and it ran in 5 minutes.** (Jacob Quinn)
-
-> What hooked me wasn't the speed (I was using Fortran before, which was more than adequate for that purpose), but **the composability of the whole ecosystem, which lets you easily leverage other people's work.** (Mosè Giordano)
-
-> The Julia community is open, unassuming and inclusive, and works hard everyday to welcome new contributors and **reduce the barrier to entry for students**. It is one of Julia's biggest strengths. (Ranjan Anantharaman)
-
-[Why we use Julia, 10 years later](https://julialang.org/blog/2022/02/10years/) -- The Julia Community
-"""
-
-# ╔═╡ 1b7bd762-fea3-4258-8aed-0e7012e99299
-md"""
-# Two languages problem
-"""
-
-# ╔═╡ 86d03bd0-c671-4a89-98cc-34f55f418076
-md"""
-## Scientists vs Developers
-"""
-
-# ╔═╡ f68c1e9f-2054-4649-a3fe-3070f4d95ac6
-md"""
-### Where is Julia (1/2)
-"""
-
-# ╔═╡ eda6ca36-2c98-401b-8066-082e0cc5b04d
-Resource("https://cdn.hashnode.com/res/hashnode/image/upload/v1681735971356/91b6e886-7ce1-41a3-9d9f-29b7b096e7f2.png")
-
-# ╔═╡ 2465b461-a8de-41bc-b8aa-120cc59a8698
-md"""
-### Where is Julia (2/2)
-"""
-
-# ╔═╡ 4c91ab1c-1b92-4d4c-8037-ce5bcd1d07e5
-Resource("https://cdn.hashnode.com/res/hashnode/image/upload/v1681735992315/62fdd58f-4630-4120-8eb4-5238740543e8.png")
-
-# ╔═╡ 8a16af2b-0b64-4f68-acb0-6528a2e2c8e7
-md"""
-## Compiled vs Interpreted
-"""
-
-# ╔═╡ 917f4674-002c-4f47-ad82-dfe6340423d7
-Resource("http://ada-developers-academy.github.io/ada-build/learning-at-ada/ada-languages/images/compiled-interpreted.png", :width => 600)
-
-# ╔═╡ 5460e927-a9cc-4187-9fe0-06ecf3eb00ef
-md"""
-!!! tip "Compilation"
-	- Ahead of time (C, C++, Go, Rust, ...): types are statically defined and the code is compiled before execution
-	- Just-In-Time (Julia, numba, JAX...): types inferred dynamically and functions compiled at first execution
-	- Runtime (Python, R, ...): types inferred dynamically and functions compiled during runtime
-"""
-
-# ╔═╡ 5783675c-4f23-4190-8ded-07927666efd2
-md"""
-Julia is **dynamically** typed, feels like a scripting language, and has good support for interactive use.
-Julia doesn't require you to annotate types: it infers them from the types of the arguments.
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
@@ -261,7 +170,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.11.7"
 manifest_format = "2.0"
-project_hash = "c279e25ae7e793505f60c089a7b366c8d083f65f"
+project_hash = "6eb52a63ca40e21797cf957fe121287bccbe6f12"
 
 [[deps.AbstractPlutoDingetjes]]
 deps = ["Pkg"]
@@ -679,37 +588,24 @@ version = "17.4.0+2"
 # ╠═ffb95f3b-7c02-47c5-ab02-a59fe9019f05
 # ╠═538e71c7-e425-466e-b004-5e4ed4bf026c
 # ╠═ea9e8cfe-402d-4d9e-95b1-147615196a79
-# ╠═23c6d19f-0331-4238-9f93-796a4013fd43
 # ╟─7c4d1dd2-12bb-4905-94e5-916f6c73a9f8
 # ╟─98e6aefb-019b-442c-a1ac-16f9a6f5acdd
 # ╠═8de786fa-ca6f-4268-ba62-1f87c5bb1ef2
 # ╟─19b05b91-1e11-43dd-ae84-5e064e7466d3
 # ╟─2fc6ee50-10ad-4356-a963-d646559231ae
 # ╟─a8750d23-8b47-4314-970d-865673c82b21
-# ╟─1d7a6946-e2a2-4352-8e74-5c077393ee49
+# ╟─6d981650-6ec6-4324-8c9c-ca0fd10e0401
+# ╟─e737be8e-6980-44ed-aaa9-030477561837
 # ╟─620103da-14c3-43ba-8d9c-25722f18426c
+# ╟─8fd94cb6-4df7-40a0-9069-3c606afd934e
 # ╟─c9a502d8-7856-46ca-bc47-5566c29908ed
 # ╟─33bcdc05-83ed-4071-bbe9-e93753de3b92
+# ╠═816aa436-b68a-4af9-8ebe-b825e3b9a7ca
 # ╟─b19406af-c48c-4f39-9ae9-be79070b2d4a
 # ╟─4eb97dfc-5791-41a2-b898-a9b1e2af2ff4
 # ╟─458dd18c-1cf5-4e90-92fa-d2b15a276d0f
+# ╟─03fd216b-fa11-4f99-ae3a-85d33a120eed
 # ╟─8753bf78-4b72-4afe-b219-b87d96fa199f
-# ╟─46cd0752-992e-43df-965e-1ecea6f280ff
-# ╟─c797d46b-5a9a-4d7b-a988-d876f52e2436
 # ╟─e9643cb0-5c15-423b-8b8a-5527f9896ef5
-# ╟─6757b67e-21fc-4480-b284-63cf2590ca45
-# ╟─8d895edb-a503-4fb2-b0e6-3c2499566eb4
-# ╟─dbbe6add-dd22-4159-9c37-bf76f13c04a0
-# ╟─fcb36c30-6d2e-4bd8-b472-e12ee4a54f31
-# ╟─1b7bd762-fea3-4258-8aed-0e7012e99299
-# ╟─86d03bd0-c671-4a89-98cc-34f55f418076
-# ╟─f68c1e9f-2054-4649-a3fe-3070f4d95ac6
-# ╟─eda6ca36-2c98-401b-8066-082e0cc5b04d
-# ╟─2465b461-a8de-41bc-b8aa-120cc59a8698
-# ╟─4c91ab1c-1b92-4d4c-8037-ce5bcd1d07e5
-# ╟─8a16af2b-0b64-4f68-acb0-6528a2e2c8e7
-# ╟─917f4674-002c-4f47-ad82-dfe6340423d7
-# ╟─5460e927-a9cc-4187-9fe0-06ecf3eb00ef
-# ╟─5783675c-4f23-4190-8ded-07927666efd2
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

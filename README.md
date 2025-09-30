@@ -10,13 +10,20 @@ Who doesn't love a nicely formatted slideshow?
 This package combines the two!
 Actually, it tries to do so! As I have no knowledge of Javascript, almost no comprehension of HTML and CSS, I turned to LLMs to help me out.
 
-I was frustrated by the basic look of the [presentation mode of Pluto](https://plutojl.org/en/docs/presentation/), which did not look like my classic Beamer presentations.
-Modifying this classic presentation mode is not easy, because it requires some choice, might depends on the size of your screen and so on ([see here](https://github.com/fonsp/Pluto.jl/discussions/3226)).
+**Origin story**: I was frustrated by the basic look of the [presentation mode of Pluto](https://plutojl.org/en/docs/presentation/), which did not look like my classic Beamer presentations.
+Modifying this classic presentation mode is not completely straightforward, because it requires some choice, might depend on the size of your screen and so on ([see here](https://github.com/fonsp/Pluto.jl/discussions/3226)).
 However, I still wanted to try and end up creating this package in case you find it useful.
+There is probably a lot of room for improvement, and better ways to do things, so feel free to open an issue or a PR.
+
+!!! warning
+    This package is very experimental. Keep in mind that the display of the slides might depend on your screen size. Sometimes a good old `F5` (refresh) might be needed.
 
 ## Features
 
-- Slide mode: it will display `# Section`, `## Subsection/Slide`, and `### Subsubsection` as different slides. The convention is similar as in Pluto's presentation mode (so the original presentation mode should also work).  The last title appear in a band at the top of the slide.
+- Slide mode: it will display `# Section`, `## Subsection/Slide`, and `### Subsubsection` as different slides. The convention is similar as in Pluto's presentation mode (so the original presentation mode should also work).  
+- Title slide and section titles: The last title appear in a band at the top of the slide.
+- Slide counter: it will display the current slide number and the total number of slides (it should be an option).
+- Size of fonts for your screen.
 - Navigation: you can navigate through the slides with the arrow keys, or with a click on the left/right part of the screen and leave slide mode.
 - Title slide: it will display the title (`# Title`) of the notebook as the title slide.
 - `pause()` command: it will create a pause in the slide, allowing you to reveal content step by step. It is very experimental and seems to work inside markdown cells like
@@ -29,25 +36,19 @@ End of the joke!
 """
 ```
 
-- Slide counter: it will display the current slide number and the total number of slides (it should be an option).
-- Size of fonts for your screen.
-
-!!! warning
-    This package is very experimental. Keep in mind that the display of the slides might depend on your screen size. Sometime of good old `F5` (refresh) might be needed.
-
 ## Workflow
 
 My typical workflow **at work** is
 
 1. Open a Pluto notebook with `import Pluto;Pluto.run(auto_reload_from_file=true)`
 2. Have the `.jl` script open in a larger screen
-3. Using the laptop I'll use for the presentation as a second screen, I open the Pluto notebook. This is the only way to be sure that what will be displayed is exactly what I want.
+3. Using the laptop I'll use for the presentation as a second screen using full screen of your navigator, I open the Pluto notebook. This is the only way to be sure that what will be displayed is exactly what I want.
 4. Edit either the `.jl` script or the Pluto notebook. The notebook will reload automatically.
 
-Obviously, if you don't have a second screen e.g. **on the road**, you can just open the notebook on your presentation laptop.
+If you don't have a second screen e.g. **on the road**, you can just open the notebook on your presentation laptop.
 
 ## TODO
 
-- [ ] More options (font size for code output, font family, etc.). In fact if you know a bit of CSS, HTML and Pluto you could already do so easily, but it would be nice to have like in Beamer an option at the beginning of the notebook.
-- [ ] Template like Beamer themes (where do you put title band etc., colors).
+- [ ] More options (font size for code output, font family, etc.). In fact, if you know a bit of CSS, HTML, and Pluto, you could already do so easily. However, it would be nice to have an option at the beginning of the notebook, similar to presentation software such as Beamer.
+- [ ] Template like Beamer themes (where do you put title band etc., colors), e.g. Madrid, Berlin.
 - [ ] More testing (I have only tested on my computer, with Firefox).

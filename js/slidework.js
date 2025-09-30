@@ -93,21 +93,49 @@
             pauseMarkers.push(...markers)
         })
         
-        currentFragmentIndex = Math.max(0, Math.min(pauseMarkers.length, fragmentIndex))
+        // Calculate the maximum fragment index for this slide
+        let maxFragmentIndex = 0
+        pauseMarkers.forEach(marker => {
+            const fragmentNum = marker.getAttribute('data-fragment')
+            if (fragmentNum) {
+                maxFragmentIndex = Math.max(maxFragmentIndex, parseInt(fragmentNum))
+            } else {
+                maxFragmentIndex = Math.max(maxFragmentIndex, pauseMarkers.filter(m => !m.getAttribute('data-fragment')).length)
+            }
+        })
+        
+        currentFragmentIndex = Math.max(0, Math.min(maxFragmentIndex, fragmentIndex))
         
         // Hide content after pause markers based on current fragment
         pauseMarkers.forEach((marker, idx) => {
-            if (idx >= currentFragmentIndex) {
+            const fragmentNum = marker.getAttribute('data-fragment')
+            
+            if (fragmentNum) {
+                // Numbered pause marker - show content if currentFragmentIndex >= fragmentNum
+                const targetFragment = parseInt(fragmentNum)
                 let next = marker.nextElementSibling
                 while (next && !next.matches('.pause-marker')) {
-                    next.style.display = 'none'
+                    if (currentFragmentIndex >= targetFragment) {
+                        next.style.display = ''
+                    } else {
+                        next.style.display = 'none'
+                    }
                     next = next.nextElementSibling
                 }
             } else {
-                let next = marker.nextElementSibling
-                while (next && !next.matches('.pause-marker')) {
-                    next.style.display = ''
-                    next = next.nextElementSibling
+                // Sequential pause marker - show content if idx < currentFragmentIndex
+                if (idx >= currentFragmentIndex) {
+                    let next = marker.nextElementSibling
+                    while (next && !next.matches('.pause-marker')) {
+                        next.style.display = 'none'
+                        next = next.nextElementSibling
+                    }
+                } else {
+                    let next = marker.nextElementSibling
+                    while (next && !next.matches('.pause-marker')) {
+                        next.style.display = ''
+                        next = next.nextElementSibling
+                    }
                 }
             }
         })
@@ -203,9 +231,20 @@
             pauseMarkers.push(...markers)
         })
         
+        // Calculate the maximum fragment index for this slide
+        let maxFragmentIndex = 0
+        pauseMarkers.forEach(marker => {
+            const fragmentNum = marker.getAttribute('data-fragment')
+            if (fragmentNum) {
+                maxFragmentIndex = Math.max(maxFragmentIndex, parseInt(fragmentNum))
+            } else {
+                maxFragmentIndex = pauseMarkers.length  // Sequential markers use length as max
+            }
+        })
+        
         if (delta > 0) {
             // Moving forward
-            if (currentFragmentIndex < pauseMarkers.length) {
+            if (currentFragmentIndex < maxFragmentIndex) {
                 // Next fragment in current slide
                 showSlide(currentSlideIndex, currentFragmentIndex + 1)
             } else {
@@ -227,7 +266,19 @@
                         const markers = cell.querySelectorAll('.pause-marker')
                         prevPauseMarkers.push(...markers)
                     })
-                    showSlide(prevIndex, prevPauseMarkers.length)
+                    
+                    // Calculate max fragment for previous slide
+                    let prevMaxFragmentIndex = 0
+                    prevPauseMarkers.forEach(marker => {
+                        const fragmentNum = marker.getAttribute('data-fragment')
+                        if (fragmentNum) {
+                            prevMaxFragmentIndex = Math.max(prevMaxFragmentIndex, parseInt(fragmentNum))
+                        } else {
+                            prevMaxFragmentIndex = prevPauseMarkers.length
+                        }
+                    })
+                    
+                    showSlide(prevIndex, prevMaxFragmentIndex)
                 }
             }
         }

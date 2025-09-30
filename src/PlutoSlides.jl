@@ -199,6 +199,29 @@ function pause()
     return @htl("<span class='pause-marker' style='display:none;'></span>")
 end
 
+"""
+    pause(n::Integer)
+
+Creates an invisible numbered pause marker for incremental slide reveals.
+Mimics beamer's \\pause[n] behavior - content after this marker will be visible
+starting from fragment n.
+
+# Arguments
+- `n`: Fragment number (1-based) when this content should become visible
+
+# Example
+```julia
+md"First content is always visible"
+pause(2)
+md"This appears on fragment 2"
+pause(4) 
+md"This appears on fragment 4"
+```
+"""
+function pause(n::Integer)
+    return @htl("<span class='pause-marker' data-fragment='$(n)' style='display:none;'></span>")
+end
+
 export myTitle, button_slide_mode, slidemode, myWebPage, notebook_font_size, pause
 
 end
