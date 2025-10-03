@@ -67,28 +67,60 @@ md"""
 """
 
 # ╔═╡ e737be8e-6980-44ed-aaa9-030477561837
-Columns(
-md"""
-`PlutoSlides.slidemode()` 
-""",
-md"""
-- It will display `# Section`, `## Subsection/Slide`, and `### Subsubsection` as different slides. The convention is similar as in Pluto's presentation mode (so the original presentation mode should also work).
-- Title slide and section titles: The last title appear in a band at the top of the slide.
-- Navigation: you can navigate through the slides with the arrow keys, or with a click on the left/right part of the screen and leave slide mode.
-- Slide counter: it will display the current slide number and the total number of slides (it should be an option).
-	""";
-widths = [60,40], gap = 0
-)
+@doc PlutoSlides.slidemode()
+
+# ╔═╡ 756fe1d4-a59d-4a7d-98cd-8c375a547623
+1+1
 
 # ╔═╡ 620103da-14c3-43ba-8d9c-25722f18426c
 md"""
 ## Title slide
 """
 
+# ╔═╡ 19bd94f2-bb58-4173-9437-1b3aca38343e
+
+
 # ╔═╡ 8fd94cb6-4df7-40a0-9069-3c606afd934e
 md"""
 You saw it already
 """
+
+# ╔═╡ 06b554bc-5b6f-49c4-8f45-90b5fee60d8b
+md"""
+## Image with pause
+"""
+
+# ╔═╡ 4db8ab89-aa29-4b3a-94e6-bc24b84b732b
+Columns(
+    md"""
+    - **Extremes and risks:**  
+      impact on agriculture, health, energy...
+    - **Climate change:**  
+      changes in frequency, intensity,...
+
+    \
+
+    \
+
+    \
+
+    \
+
+    **Can we estimate (future) risks quantitatively?**
+    Examples:
+    - Large-scale extremes (heatwaves)     
+      or local (`RainMaker.jl` challenge 😉)
+    - Compound extremes e.g. high temperature + humidity
+    - Long-lasting events (e.g. droughts)
+    """,
+    md"""
+    $(Resource("https://i.imgur.com/bcO30aD.png", :width => "90%"))
+    """;
+    widths=[45, 55], gap=10
+)
+
+# ╔═╡ 6b23b3a9-fd43-4b80-92b7-c03e8f935e7a
+md"""$(pause()) ⟶ **Need** weather generators to estimate probabilities of rare events"""
 
 # ╔═╡ c9a502d8-7856-46ca-bc47-5566c29908ed
 md"""
@@ -101,7 +133,12 @@ md"""
 """
 
 # ╔═╡ 816aa436-b68a-4af9-8ebe-b825e3b9a7ca
+md"""
+First part of joke
+$(pause())
 
+Second part
+"""
 
 # ╔═╡ b19406af-c48c-4f39-9ae9-be79070b2d4a
 md"""
@@ -434,7 +471,7 @@ version = "0.1.6"
 deps = ["HypertextLiteral", "PlutoUI"]
 path = "C:\\Users\\metivier\\.julia\\dev\\PlutoSlides"
 uuid = "ccaada3e-fbb3-407e-96e9-78c3ad6e4026"
-version = "0.0.1-DEV"
+version = "0.0.3"
 
 [[deps.PlutoTeachingTools]]
 deps = ["Downloads", "HypertextLiteral", "Latexify", "Markdown", "PlutoUI"]
@@ -595,12 +632,17 @@ version = "17.4.0+2"
 # ╟─2fc6ee50-10ad-4356-a963-d646559231ae
 # ╟─a8750d23-8b47-4314-970d-865673c82b21
 # ╟─6d981650-6ec6-4324-8c9c-ca0fd10e0401
-# ╟─e737be8e-6980-44ed-aaa9-030477561837
+# ╠═e737be8e-6980-44ed-aaa9-030477561837
+# ╠═756fe1d4-a59d-4a7d-98cd-8c375a547623
 # ╟─620103da-14c3-43ba-8d9c-25722f18426c
+# ╠═19bd94f2-bb58-4173-9437-1b3aca38343e
 # ╟─8fd94cb6-4df7-40a0-9069-3c606afd934e
+# ╟─06b554bc-5b6f-49c4-8f45-90b5fee60d8b
+# ╟─4db8ab89-aa29-4b3a-94e6-bc24b84b732b
+# ╠═6b23b3a9-fd43-4b80-92b7-c03e8f935e7a
 # ╟─c9a502d8-7856-46ca-bc47-5566c29908ed
 # ╟─33bcdc05-83ed-4071-bbe9-e93753de3b92
-# ╠═816aa436-b68a-4af9-8ebe-b825e3b9a7ca
+# ╟─816aa436-b68a-4af9-8ebe-b825e3b9a7ca
 # ╟─b19406af-c48c-4f39-9ae9-be79070b2d4a
 # ╟─4eb97dfc-5791-41a2-b898-a9b1e2af2ff4
 # ╟─458dd18c-1cf5-4e90-92fa-d2b15a276d0f
