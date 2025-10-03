@@ -434,7 +434,7 @@ version = "0.1.6"
 deps = ["HypertextLiteral", "PlutoUI"]
 path = "C:\\Users\\metivier\\.julia\\dev\\PlutoSlides"
 uuid = "ccaada3e-fbb3-407e-96e9-78c3ad6e4026"
-version = "0.0.1-DEV"
+version = "0.0.2"
 
 [[deps.PlutoTeachingTools]]
 deps = ["Downloads", "HypertextLiteral", "Latexify", "Markdown", "PlutoUI"]
