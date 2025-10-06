@@ -3,9 +3,11 @@ pluto-cell.slide-hidden {
     display: none !important;
 }
 
-/* body.slide-mode pluto-notebook {
-    margin-top: 8vh;
-} */
+/* Base slide mode styles */
+body.slide-mode {
+    margin: 0 !important;
+    padding: 0 !important;
+}
 
 /* Hide Pluto UI elements in slide mode */
 body.slide-mode #pluto-nav,

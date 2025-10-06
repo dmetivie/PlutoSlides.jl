@@ -18,10 +18,46 @@ function notebook_font_size(fontsize_html=24, fontsize_md=24)
     </style>
     """
 end
-#todo: fix default values to see the bandeau
-function slidemode(; footer_left=" ", footer_center="")
+"""
+    slidemode(; footer_left=" ", footer_center="", scale_factor=1.0, max_width="1520px")
+
+Configure slide mode for PlutoSlides presentations.
+
+# Arguments
+- `footer_left`: Text to display in the left footer section
+- `footer_center`: Text to display in the center footer section  
+- `scale_factor`: Global scaling factor for all fonts (default: 1.0)
+- `max_width`: Maximum width of the notebook content (default: "1520px")
+
+# Examples
+```julia
+# Basic usage with default width
+slidemode(footer_left="My Presentation", footer_center="Conference 2024")
+
+# Custom width for wider screens
+slidemode(footer_left="My Presentation", footer_center="Conference 2024", max_width="1800px")
+
+# Narrow width for smaller screens or projectors
+slidemode(footer_left="My Presentation", footer_center="Conference 2024", max_width="1200px")
+
+# Full width (no limit)
+slidemode(footer_left="My Presentation", footer_center="Conference 2024", max_width="100%")
+
+# Combined with scaling
+slidemode(footer_left="My Presentation", footer_center="Conference 2024", 
+          scale_factor=1.2, max_width="1600px")
+```
+"""
+function slidemode(; footer_left=" ", footer_center="", max_width="100%")
     css_code = read(joinpath(@__DIR__, "..", "css", "always.css"), String)
     css_code_slide = read(joinpath(@__DIR__, "..", "css", "slidecss.css"), String)
+
+    # Add custom max-width styling
+    custom_width = """
+    main {
+        max-width: $(max_width) !important;
+    }
+    """
 
     return @htl("""
      <div id="slide-config" 
@@ -31,6 +67,7 @@ function slidemode(; footer_left=" ", footer_center="")
      <style>
      $(css_code_slide)
      $(css_code)
+     $(custom_width)
      </style>
   $(PlutoUI.LocalResource(joinpath(@__DIR__, "..", "js", "slidework.js")))
      """)
