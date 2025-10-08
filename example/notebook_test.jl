@@ -43,7 +43,7 @@ button_slide_mode()
 # ╔═╡ 2fc6ee50-10ad-4356-a963-d646559231ae
 myTitle(title = "PlutoSlides.jl: the Pluto slideshow!", author = "David Métivier",
 		footnote = md"[^Note]: This is not an official Pluto Project", 
-		figures = [Resource("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Flatex-beamer.com%2Fwp-content%2Fuploads%2F2021%2F08%2FBeamer-Inbuilt-themes-Berlin-blocks.png&f=1&nofb=1&ipt=6a346f2fb4ae39ef7bfa9115853e1ac4584bf814eac86ad719da7f9908504f27.png", :width => 450), Resource("https://raw.githubusercontent.com/fonsp/Pluto.jl/dd0ead4caa2d29a3a2cfa1196d31e3114782d363/frontend/img/logo_white_contour.svg", :with => 500)]
+		figures = [Resource("https://raw.githubusercontent.com/dmetivie/PlutoSlides.jl/refs/heads/master/assets/logo_pluto_slides.svg", :with => 500)]
 	   )
 
 # ╔═╡ a8750d23-8b47-4314-970d-865673c82b21
@@ -113,9 +113,6 @@ $(pause(2))
 Takeaway.
 """
 
-# ╔═╡ 6b23b3a9-fd43-4b80-92b7-c03e8f935e7a
-md"""$(pause()) ⟶ **Need** weather generators to estimate probabilities of rare events"""
-
 # ╔═╡ c9a502d8-7856-46ca-bc47-5566c29908ed
 md"""
 ## Subsubtitles
@@ -180,6 +177,9 @@ Columns(
     """;
     widths=[45, 55], gap=10
 )
+
+# ╔═╡ 6b23b3a9-fd43-4b80-92b7-c03e8f935e7a
+md"""$(pause()) ⟶ **Need** weather generators to estimate probabilities of rare events"""
 
 # ╔═╡ 4eb97dfc-5791-41a2-b898-a9b1e2af2ff4
 md"""
@@ -1490,8 +1490,8 @@ version = "1.9.2+0"
 # ╟─a8750d23-8b47-4314-970d-865673c82b21
 # ╟─a27a9dc4-58c1-4703-8e4a-f6e8eed6080a
 # ╟─350c3667-787f-4d4c-85fd-691c22e83e88
-# ╟─7c4d1dd2-12bb-4905-94e5-916f6c73a9f8
 # ╟─7f62e6ef-edc0-42cd-971d-38b94d9635ee
+# ╟─7c4d1dd2-12bb-4905-94e5-916f6c73a9f8
 # ╟─6f314bab-3738-47ea-919e-98ed049a38ac
 # ╟─6d981650-6ec6-4324-8c9c-ca0fd10e0401
 # ╠═e737be8e-6980-44ed-aaa9-030477561837
@@ -1504,7 +1504,6 @@ version = "1.9.2+0"
 # ╟─8b3bd7f0-6a04-42e9-a113-0e5466e22c68
 # ╟─33bcdc05-83ed-4071-bbe9-e93753de3b92
 # ╠═816aa436-b68a-4af9-8ebe-b825e3b9a7ca
-# ╟─6b23b3a9-fd43-4b80-92b7-c03e8f935e7a
 # ╟─c9a502d8-7856-46ca-bc47-5566c29908ed
 # ╟─f1a98bbb-8474-4da8-94ef-229c1a52ef17
 # ╠═5fe14d97-497d-40ae-8066-fed7dcd18927
@@ -1516,6 +1515,7 @@ version = "1.9.2+0"
 # ╟─b19406af-c48c-4f39-9ae9-be79070b2d4a
 # ╟─06b554bc-5b6f-49c4-8f45-90b5fee60d8b
 # ╟─4db8ab89-aa29-4b3a-94e6-bc24b84b732b
+# ╟─6b23b3a9-fd43-4b80-92b7-c03e8f935e7a
 # ╟─4eb97dfc-5791-41a2-b898-a9b1e2af2ff4
 # ╟─458dd18c-1cf5-4e90-92fa-d2b15a276d0f
 # ╟─38eaf5f1-c8f8-4371-8f12-7505eb7c1ace

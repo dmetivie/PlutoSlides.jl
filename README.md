@@ -10,6 +10,8 @@ Who doesn't love a nicely formatted slideshow?
 This package combines the two!
 Actually, it tries to do so! As I have no knowledge of Javascript, almost no comprehension of HTML and CSS, I turned to LLMs to help me out.
 
+![Example](https://github.com/dmetivie/PlutoSlides.jl/blob/master/assets/example.gif)
+
 **Origin story**: I was frustrated by the basic look of the [presentation mode of Pluto](https://plutojl.org/en/docs/presentation/), which did not look like my classic Beamer presentations.
 Modifying this classic presentation mode is not completely straightforward, because it requires some choice, might depend on the size of your screen and so on ([see here](https://github.com/fonsp/Pluto.jl/discussions/3226)).
 However, I still wanted to try and end up creating this package in case you find it useful.
