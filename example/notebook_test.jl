@@ -37,27 +37,11 @@ using Plots
 # ╔═╡ e719a33e-13f8-449e-a8f3-3f16c5ecbed0
 import MarkdownLiteral:@markdown
 
-# ╔═╡ ea9e8cfe-402d-4d9e-95b1-147615196a79
-PlutoSlides.slidemode(footer_left = "Authors", footer_center = "PlutoSlides.jl",  max_width="100%")
-
-# ╔═╡ 7c4d1dd2-12bb-4905-94e5-916f6c73a9f8
-md"""
-Global Font size $(@bind fontsize_html NumberField(1:100, default=24))
-"""
-
-# ╔═╡ 98e6aefb-019b-442c-a1ac-16f9a6f5acdd
-md"""
-Markdown Font size $(@bind fontsize_md NumberField(1:100, default=fontsize_html))
-"""
-
-# ╔═╡ 8de786fa-ca6f-4268-ba62-1f87c5bb1ef2
-notebook_font_size(fontsize_html, fontsize_md)
-
 # ╔═╡ 19b05b91-1e11-43dd-ae84-5e064e7466d3
 button_slide_mode()
 
 # ╔═╡ 2fc6ee50-10ad-4356-a963-d646559231ae
-myTitle(title = md"PlutoSlides.jl the Pluto slideshow!", author = "David Métivier",
+myTitle(title = "PlutoSlides.jl: the Pluto slideshow!", author = "David Métivier",
 		footnote = md"[^Note]: This is not an official Pluto Project", 
 		figures = [Resource("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Flatex-beamer.com%2Fwp-content%2Fuploads%2F2021%2F08%2FBeamer-Inbuilt-themes-Berlin-blocks.png&f=1&nofb=1&ipt=6a346f2fb4ae39ef7bfa9115853e1ac4584bf814eac86ad719da7f9908504f27.png", :width => 450), Resource("https://raw.githubusercontent.com/fonsp/Pluto.jl/dd0ead4caa2d29a3a2cfa1196d31e3114782d363/frontend/img/logo_white_contour.svg", :with => 500)]
 	   )
@@ -67,49 +51,101 @@ md"""
 # Features
 """
 
+# ╔═╡ a27a9dc4-58c1-4703-8e4a-f6e8eed6080a
+md"""
+## Appearance
+"""
+
+# ╔═╡ 350c3667-787f-4d4c-85fd-691c22e83e88
+md"""Choose your Pluto Slides color theme $(@bind main_color ColorStringPicker(default = "#ff7f50"))"""
+
+# ╔═╡ 7c4d1dd2-12bb-4905-94e5-916f6c73a9f8
+md"""
+Font size $(@bind fontsize_html NumberField(1:100, default=24))
+"""
+
+# ╔═╡ 6f314bab-3738-47ea-919e-98ed049a38ac
+md"""
+!!! note "Riemann-Lebesgue lemma"
+    Let ``f\in L^1(\mathbb{R}^n)`` be an integrable function, i.e. ``f\colon\mathbb{R}^n \rightarrow \mathbb{C}`` is a [measurable function](https://en.wikipedia.org/wiki/Measurable_function) such that
+    :``\|f\|_{L^1} = \int_{\mathbb{R}^n} |f(x)| \mathrm{d}x < \infty, ``
+    and let ``\hat{f}`` be the Fourier transform of ``f``, i.e.
+    :
+    ``\hat{f}\colon\mathbb{R}^n \rightarrow \mathbb{C}, \ \xi\mapsto \int_{\mathbb{R}^n} f(x) \mathrm{e}^{-\mathrm{i}x\cdot\xi}\mathrm{d}x.``
+
+    Then ``\hat{f}`` vanishes at infinity: ``|\hat{f}(\xi)| \to 0`` as `` |\xi| \to\infty ``.
+"""
+
 # ╔═╡ 6d981650-6ec6-4324-8c9c-ca0fd10e0401
 md"""
 ## Slide mode
 """
 
 # ╔═╡ e737be8e-6980-44ed-aaa9-030477561837
-@markdown("
-$(println((PlutoSlides.slidemode())))
-		  ")
-
-# ╔═╡ 756fe1d4-a59d-4a7d-98cd-8c375a547623
-1+1
+@doc PlutoSlides.slidemode()
 
 # ╔═╡ 620103da-14c3-43ba-8d9c-25722f18426c
 md"""
-## Title slide
+## Plotting
 """
 
-# ╔═╡ 4076b62d-c325-4c3f-9f8c-67c313d1f7e7
-@markdown("""
-``n = `` $(@bind n NumberField(2:1000))
-""")
+# ╔═╡ 33bcdc05-83ed-4071-bbe9-e93753de3b92
+md"""
+## Pause feature
+"""
 
-# ╔═╡ 4d3381a4-2e3b-458e-96ec-c70febb2a019
-x = range(0, 10, length=n)
+# ╔═╡ 816aa436-b68a-4af9-8ebe-b825e3b9a7ca
+md"""
+$(pause(3))
 
-# ╔═╡ 2ec9713f-dad8-4eb3-af26-5523905b0f41
-y = sin.(x)
+Context for the slide.
 
-# ╔═╡ 846deb1e-ba12-4815-acb0-8ade3bff4e2b
-y_noisy = @. sin(x) + 0.1*randn()
+$(pause(0))
 
-# ╔═╡ 07e523c9-b68e-4f63-8e84-c4afb4bd8709
-1+1
+Main point.
 
-# ╔═╡ 330ded5b-f8fc-4dd6-849f-b82729f791eb
-1+1
+$(pause(1))
 
-# ╔═╡ 38350c99-2a9c-4da3-8a26-662b8b85e630
-begin
-	plt = plot(x, y, label="sin(x)")
-	plot!(plt, x, y_noisy, seriestype=:scatter, label="data")
-end
+Supporting detail.
+
+$(pause(2))
+
+Takeaway.
+"""
+
+# ╔═╡ 6b23b3a9-fd43-4b80-92b7-c03e8f935e7a
+md"""$(pause()) ⟶ **Need** weather generators to estimate probabilities of rare events"""
+
+# ╔═╡ c9a502d8-7856-46ca-bc47-5566c29908ed
+md"""
+## Subsubtitles
+"""
+
+# ╔═╡ 0ba7fe0b-3a5f-4a68-a13c-3f1bfabffb53
+md"""
+### Subsub title
+"""
+
+# ╔═╡ 57df203b-fb73-4067-bb09-506cda1ca8a8
+md"""
+There is probably a better way to display this subsubtitle.
+"""
+
+# ╔═╡ 38b39ef6-b0ac-4964-8262-d7c8afc3db01
+rand(5, 5)
+
+# ╔═╡ b27c5860-a6ec-4c74-bdb5-b7f2b605dbf4
+md"""
+### Subsub title 2
+"""
+
+# ╔═╡ 08435588-4c00-485d-a5b2-7a666c59d1aa
+rand(4,4)
+
+# ╔═╡ b19406af-c48c-4f39-9ae9-be79070b2d4a
+md"""
+# Example
+"""
 
 # ╔═╡ 06b554bc-5b6f-49c4-8f45-90b5fee60d8b
 md"""
@@ -145,33 +181,6 @@ Columns(
     widths=[45, 55], gap=10
 )
 
-# ╔═╡ 6b23b3a9-fd43-4b80-92b7-c03e8f935e7a
-md"""$(pause()) ⟶ **Need** weather generators to estimate probabilities of rare events"""
-
-# ╔═╡ c9a502d8-7856-46ca-bc47-5566c29908ed
-md"""
-## TODO
-"""
-
-# ╔═╡ 33bcdc05-83ed-4071-bbe9-e93753de3b92
-md"""
-## Pause feature
-"""
-
-# ╔═╡ 816aa436-b68a-4af9-8ebe-b825e3b9a7ca
-md"""
-First part of joke
-
-$(pause())
-
-Second part
-"""
-
-# ╔═╡ b19406af-c48c-4f39-9ae9-be79070b2d4a
-md"""
-# Example
-"""
-
 # ╔═╡ 4eb97dfc-5791-41a2-b898-a9b1e2af2ff4
 md"""
 ## Combining with PlutoTeachingTools.jl
@@ -191,31 +200,81 @@ blockquote(
   """
 )
 
-# ╔═╡ 3a8ff061-6134-4820-807c-0d4ea8fb0b38
-@bind a Slider(1:5)
-
-# ╔═╡ ec1dc836-fe65-4e32-aecb-e296f07e0537
-a^2
-
-# ╔═╡ 03fd216b-fa11-4f99-ae3a-85d33a120eed
+# ╔═╡ 38eaf5f1-c8f8-4371-8f12-7505eb7c1ace
 md"""
-## Admonitions blocks
+# Stuff you wanna hide
 """
 
-# ╔═╡ 8753bf78-4b72-4afe-b219-b87d96fa199f
+# ╔═╡ 756fe1d4-a59d-4a7d-98cd-8c375a547623
+const COMMON_FONT_STACKS = [
+    "Default",
+    # Sans-serif
+    "Computer Modern Sans",
+    "Computer Modern Sans, Fira Sans, Helvetica Neue, Arial, sans-serif",
+    "Fira Sans, Helvetica, Arial, sans-serif",
+    "Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji",
+    "Helvetica Neue, Helvetica, Arial, sans-serif",
+    "Arial, Helvetica, sans-serif",
+    "system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji",
+    "Open Sans, Helvetica Neue, Arial, sans-serif",
+    "Roboto, Helvetica Neue, Arial, sans-serif",
+    "Noto Sans, Arial, sans-serif",
+    "Source Sans Pro, Helvetica, Arial, sans-serif",
+
+    # Serif
+    "Georgia, Times New Roman, Times, serif",
+    "Times New Roman, Times, Georgia, serif",
+    "PT Serif, Georgia, Times New Roman, serif",
+    "Computer Modern, Latin Modern Roman, Times New Roman, serif",
+
+    # Monospace (for code blocks or UI)
+    "JuliaMono, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace",
+    "Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace",
+    "JetBrains Mono, Menlo, Consolas, monospace",
+    "Fira Code, Consolas, Menlo, monospace",
+]
+
+# ╔═╡ 7f62e6ef-edc0-42cd-971d-38b94d9635ee
 md"""
-!!! warning "Disclaimer"
-	I will present many things: a lot already exists in other languages, sometimes as add-ons or wrapped C/C++ libraries.
-	
-	Julia language and most of its packages are inspired by many cool existing things.
-	
-	In this talk I want to emphasize the simplicity of some features and how far they can take us.
+Font Familly $(@bind font_family Select(COMMON_FONT_STACKS))
 """
 
-# ╔═╡ e9643cb0-5c15-423b-8b8a-5527f9896ef5
-md"""
-## 2018: a stable language
-"""
+# ╔═╡ ea9e8cfe-402d-4d9e-95b1-147615196a79
+PlutoSlides.slidemode(footer_left = "Authors", footer_center = "PlutoSlides.jl",  max_width="100%", font_family = font_family, font_size = fontsize_html, color_subtitle_bg = main_color)
+
+# ╔═╡ 2ddc54a2-ea61-4372-a205-dc2a5d97a391
+aa = @bind n NumberField(2:1000)
+
+# ╔═╡ 4076b62d-c325-4c3f-9f8c-67c313d1f7e7
+@markdown("""
+``n = `` $(aa)
+""")
+
+# ╔═╡ 4d3381a4-2e3b-458e-96ec-c70febb2a019
+x = range(0, 10, length=n)
+
+# ╔═╡ 2ec9713f-dad8-4eb3-af26-5523905b0f41
+y = sin.(x)
+
+# ╔═╡ 846deb1e-ba12-4815-acb0-8ade3bff4e2b
+y_noisy = @. sin(x) + 0.1*randn()
+
+# ╔═╡ 8b3bd7f0-6a04-42e9-a113-0e5466e22c68
+Columns(md"""
+A plot in Julia with `Plots.jl`
+""", 
+	   begin
+	plt = plot(x, y, label="sin(x)")
+	plot!(plt, x, y_noisy, seriestype=:scatter, label="data")
+end)
+
+# ╔═╡ f1a98bbb-8474-4da8-94ef-229c1a52ef17
+@markdown("""
+That's the same ``n`` as before by the way ``n = `` $(aa)
+""")
+
+# ╔═╡ 5fe14d97-497d-40ae-8066-fed7dcd18927
+rand(n*2)
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -233,7 +292,7 @@ HypertextLiteral = "~0.9.5"
 MarkdownLiteral = "~0.1.2"
 Plots = "~1.41.1"
 PlutoLinks = "~0.1.6"
-PlutoSlides = "~0.0.1"
+PlutoSlides = "~0.0.2"
 PlutoTeachingTools = "~0.4.6"
 PlutoUI = "~0.7.71"
 """
@@ -244,7 +303,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.11.7"
 manifest_format = "2.0"
-project_hash = "c6f705febfe2c312548d1381811e4710da8f61ce"
+project_hash = "76ac14b311ba53da6e254aee83d512acd115a8d5"
 
 [[deps.AbstractPlutoDingetjes]]
 deps = ["Pkg"]
@@ -289,9 +348,9 @@ version = "1.18.5+0"
 
 [[deps.CodeTracking]]
 deps = ["InteractiveUtils", "UUIDs"]
-git-tree-sha1 = "5ac098a7c8660e217ffac31dc2af0964a8c3182a"
+git-tree-sha1 = "980f01d6d3283b3dbdfd7ed89405f96b7256ad57"
 uuid = "da1fd8a2-8d9e-5ec2-8556-3022fb5608a2"
-version = "2.0.0"
+version = "2.0.1"
 
 [[deps.CodecZlib]]
 deps = ["TranscodingStreams", "Zlib_jll"]
@@ -510,9 +569,9 @@ version = "1.0.2"
 
 [[deps.HTTP]]
 deps = ["Base64", "CodecZlib", "ConcurrentUtilities", "Dates", "ExceptionUnwrapping", "Logging", "LoggingExtras", "MbedTLS", "NetworkOptions", "OpenSSL", "PrecompileTools", "Random", "SimpleBufferStream", "Sockets", "URIs", "UUIDs"]
-git-tree-sha1 = "ed5e9c58612c4e081aecdb6e1a479e18462e041e"
+git-tree-sha1 = "5e6fe50ae7f23d171f44e311c2960294aaa0beb5"
 uuid = "cd3eb016-35fb-5094-929b-558a96fad6f3"
-version = "1.10.17"
+version = "1.10.19"
 
 [[deps.HarfBuzz_jll]]
 deps = ["Artifacts", "Cairo_jll", "Fontconfig_jll", "FreeType2_jll", "Glib_jll", "Graphite2_jll", "JLLWrappers", "Libdl", "Libffi_jll"]
@@ -717,15 +776,15 @@ version = "1.11.0"
 
 [[deps.LoggingExtras]]
 deps = ["Dates", "Logging"]
-git-tree-sha1 = "f02b56007b064fbfddb4c9cd60161b6dd0f40df3"
+git-tree-sha1 = "f00544d95982ea270145636c181ceda21c4e2575"
 uuid = "e6f89c97-d47a-5376-807f-9c37f3926c36"
-version = "1.1.0"
+version = "1.2.0"
 
 [[deps.LoweredCodeUtils]]
 deps = ["CodeTracking", "Compiler", "JuliaInterpreter"]
-git-tree-sha1 = "73b98709ad811a6f81d84e105f4f695c229385ba"
+git-tree-sha1 = "e24491cb83551e44a69b9106c50666dea9d953ab"
 uuid = "6f1432cf-f94c-5a45-995e-cdbf5db27b0b"
-version = "3.4.3"
+version = "3.4.4"
 
 [[deps.MIMEs]]
 git-tree-sha1 = "c64d943587f7187e751162b3b84445bbbd79f691"
@@ -904,7 +963,7 @@ uuid = "0ff47ea0-7a50-410d-8455-4348d5de0420"
 version = "0.1.6"
 
 [[deps.PlutoSlides]]
-deps = ["HypertextLiteral", "PlutoUI"]
+deps = ["HypertextLiteral", "PlutoUI", "Printf"]
 path = "C:\\Users\\metivier\\.julia\\dev\\PlutoSlides"
 uuid = "ccaada3e-fbb3-407e-96e9-78c3ad6e4026"
 version = "0.0.3"
@@ -1332,9 +1391,9 @@ version = "0.61.1+0"
 
 [[deps.libaom_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
-git-tree-sha1 = "4bba74fa59ab0755167ad24f98800fe5d727175b"
+git-tree-sha1 = "371cc681c00a3ccc3fbc5c0fb91f58ba9bec1ecf"
 uuid = "a4ae2306-e953-59d6-aa16-d00cac43593b"
-version = "3.12.1+0"
+version = "3.13.1+0"
 
 [[deps.libass_jll]]
 deps = ["Artifacts", "Bzip2_jll", "FreeType2_jll", "FriBidi_jll", "HarfBuzz_jll", "JLLWrappers", "Libdl", "Zlib_jll"]
@@ -1426,37 +1485,41 @@ version = "1.9.2+0"
 # ╠═e719a33e-13f8-449e-a8f3-3f16c5ecbed0
 # ╠═538e71c7-e425-466e-b004-5e4ed4bf026c
 # ╠═ea9e8cfe-402d-4d9e-95b1-147615196a79
-# ╟─7c4d1dd2-12bb-4905-94e5-916f6c73a9f8
-# ╟─98e6aefb-019b-442c-a1ac-16f9a6f5acdd
-# ╠═8de786fa-ca6f-4268-ba62-1f87c5bb1ef2
 # ╟─19b05b91-1e11-43dd-ae84-5e064e7466d3
 # ╟─2fc6ee50-10ad-4356-a963-d646559231ae
 # ╟─a8750d23-8b47-4314-970d-865673c82b21
+# ╟─a27a9dc4-58c1-4703-8e4a-f6e8eed6080a
+# ╟─350c3667-787f-4d4c-85fd-691c22e83e88
+# ╟─7c4d1dd2-12bb-4905-94e5-916f6c73a9f8
+# ╟─7f62e6ef-edc0-42cd-971d-38b94d9635ee
+# ╟─6f314bab-3738-47ea-919e-98ed049a38ac
 # ╟─6d981650-6ec6-4324-8c9c-ca0fd10e0401
 # ╠═e737be8e-6980-44ed-aaa9-030477561837
-# ╠═756fe1d4-a59d-4a7d-98cd-8c375a547623
 # ╟─620103da-14c3-43ba-8d9c-25722f18426c
 # ╠═b54106f9-1885-4ae5-8f35-46edc2718806
 # ╟─4076b62d-c325-4c3f-9f8c-67c313d1f7e7
 # ╠═4d3381a4-2e3b-458e-96ec-c70febb2a019
 # ╠═2ec9713f-dad8-4eb3-af26-5523905b0f41
 # ╠═846deb1e-ba12-4815-acb0-8ade3bff4e2b
-# ╠═07e523c9-b68e-4f63-8e84-c4afb4bd8709
-# ╠═330ded5b-f8fc-4dd6-849f-b82729f791eb
-# ╟─38350c99-2a9c-4da3-8a26-662b8b85e630
-# ╟─06b554bc-5b6f-49c4-8f45-90b5fee60d8b
-# ╟─4db8ab89-aa29-4b3a-94e6-bc24b84b732b
+# ╟─8b3bd7f0-6a04-42e9-a113-0e5466e22c68
+# ╟─33bcdc05-83ed-4071-bbe9-e93753de3b92
+# ╠═816aa436-b68a-4af9-8ebe-b825e3b9a7ca
 # ╟─6b23b3a9-fd43-4b80-92b7-c03e8f935e7a
 # ╟─c9a502d8-7856-46ca-bc47-5566c29908ed
-# ╟─33bcdc05-83ed-4071-bbe9-e93753de3b92
-# ╟─816aa436-b68a-4af9-8ebe-b825e3b9a7ca
+# ╟─f1a98bbb-8474-4da8-94ef-229c1a52ef17
+# ╠═5fe14d97-497d-40ae-8066-fed7dcd18927
+# ╟─0ba7fe0b-3a5f-4a68-a13c-3f1bfabffb53
+# ╟─57df203b-fb73-4067-bb09-506cda1ca8a8
+# ╠═38b39ef6-b0ac-4964-8262-d7c8afc3db01
+# ╟─b27c5860-a6ec-4c74-bdb5-b7f2b605dbf4
+# ╠═08435588-4c00-485d-a5b2-7a666c59d1aa
 # ╟─b19406af-c48c-4f39-9ae9-be79070b2d4a
+# ╟─06b554bc-5b6f-49c4-8f45-90b5fee60d8b
+# ╟─4db8ab89-aa29-4b3a-94e6-bc24b84b732b
 # ╟─4eb97dfc-5791-41a2-b898-a9b1e2af2ff4
 # ╟─458dd18c-1cf5-4e90-92fa-d2b15a276d0f
-# ╟─3a8ff061-6134-4820-807c-0d4ea8fb0b38
-# ╠═ec1dc836-fe65-4e32-aecb-e296f07e0537
-# ╟─03fd216b-fa11-4f99-ae3a-85d33a120eed
-# ╟─8753bf78-4b72-4afe-b219-b87d96fa199f
-# ╟─e9643cb0-5c15-423b-8b8a-5527f9896ef5
+# ╟─38eaf5f1-c8f8-4371-8f12-7505eb7c1ace
+# ╠═756fe1d4-a59d-4a7d-98cd-8c375a547623
+# ╠═2ddc54a2-ea61-4372-a205-dc2a5d97a391
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
