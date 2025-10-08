@@ -1,4 +1,4 @@
-# PlutoSlides
+# PlutoSlides ![logo](https://github.com/dmetivie/PlutoSlides.jl/blob/master/assets/logo_pluto_slides.svg)
 
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://dmetivie.github.io/PlutoSlides.jl/stable/)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://dmetivie.github.io/PlutoSlides.jl/dev/)
@@ -49,6 +49,11 @@ If you don't have a second screen e.g. **on the road**, you can just open the no
 
 ## TODO
 
-- [ ] More options (font size for code output, font family, etc.). In fact, if you know a bit of CSS, HTML, and Pluto, you could already do so easily. However, it would be nice to have an option at the beginning of the notebook, similar to presentation software such as Beamer.
+!!! warning
+    Performance for large notebooks (or one with something I could not figure?) is not great.
+
+
+- [X] (it could always be better) More options (font size for code output, font family, etc.). In fact, if you know a bit of CSS, HTML, and Pluto, you could already do so easily. However, it would be nice to have an option at the beginning of the notebook, similar to presentation software such as Beamer.
+- [ ] Better scalability of notebooks for size and different screens.
 - [ ] Template like Beamer themes (where do you put title band etc., colors), e.g. Madrid, Berlin.
 - [ ] More testing (I have only tested on my computer, with Firefox).

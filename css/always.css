@@ -1,11 +1,12 @@
 /* PlutoSlides base styles */
+/* Font variables will only be applied when set by slidemode() */
+
 main {
     margin: 0 auto;
-    font-family: "Computer Modern Sans", "Fira Sans", "Helvetica Neue", sans-serif;
 }
 
 /* Center images in Pluto output */
-pluto-output > div > img {
+pluto-output>div>img {
     margin: auto;
     display: block;
 }

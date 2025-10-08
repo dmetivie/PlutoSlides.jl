@@ -2,61 +2,83 @@ module PlutoSlides
 
 using HypertextLiteral: @htl, @htl_str
 using PlutoUI
+using Printf
+include("colors.jl")
 
 """
-	notebook_font_size(fontsize_html=24, fontsize_md=24)
-"""
-function notebook_font_size(fontsize_html=24, fontsize_md=24)
-    html_font = "font-size: $(string(fontsize_html))px;"
-    md_font = ".markdown{ font-size: $(string(fontsize_md))px; }"
-    htl"""
-    <style>
-    html {
-        $(html_font)
-    	$(md_font)
-    }
-    </style>
-    """
-end
-"""
-    slidemode(; footer_left=" ", footer_center="", scale_factor=1.0, max_width="1520px")
+    slidemode(; footer_left=" ", footer_center="", max_width="100%", font_family=nothing, font_size=nothing,
+        color_subtitle_bg="#ff7f50", color_band_text="#ffffff",
+        color_title_bg=mix_black(color_subtitle_bg, 0.50), 
+        color_controls_bg=color_subtitle_bg, color_footer_right_bg=color_subtitle_bg, color_footer_center_bg=mix_black(color_footer_right_bg, 0.25),
+        color_footer_left_bg=mix_black(color_footer_right_bg, 0.50),
+        color_h1="#000000", color_h3="#333333", color_h3_border=color_subtitle_bg, color_h3_bg=mix_black(color_footer_right_bg, 0.25))
+        css_code = read(joinpath(@__DIR__, "..", "css", "always.css"), String)
+        css_code_slide = read(joinpath(@__DIR__, "..", "css", "slidecss.css"), String)
 
 Configure slide mode for PlutoSlides presentations.
 
-# Arguments
+**Arguments**
 - `footer_left`: Text to display in the left footer section
-- `footer_center`: Text to display in the center footer section  
-- `scale_factor`: Global scaling factor for all fonts (default: 1.0)
-- `max_width`: Maximum width of the notebook content (default: "1520px")
+- `footer_center`: Text to display in the center footer section
+- `max_width`: Maximum width of the notebook content (default: "100%")
+- `font_family`: Optional CSS font-family stack to use everywhere (e.g., "'Fira Sans', Helvetica, Arial, sans-serif")
+- `font_size`: Optional base font size in pixels; affects rem/em-based sizing (e.g., 16, 18, 20)
+- `color_*`: Palette colors for bands and headings. By default, the footer center and left colors are derived from the right color using Beamer-like mixes with black:
+    - center = mix_black(right, 0.25)
+    - left   = mix_black(right, 0.50)
 
-# Examples
+**Examples**
 ```julia
-# Basic usage with default width
-slidemode(footer_left="My Presentation", footer_center="Conference 2024")
+# Basic usage (full width)
+slidemode(footer_left="My Presentation", footer_center="Conference 2025")
 
 # Custom width for wider screens
-slidemode(footer_left="My Presentation", footer_center="Conference 2024", max_width="1800px")
+slidemode(footer_left="My Presentation", footer_center="Conference 2025", max_width="1800px")
 
 # Narrow width for smaller screens or projectors
-slidemode(footer_left="My Presentation", footer_center="Conference 2024", max_width="1200px")
+slidemode(footer_left="My Presentation", footer_center="Conference 2025", max_width="1200px")
 
-# Full width (no limit)
-slidemode(footer_left="My Presentation", footer_center="Conference 2024", max_width="100%")
+# Set typography globally
+slidemode(footer_left="My Presentation", footer_center="Conference 2025", font_family="'Fira Sans', Helvetica, Arial, sans-serif", font_size=18)
 
-# Combined with scaling
-slidemode(footer_left="My Presentation", footer_center="Conference 2024", 
-          scale_factor=1.2, max_width="1600px")
+# Customize palette (set right; others derive automatically like Beamer)
+slidemode(color_footer_right_bg="#ff7f50")
 ```
 """
-function slidemode(; footer_left=" ", footer_center="", max_width="100%")
+function slidemode(; footer_left=" ", footer_center="", max_width="100%", font_family=nothing, font_size=nothing,
+    color_subtitle_bg="#ff7f50", color_band_text="#ffffff",
+    color_title_bg=mix_black(color_subtitle_bg, 0.50), 
+    color_controls_bg=color_subtitle_bg,
+    color_footer_right_bg=color_subtitle_bg,
+    color_footer_center_bg=mix_black(color_footer_right_bg, 0.25),
+    color_footer_left_bg=mix_black(color_footer_right_bg, 0.50),
+    color_h1="#000000", color_h3="#333333", color_h3_border=color_subtitle_bg, color_h3_bg=mix_black(color_footer_right_bg, 0.25))
     css_code = read(joinpath(@__DIR__, "..", "css", "always.css"), String)
     css_code_slide = read(joinpath(@__DIR__, "..", "css", "slidecss.css"), String)
-
     # Add custom max-width styling
     custom_width = """
     main {
         max-width: $(max_width) !important;
     }
+    """
+
+    # Optional font overrides via CSS variables
+    custom_fonts = """
+    :root {
+        --ps-color-title-bg: $(color_title_bg);
+        --ps-color-subtitle-bg: $(color_subtitle_bg);
+        --ps-color-band-text: $(color_band_text);
+        --ps-color-controls-bg: $(color_controls_bg);
+        --ps-color-footer-left-bg: $(color_footer_left_bg);
+        --ps-color-footer-center-bg: $(color_footer_center_bg);
+        --ps-color-footer-right-bg: $(color_footer_right_bg);
+        --ps-color-h1: $(color_h1);
+        --ps-color-h3: $(color_h3);
+        --ps-color-h3-border: $(color_h3_border);
+        --ps-color-h3-bg: $(color_h3_bg);
+    }
+    $(isnothing(font_family) ? "" : "body, main, .markdown, pluto-output, html, h1, h2, h3, h4, h5, h6, #slide-footer-band, .my-title-slide { font-family: $(font_family) !important; }")
+    $(isnothing(font_size) ? "" : "body, main, .markdown, pluto-output, html { font-size: $(font_size)px; }")
     """
 
     return @htl("""
@@ -68,6 +90,8 @@ function slidemode(; footer_left=" ", footer_center="", max_width="100%")
      $(css_code_slide)
      $(css_code)
      $(custom_width)
+     $(custom_fonts)
+
      </style>
   $(PlutoUI.LocalResource(joinpath(@__DIR__, "..", "js", "slidework.js")))
      """)
@@ -146,11 +170,10 @@ function myTitle(; title=nothing,
     	justify-content: space-between;
     	height: 90vh;
     	padding: 2em;
-    	font-family: "Computer Modern", "Fira Sans", "Helvetica Neue", sans-serif;
     }
     .title-band {
-    	background-color: #ff7f50;
-    	color: white;
+    	background-color: var(--ps-color-subtitle-bg, #ff7f50);
+    	color: var(--ps-color-band-text, white);
     	padding: 1em 2em;
     	font-size: 2rem;
     	font-weight: bold;
@@ -159,7 +182,7 @@ function myTitle(; title=nothing,
     	width: 100%;
     }
     .author {
-    	font-size: 1.5rem;
+    	font-size: 1.25rem;
     	margin-top: 1em;
     	color: #444;
     }
@@ -183,7 +206,7 @@ function myTitle(; title=nothing,
     	min-width: 140px;
     }
     .credit {
-    	font-size: 0.9em;
+    	font-size: 0.9rem;
     	color: #888;
     	margin-top: 1em;
     }
@@ -203,6 +226,7 @@ end
 	PlutoUI.LocalResource(dir::AbstractString, path::AbstractString, html_attributes::Pair...)
 Search recursively for `path` inside directory `dir` (including all subdirectories) and return `PlutoUI.LocalResource(joinpath(found_dir, path))` for the first match.
 Throws an ArgumentError if not found.
+Remember that to share your notebook it is best to have online resources.
 """
 function PlutoUI.LocalResource(dir::AbstractString, path::AbstractString, html_attributes::Pair...)
     # Quick direct check (path may already include subfolders)

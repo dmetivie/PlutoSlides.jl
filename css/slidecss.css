@@ -20,12 +20,12 @@ body.slide-mode .pluto-footer {
 
 
 body.slide-mode pluto-output h1 {
-    font-size: 4em;
+    font-size: 3rem;
     font-weight: bold;
     text-align: center;
     margin-top: 20vh;
     margin-bottom: 30vh;
-    color: #000000;
+    color: var(--ps-color-h1, #000000);
     /* Match your theme */
 }
 
@@ -33,12 +33,12 @@ body.slide-mode pluto-output h1 {
 body.slide-mode pluto-output h3 {
     font-size: 1.5em;
     font-weight: 600;
-    color: #333333;
+    color: var(--ps-color-h3, #333333);
     margin-top: 1.5em;
     margin-bottom: 0.5em;
     padding-left: 1em;
-    border-left: 4px solid #ff7f50;
-    background-color: #f8f9fa;
+    border-left: 4px solid var(--ps-color-h3-border, #ff7f50);
+    background-color: var(--ps-color-h3-bg, #f8f9fa);
     padding: 0.5em 0.5em 0.25em 1em;
     border-radius: 0 4px 4px 0;
 }
@@ -54,7 +54,7 @@ body.slide-mode {
     z-index: 1001;
     display: flex;
     align-items: center;
-    background: #ff7f50;
+    background: var(--ps-color-controls-bg, #ff7f50);
     padding: 0.05em 0.0em 0.01em 0.0em;
     font-size: 0.8em;
 }
@@ -62,7 +62,7 @@ body.slide-mode {
 #slide-controls button {
     font-size: 0.9em;
     padding: 0.0em 0.5em;
-    color: white;
+    color: var(--ps-color-band-text, #ffffff);
     background: none;
     cursor: pointer;
 }
@@ -76,11 +76,12 @@ body.slide-mode {
     /* Aligns to the left edge */
     width: 50%;
     /* Takes up half the screen width */
-    background: #804028;
+    background: var(--ps-color-title-bg, #804028);
     /* Dark burnt orange background */
-    color: white;
+    color: var(--ps-color-band-text, #ffffff);
     /* White text for contrast */
-    /* Clean sans-serif font */
+    /* Use unified font */
+    font-family: var(--ps-font-family);
     font-size: 0.9rem;
     /* Slightly smaller than default (~11.5pt) */
     font-weight: 600;
@@ -109,11 +110,12 @@ body.slide-mode {
     /* Aligned to left */
     width: 100%;
     /* Full width */
-    background: #ff7f50;
+    background: var(--ps-color-subtitle-bg, #ff7f50);
     /* Coral background for contrast */
-    color: white;
+    color: var(--ps-color-band-text, #ffffff);
     /* White subtitle text */
-    /* Matches title font */
+    /* Use unified font */
+    font-family: var(--ps-font-family);
     font-size: 1.9rem;
     /* Larger text to mimic Beamer subtitle (~18pt) */
     font-weight: 600;
@@ -138,7 +140,7 @@ body.slide-mode {
     bottom: 0;
     left: 0;
     width: 100%;
-    color: white;
+    color: var(--ps-color-band-text, #ffffff);
     font-size: 0.9rem;
     z-index: 1001;
     /* pointer-events: none; */
@@ -156,18 +158,18 @@ body.slide-mode #slide-footer-band {
 #slide-footer-left {
     text-align: center;
     width: 33.33%;
-    background: #804028;
+    background: var(--ps-color-footer-left-bg, #804028);
 }
 
 #slide-footer-center {
     text-align: center;
     width: 33.33%;
-    background: #BF5F3C;
+    background: var(--ps-color-footer-center-bg, #BF5F3C);
 }
 
 #slide-indicator {
     text-align: right;
     width: 33.33%;
-    background: #ff7f50;
+    background: var(--ps-color-footer-right-bg, #ff7f50);
     padding: 0em 0.4em;
 }
