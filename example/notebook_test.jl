@@ -41,10 +41,12 @@ import MarkdownLiteral:@markdown
 button_slide_mode()
 
 # ╔═╡ 2fc6ee50-10ad-4356-a963-d646559231ae
-myTitle(title = "PlutoSlides.jl: the Pluto slideshow!", author = "David Métivier",
-		footnote = md"[^Note]: This is not an official Pluto Project", 
-		figures = [Resource("https://raw.githubusercontent.com/dmetivie/PlutoSlides.jl/refs/heads/master/assets/logo_pluto_slides.svg", :with => 500)]
-	   )
+myTitle(
+    title    = "PlutoSlides.jl: the Pluto slideshow!",
+    author   = "David Métivier",
+    footnote = md"[^Note]: This is not an official Pluto Project",
+    figures  = [Resource("https://raw.githubusercontent.com/dmetivie/PlutoSlides.jl/refs/heads/master/assets/logo_pluto_slides.svg", :with => 500)]
+)
 
 # ╔═╡ a8750d23-8b47-4314-970d-865673c82b21
 md"""
@@ -62,6 +64,11 @@ md"""Choose your Pluto Slides color theme $(@bind main_color ColorStringPicker(d
 # ╔═╡ 7c4d1dd2-12bb-4905-94e5-916f6c73a9f8
 md"""
 Font size $(@bind fontsize_html NumberField(1:100, default=24))
+"""
+
+# ╔═╡ 82a9cdbc-ec90-4e19-8338-4d031b1dcc73
+md"""
+Max Width $(@bind max_width Slider(1:100, default=100))
 """
 
 # ╔═╡ 6f314bab-3738-47ea-919e-98ed049a38ac
@@ -236,11 +243,11 @@ const COMMON_FONT_STACKS = [
 
 # ╔═╡ 7f62e6ef-edc0-42cd-971d-38b94d9635ee
 md"""
-Font Familly $(@bind font_family Select(COMMON_FONT_STACKS))
+Font Family $(@bind font_family Select(COMMON_FONT_STACKS))
 """
 
 # ╔═╡ ea9e8cfe-402d-4d9e-95b1-147615196a79
-PlutoSlides.slidemode(footer_left = "Authors", footer_center = "PlutoSlides.jl",  max_width="100%", font_family = font_family, font_size = fontsize_html, color_subtitle_bg = main_color)
+PlutoSlides.slidemode(footer_left = "Authors", footer_center = "PlutoSlides.jl",  max_width=string(max_width,"%"), font_family = font_family, font_size = fontsize_html, color_subtitle_bg = main_color)
 
 # ╔═╡ 2ddc54a2-ea61-4372-a205-dc2a5d97a391
 aa = @bind n NumberField(2:1000)
@@ -1492,6 +1499,7 @@ version = "1.9.2+0"
 # ╟─350c3667-787f-4d4c-85fd-691c22e83e88
 # ╟─7f62e6ef-edc0-42cd-971d-38b94d9635ee
 # ╟─7c4d1dd2-12bb-4905-94e5-916f6c73a9f8
+# ╟─82a9cdbc-ec90-4e19-8338-4d031b1dcc73
 # ╟─6f314bab-3738-47ea-919e-98ed049a38ac
 # ╟─6d981650-6ec6-4324-8c9c-ca0fd10e0401
 # ╠═e737be8e-6980-44ed-aaa9-030477561837
