@@ -13,6 +13,13 @@ This package combines the two[^Disclaimer]! Gets the interactivity of Pluto with
 
 [^Disclaimer]: Actually, it tries to do so! As I have no knowledge of Javascript, almost no comprehension of HTML and CSS, I turned to LLMs to help me out. So this package is very much vibe coding.
 
+It is not yet registered in the General registry, but you can install it from my local registry with
+```julia
+julia> import Pkg; 
+julia> Pkg.pkg"registry add https://github.com/dmetivie/LocalRegistry"
+```
+Then add it to your Pluto notebook with like any other package.
+
 ![Example](https://raw.githubusercontent.com/dmetivie/PlutoSlides.jl/master/assets/example.gif)
 
 ## Features
