@@ -45,7 +45,7 @@ myTitle(
     title    = "PlutoSlides.jl: the Pluto slideshow!",
     author   = "David Métivier",
     footnote = md"[^Note]: This is not an official Pluto Project",
-    figures  = [Resource("https://raw.githubusercontent.com/dmetivie/PlutoSlides.jl/refs/heads/master/assets/logo_pluto_slides.svg", :with => 500)]
+    figures  = [Resource("https://raw.githubusercontent.com/dmetivie/PlutoSlides.jl/refs/heads/master/assets/logo_pluto_slides.svg", :with => "100%")]
 )
 
 # ╔═╡ a8750d23-8b47-4314-970d-865673c82b21
