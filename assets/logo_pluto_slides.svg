@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg:svg
    width="638"
-   height="177.5"
-   viewBox="0 0 638 177.5"
+   height="182.5"
+   viewBox="0 0 638 182.5"
    version="1.1"
    xml:space="preserve"
    style="clip-rule:evenodd;fill-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2"
@@ -23,8 +23,8 @@
    inkscape:pagecheckerboard="0"
    inkscape:deskcolor="#d1d1d1"
    inkscape:zoom="1.2903097"
-   inkscape:cx="32.550326"
-   inkscape:cy="390.21641"
+   inkscape:cx="32.550325"
+   inkscape:cy="390.2164"
    inkscape:window-width="2560"
    inkscape:window-height="1369"
    inkscape:window-x="1912"
@@ -40,7 +40,7 @@
         <!-- Add PlutoSlides.jl text -->
         
         <svg:g
-   transform="matrix(1.0110924,0,0,0.81024442,96.091904,172.69284)"
+   transform="matrix(1.0345674,0,0,0.82905624,82.454686,170.87268)"
    id="g1">
             <svg:g
    id="Layer-11"
@@ -76,35 +76,35 @@
         </svg:g><svg:text
    xml:space="preserve"
    style="font-weight:bold;font-size:30.8755px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;clip-rule:evenodd;fill:#d66661;fill-opacity:0.9;fill-rule:evenodd;stroke-width:2.82852;stroke-linejoin:round;stroke-miterlimit:2"
-   x="649.755"
-   y="467.15802"
+   x="651.86017"
+   y="469.26315"
    id="text2-8"><svg:tspan
      sodipodi:role="line"
      id="tspan1-2"
      style="font-size:30.8755px;fill:#000000;stroke-width:2.82852"
-     x="649.755"
-     y="467.15802">2</svg:tspan></svg:text>
+     x="651.86017"
+     y="469.26315">2</svg:tspan></svg:text>
     <svg:text
    xml:space="preserve"
    style="font-weight:bold;font-size:30.8755px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#d66661;fill-opacity:0.9;stroke-width:2.82852"
-   x="648.53387"
-   y="422.35394"
+   x="650.63904"
+   y="424.45908"
    id="text2"><svg:tspan
      sodipodi:role="line"
      id="tspan1"
      style="font-size:30.8755px;fill:#000000;stroke-width:2.82852"
-     x="648.53387"
-     y="422.35394">1</svg:tspan></svg:text><svg:text
+     x="650.63904"
+     y="424.45908">1</svg:tspan></svg:text><svg:text
    xml:space="preserve"
    style="font-weight:bold;font-size:30.8754px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;fill-opacity:0.9;stroke-width:2.82852"
-   x="650.43341"
-   y="514.21185"
+   x="652.53857"
+   y="516.31702"
    id="text3"><svg:tspan
      sodipodi:role="line"
      id="tspan2"
      style="stroke-width:2.82852"
-     x="650.43341"
-     y="514.21185">3</svg:tspan></svg:text><svg:text
+     x="652.53857"
+     y="516.31702">3</svg:tspan></svg:text><svg:text
    xml:space="preserve"
    style="font-weight:bold;font-size:30.8754px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#1f4e79;stroke-width:2.82852"
    x="373.87695"
@@ -150,16 +150,16 @@
    id="text1-5"
    style="font-size:157.184px;line-height:0.6;white-space:pre;inline-size:868.892;clip-rule:evenodd;display:inline;fill-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2"
    xml:space="preserve"
-   transform="matrix(0.9076284,0,0,0.9076284,2.1397442,-22.734917)"><svg:tspan
+   transform="matrix(0.9076284,0,0,0.9076284,2.1397442,-18.524625)"><svg:tspan
      x="33.441116"
      y="511.56204"
-     id="tspan11"><svg:tspan
+     id="tspan6"><svg:tspan
        style="fill:#464bb3"
-       id="tspan10">
+       id="tspan4">
 </svg:tspan></svg:tspan><svg:tspan
      x="33.441116"
      y="605.87247"
-     id="tspan13"><svg:tspan
+     id="tspan8"><svg:tspan
        style="fill:#464bb3;stroke:none"
-       id="tspan12">Slides</svg:tspan></svg:tspan></svg:text></svg:g>
+       id="tspan7">Slides</svg:tspan></svg:tspan></svg:text></svg:g>
 </svg:svg>

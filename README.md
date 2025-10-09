@@ -27,14 +27,14 @@ This package combines the two[^Disclaimer]! Gets the interactivity of Pluto with
 
 ## Warnings
 
-!!! warning "Display"
-    Keep in mind that the display of the slides (vertical and horizontal) depends on your screen size.
+> [!WARNING]
+> **Display**: Keep in mind that the display of the slides (vertical and horizontal) depends on your screen size.
 
-!!! warning "Experimental"
-    This package is very experimental and not well tested. Sometimes a good old `F5` (refresh) might be needed.
+> [!WARNING]  
+> **Experimental**: This package is very experimental and not well tested. Sometimes a good old `F5` (refresh) might be needed.
 
-!!! warning "Performance"
-    On some of my larger notebooks, I noticed a huge performance drop. Is it related to the number of slides or something else? I don't know. If you have an idea, please discuss it on the related issue [#3](https://github.com/dmetivie/PlutoSlides.jl/issues/3).
+> [!WARNING]
+> **Performance**: On some of my larger notebooks, I noticed a huge performance drop. Is it related to the number of slides or something else? I don't know. If you have an idea, please discuss it on the related issue [#3](https://github.com/dmetivie/PlutoSlides.jl/issues/3).
 
 ## Workflow
 
@@ -47,15 +47,15 @@ My typical workflow **at work** is
 
 If you don't have a second screen e.g. **on the road**, you can just open the notebook on your presentation laptop.
 
-!!! tip
-    You can have very simple Markdown layout, but thanks to `@htl` macro, you can have much more complex one, with output of code (figures, numbers etc.) entangled with text using interpolation `@htl"My text is $(x)"`.
-    For that `HypertextLiteral.jl` and `MarkdownLiteral.jl` packages are great.
+> [!TIP]
+> You can have very simple Markdown layout, but thanks to `@htl` macro, you can have much more complex one, with output of code (figures, numbers etc.) entangled with text using interpolation `@htl"My text is $(x)"`.
+> For that `HypertextLiteral.jl` and `MarkdownLiteral.jl` packages are great.
 
-!!! tip "LLMs"
-    LLM coding assistants are so powerful that they can really help with HTML, Markdown, etc.
-    Using them inside your IDE with `import Pluto;Pluto.run(auto_reload_from_file=true)` is really powerful[^LLMs].
-    It can easily convert existing LaTeX Beamer slides to a Pluto notebook.
-    To add a cell, they sometimes can even generate correct Pluto unique cell id `# ╟─xxxx` that is recognized by Pluto. In case this does not work, you can always add the cell on the notebook and it will appear on the `.jl` script.
+> [!TIP]
+> **LLMs**: LLM coding assistants are so powerful that they can really help with HTML, Markdown, etc.
+> Using them inside your IDE with `import Pluto;Pluto.run(auto_reload_from_file=true)` is really powerful[^LLMs].
+> It can easily convert existing LaTeX Beamer slides to a Pluto notebook.
+> To add a cell, they sometimes can even generate correct Pluto unique cell id `# ╟─xxxx` that is recognized by Pluto. In case this does not work, you can always add the cell on the notebook and it will appear on the `.jl` script.
 
 [^LLMs]: This is not specific to `PlutoSlides.jl`, but for Pluto in general.
 
