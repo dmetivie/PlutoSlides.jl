@@ -4,6 +4,7 @@
     let currentSlideIndex = 0
     let currentFragmentIndex = 0
     let inSlideMode = false
+    let h3TitleMode = false
 
     // Create and insert control bar into the DOM
     function injectSlideControls() {
@@ -13,6 +14,7 @@
         const config = document.getElementById("slide-config")
         const footerLeft = config?.getAttribute("data-footer-left") || ""
         const footerCenter = config?.getAttribute("data-footer-center") || ""
+        h3TitleMode = config?.getAttribute("data-h3-title") === "true"
 
         // Create footer band and slide indicator
         const footerBand = document.createElement("div")
@@ -35,6 +37,11 @@
         titleBand.id = "slide-title-band"
         titleBand.textContent = ""
         document.body.appendChild(titleBand)
+
+        const titleBandRight = document.createElement("div")
+        titleBandRight.id = "slide-title-band-right"
+        titleBandRight.textContent = ""
+        document.body.appendChild(titleBandRight)
 
         const subtitleBand = document.createElement("div")
         subtitleBand.id = "slide-subtitle-band"
@@ -147,6 +154,7 @@
         }
 
         const titleBand = document.getElementById("slide-title-band");
+        const titleBandRight = document.getElementById("slide-title-band-right");
         const subtitleBand = document.getElementById("slide-subtitle-band");
 
         const h1Cell = slides[currentSlideIndex].find(cell =>
@@ -154,10 +162,19 @@
         );
 
         if (h1Cell) {
+            // Title slide: hide all bands
             titleBand.style.display = "none";
+            titleBandRight.style.display = "none";
             subtitleBand.style.display = "none";
         } else {
-            let title = "", subtitle = "";
+            // Check if current slide is an h3 slide
+            const h3Cell = slides[currentSlideIndex].find(cell =>
+                cell.querySelector("pluto-output h3")
+            );
+            const isH3Slide = h3Cell !== undefined;
+
+            // Normal slides: show left band with h1, right band empty, subtitle with h2
+            let title = "", subtitle = "", h2Text = "", h3Text = "";
             for (let i = currentSlideIndex; i >= 0; i--) {
                 if (!title) {
                     const h1 = slides[i].find(cell => cell.querySelector("pluto-output h1"));
@@ -167,13 +184,35 @@
                     const h2 = slides[i].find(cell => cell.querySelector("pluto-output h2"));
                     if (h2) subtitle = h2.querySelector("h2")?.textContent ?? "";
                 }
-                if (title && subtitle) break;
+                if (!h2Text) {
+                    const h2 = slides[i].find(cell => cell.querySelector("pluto-output h2"));
+                    if (h2) h2Text = h2.querySelector("h2")?.textContent ?? "";
+                }
+                if (!h3Text && i === currentSlideIndex) {
+                    const h3 = slides[i].find(cell => cell.querySelector("pluto-output h3"));
+                    if (h3) h3Text = h3.querySelector("h3")?.textContent ?? "";
+                }
+                if (title && subtitle && h2Text) break;
             }
 
             titleBand.textContent = title;
             titleBand.style.display = title ? "block" : "none";
-            subtitleBand.textContent = subtitle;
-            subtitleBand.style.display = subtitle ? "block" : "none";
+            
+            // Right band: show h2 if h3_title mode AND h3 slide
+            if (h3TitleMode && isH3Slide) {
+                titleBandRight.textContent = h2Text;
+            } else {
+                titleBandRight.textContent = "";
+            }
+            titleBandRight.style.display = title ? "block" : "none";
+            
+            // Subtitle band: show h3 if h3_title mode AND h3 slide, otherwise h2
+            if (h3TitleMode && isH3Slide) {
+                subtitleBand.textContent = h3Text;
+            } else {
+                subtitleBand.textContent = subtitle;
+            }
+            subtitleBand.style.display = (subtitle || h3Text) ? "block" : "none";
         }
 
         // Update notebook offset
@@ -184,6 +223,9 @@
         inSlideMode = !inSlideMode;
         if (inSlideMode) {
             document.body.classList.add("slide-mode");
+            if (h3TitleMode) {
+                document.body.classList.add("h3-title-mode");
+            }
             gatherSlides();
             showSlide(0, 0);
 
@@ -198,12 +240,16 @@
             mutationObserver = setupMutationObserver();
         } else {
             document.body.classList.remove("slide-mode");
+            document.body.classList.remove("h3-title-mode");
             document.querySelectorAll("pluto-cell").forEach(cell =>
                 cell.classList.remove("slide-hidden")
             );
 
             const titleBand = document.getElementById("slide-title-band");
             if (titleBand) titleBand.style.display = "none";
+
+            const titleBandRight = document.getElementById("slide-title-band-right");
+            if (titleBandRight) titleBandRight.style.display = "none";
 
             const subtitleBand = document.getElementById("slide-subtitle-band");
             if (subtitleBand) subtitleBand.style.display = "none";

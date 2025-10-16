@@ -45,7 +45,7 @@ slidemode(footer_left="My Presentation", footer_center="Conference 2025", font_f
 slidemode(color_footer_right_bg="#ff7f50")
 ```
 """
-function slidemode(; footer_left=" ", footer_center="", max_width="100%", font_family=nothing, font_size=nothing,
+function slidemode(; h3_title=false, footer_left=" ", footer_center="", max_width="100%", font_family=nothing, font_size=nothing,
     color_subtitle_bg="#ff7f50", color_band_text="#ffffff",
     color_title_bg=mix_black(color_subtitle_bg, 0.50), 
     color_controls_bg=color_subtitle_bg,
@@ -66,6 +66,7 @@ function slidemode(; footer_left=" ", footer_center="", max_width="100%", font_f
     custom_fonts = """
     :root {
         --ps-color-title-bg: $(color_title_bg);
+        --ps-color-title-right-bg: #4472C4;
         --ps-color-subtitle-bg: $(color_subtitle_bg);
         --ps-color-band-text: $(color_band_text);
         --ps-color-controls-bg: $(color_controls_bg);
@@ -84,7 +85,8 @@ function slidemode(; footer_left=" ", footer_center="", max_width="100%", font_f
     return @htl("""
      <div id="slide-config" 
           data-footer-left="$(footer_left)" 
-          data-footer-center="$(footer_center)" 
+          data-footer-center="$(footer_center)"
+          data-h3-title="$(h3_title)" 
           style="display: none;"></div>
      <style>
      $(css_code_slide)
