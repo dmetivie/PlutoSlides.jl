@@ -6,14 +6,15 @@ using Printf
 include("colors.jl")
 
 """
-    slidemode(; footer_left=" ", footer_center="", max_width="100%", font_family=nothing, font_size=nothing,
-        color_subtitle_bg="#ff7f50", color_band_text="#ffffff",
-        color_title_bg=mix_black(color_subtitle_bg, 0.50), 
-        color_controls_bg=color_subtitle_bg, color_footer_right_bg=color_subtitle_bg, color_footer_center_bg=mix_black(color_footer_right_bg, 0.25),
-        color_footer_left_bg=mix_black(color_footer_right_bg, 0.50),
-        color_h1="#000000", color_h3="#333333", color_h3_border=color_subtitle_bg, color_h3_bg=mix_black(color_footer_right_bg, 0.25))
-        css_code = read(joinpath(@__DIR__, "..", "css", "always.css"), String)
-        css_code_slide = read(joinpath(@__DIR__, "..", "css", "slidecss.css"), String)
+    slidemode(; h3_title=true, footer_left=" ", footer_center="", max_width="100%", font_family=nothing, font_size=nothing,
+    color_subtitle_bg="#3333B3", color_band_text="#ffffff",
+    color_title_bg=mix_black(color_subtitle_bg, 0.50), 
+    color_title_right_bg=color_subtitle_bg,
+    color_controls_bg=color_subtitle_bg,
+    color_footer_right_bg=color_subtitle_bg,
+    color_footer_center_bg=mix_black(color_footer_right_bg, 0.25),
+    color_footer_left_bg=mix_black(color_footer_right_bg, 0.50),
+    color_h1="#000000", color_h3="#333333", color_h3_border=color_subtitle_bg, color_h3_bg=mix_black(color_footer_right_bg, 0.25))
 
 Configure slide mode for PlutoSlides presentations.
 
@@ -45,9 +46,10 @@ slidemode(footer_left="My Presentation", footer_center="Conference 2025", font_f
 slidemode(color_footer_right_bg="#ff7f50")
 ```
 """
-function slidemode(; h3_title=false, footer_left=" ", footer_center="", max_width="100%", font_family=nothing, font_size=nothing,
-    color_subtitle_bg="#ff7f50", color_band_text="#ffffff",
+function slidemode(; h3_title=true, footer_left=" ", footer_center="", max_width="100%", font_family=nothing, font_size=nothing,
+    color_subtitle_bg="#3333B3", color_band_text="#ffffff",
     color_title_bg=mix_black(color_subtitle_bg, 0.50), 
+    color_title_right_bg=color_subtitle_bg,
     color_controls_bg=color_subtitle_bg,
     color_footer_right_bg=color_subtitle_bg,
     color_footer_center_bg=mix_black(color_footer_right_bg, 0.25),
@@ -66,7 +68,7 @@ function slidemode(; h3_title=false, footer_left=" ", footer_center="", max_widt
     custom_fonts = """
     :root {
         --ps-color-title-bg: $(color_title_bg);
-        --ps-color-title-right-bg: #4472C4;
+        --ps-color-title-right-bg: $(color_title_right_bg);
         --ps-color-subtitle-bg: $(color_subtitle_bg);
         --ps-color-band-text: $(color_band_text);
         --ps-color-controls-bg: $(color_controls_bg);
@@ -78,7 +80,7 @@ function slidemode(; h3_title=false, footer_left=" ", footer_center="", max_widt
         --ps-color-h3-border: $(color_h3_border);
         --ps-color-h3-bg: $(color_h3_bg);
     }
-    $(isnothing(font_family) ? "" : "body, main, .markdown, pluto-output, html, h1, h2, h3, h4, h5, h6, #slide-footer-band, .my-title-slide { font-family: $(font_family) !important; }")
+    $(isnothing(font_family) ? "" : "body, main, .markdown, pluto-output, html, h1, h2, h3, h4, h5, h6, #slide-footer-band, #slide-footer-left, #slide-footer-center, #slide-indicator, .my-title-slide { font-family: $(font_family) !important; }")
     $(isnothing(font_size) ? "" : "body, main, .markdown, pluto-output, html { font-size: $(font_size)px; }")
     """
 
@@ -153,7 +155,8 @@ myTitle(
 function myTitle(; title=nothing,
     author=nothing,
     footnote=nothing,
-    figures=nothing)
+    figures=nothing,
+    color_myTitle="#3333B3")
     if isa(figures, AbstractArray)
         figs = [@htl("<div>$f</div>") for f in figures]
     else
@@ -174,7 +177,7 @@ function myTitle(; title=nothing,
     	padding: 2em;
     }
     .title-band {
-    	background-color: var(--ps-color-subtitle-bg, #ff7f50);
+    	background-color: $(color_myTitle);
     	color: var(--ps-color-band-text, white);
     	padding: 1em 2em;
     	font-size: 2rem;

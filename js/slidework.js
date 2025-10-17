@@ -360,18 +360,33 @@
         // Get the heights of the title and subtitle bands
         const subtitleHeight = 15//subtitleBand?.offsetHeight || 0;
 
-        // Check if the current slide's subtitle contains only a subtitle or additional text
+        // Check if current slide is an h3 slide
         const currentSlide = slides[currentSlideIndex];
-        const h2Cell = currentSlide.find(cell => cell.querySelector("pluto-output h2"));
+        const h3Cell = currentSlide.find(cell => cell.querySelector("pluto-output h3"));
+        const isH3Slide = h3Cell !== undefined;
+        
         let additionalOffset = 0;
 
-        if (h2Cell) {
-            const h2Content = h2Cell.querySelector("h2").textContent.trim();
-            const otherContent = h2Cell.textContent.replace(h2Content, "").trim();
+        // In h3_title mode on h3 slides, check h3 cell for additional content
+        if (h3TitleMode && isH3Slide && h3Cell) {
+            const h3Content = h3Cell.querySelector("h3").textContent.trim();
+            const otherContent = h3Cell.textContent.replace(h3Content, "").trim();
 
             // If there's additional text beyond the subtitle, add extra offset
             if (otherContent) {
                 additionalOffset = 2.5 * 16; // Example: 2.5em in pixels (assuming 16px base font size)
+            }
+        } else {
+            // Normal mode: check h2 cell for additional content
+            const h2Cell = currentSlide.find(cell => cell.querySelector("pluto-output h2"));
+            if (h2Cell) {
+                const h2Content = h2Cell.querySelector("h2").textContent.trim();
+                const otherContent = h2Cell.textContent.replace(h2Content, "").trim();
+
+                // If there's additional text beyond the subtitle, add extra offset
+                if (otherContent) {
+                    additionalOffset = 2.5 * 16; // Example: 2.5em in pixels (assuming 16px base font size)
+                }
             }
         }
 
