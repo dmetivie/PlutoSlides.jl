@@ -35,17 +35,17 @@ using HypertextLiteral
 using Plots
 
 # ╔═╡ e719a33e-13f8-449e-a8f3-3f16c5ecbed0
-import MarkdownLiteral:@markdown
+import MarkdownLiteral: @markdown
 
 # ╔═╡ 19b05b91-1e11-43dd-ae84-5e064e7466d3
 button_slide_mode()
 
 # ╔═╡ 2fc6ee50-10ad-4356-a963-d646559231ae
 myTitle(
-    title    = "PlutoSlides.jl: the Pluto slideshow!",
-    author   = "David Métivier",
-    footnote = md"[^Note]: This is not an official Pluto Project",
-    figures  = [Resource("https://raw.githubusercontent.com/dmetivie/PlutoSlides.jl/refs/heads/master/assets/logo_pluto_slides.svg", :with => "100%")]
+    title="PlutoSlides.jl: the Pluto slideshow!",
+    author="David Métivier",
+    footnote=md"[^Note]: This is not an official Pluto Project",
+    figures=[Resource("https://raw.githubusercontent.com/dmetivie/PlutoSlides.jl/refs/heads/master/assets/logo_pluto_slides.svg", :with => "100%")]
 )
 
 # ╔═╡ a8750d23-8b47-4314-970d-865673c82b21
@@ -59,7 +59,7 @@ md"""
 """
 
 # ╔═╡ 350c3667-787f-4d4c-85fd-691c22e83e88
-md"""Choose your Pluto Slides color theme $(@bind main_color ColorStringPicker(default = "#ff7f50"))"""
+md"""Choose your Pluto Slides color theme $(@bind main_color ColorStringPicker(default = "#3333B3"))"""
 
 # ╔═╡ 7c4d1dd2-12bb-4905-94e5-916f6c73a9f8
 md"""
@@ -96,6 +96,29 @@ md"""
 ## Plotting
 """
 
+# ╔═╡ c9a502d8-7856-46ca-bc47-5566c29908ed
+md"""
+## Subsubtitles
+"""
+
+# ╔═╡ a12e0d99-3f30-4fd0-81b0-78153cf6ed4c
+md"""
+This `h2` slides needs to be divided into two `h3`!
+"""
+
+# ╔═╡ 0ba7fe0b-3a5f-4a68-a13c-3f1bfabffb53
+md"""
+### Subsub title 1
+"""
+
+# ╔═╡ 38b39ef6-b0ac-4964-8262-d7c8afc3db01
+B = rand(5, 5)
+
+# ╔═╡ b27c5860-a6ec-4c74-bdb5-b7f2b605dbf4
+md"""
+### Subsub title 2
+"""
+
 # ╔═╡ 33bcdc05-83ed-4071-bbe9-e93753de3b92
 md"""
 ## Pause feature
@@ -105,46 +128,20 @@ md"""
 md"""
 $(pause(3))
 
-Context for the slide.
+When doing presentations,
 
 $(pause(0))
 
-Main point.
+I like to present stuff,
 
 $(pause(1))
 
-Supporting detail.
+with pauses,
 
 $(pause(2))
 
-Takeaway.
+to highlight the chain of thoughts.
 """
-
-# ╔═╡ c9a502d8-7856-46ca-bc47-5566c29908ed
-md"""
-## Subsubtitles
-"""
-
-# ╔═╡ 0ba7fe0b-3a5f-4a68-a13c-3f1bfabffb53
-md"""
-### Subsub title
-"""
-
-# ╔═╡ 57df203b-fb73-4067-bb09-506cda1ca8a8
-md"""
-There is probably a better way to display this subsubtitle.
-"""
-
-# ╔═╡ 38b39ef6-b0ac-4964-8262-d7c8afc3db01
-rand(5, 5)
-
-# ╔═╡ b27c5860-a6ec-4c74-bdb5-b7f2b605dbf4
-md"""
-### Subsub title 2
-"""
-
-# ╔═╡ 08435588-4c00-485d-a5b2-7a666c59d1aa
-rand(4,4)
 
 # ╔═╡ b19406af-c48c-4f39-9ae9-be79070b2d4a
 md"""
@@ -195,16 +192,16 @@ md"""
 
 # ╔═╡ 458dd18c-1cf5-4e90-92fa-d2b15a276d0f
 blockquote(
-  md"""
-  We are power **Matlab** users. Some of us are **Lisp** hackers. Some are **Pythonistas**, others **Rubyists**, still others **Perl** hackers. There are those of us who used **Mathematica** before we could grow facial hair. There are those who still can't grow facial hair. We've generated more **R** plots than any sane person should. **C** is our desert island programming language.
+    md"""
+    We are power **Matlab** users. Some of us are **Lisp** hackers. Some are **Pythonistas**, others **Rubyists**, still others **Perl** hackers. There are those of us who used **Mathematica** before we could grow facial hair. There are those who still can't grow facial hair. We've generated more **R** plots than any sane person should. **C** is our desert island programming language.
 
-  **We love all of these languages**; they are wonderful and powerful. For the work we do — **scientific computing, machine learning, data mining, large-scale linear algebra, distributed and parallel computing** — each one is perfect for some aspects of the work and terrible for others. **Each one is a trade-off**.
+    **We love all of these languages**; they are wonderful and powerful. For the work we do — **scientific computing, machine learning, data mining, large-scale linear algebra, distributed and parallel computing** — each one is perfect for some aspects of the work and terrible for others. **Each one is a trade-off**.
 
-  **We are greedy: we want more.**
-  """, 
-  md"""
-  [Why we created Julia](https://julialang.org/blog/2012/02/why-we-created-julia/) -- Jeff Bezanson, Stefan Karpinski, Viral B. Shah, and Alan Edelman
-  """
+    **We are greedy: we want more.**
+    """,
+    md"""
+    [Why we created Julia](https://julialang.org/blog/2012/02/why-we-created-julia/) -- Jeff Bezanson, Stefan Karpinski, Viral B. Shah, and Alan Edelman
+    """
 )
 
 # ╔═╡ 38eaf5f1-c8f8-4371-8f12-7505eb7c1ace
@@ -247,7 +244,7 @@ Font Family $(@bind font_family Select(COMMON_FONT_STACKS))
 """
 
 # ╔═╡ ea9e8cfe-402d-4d9e-95b1-147615196a79
-PlutoSlides.slidemode(footer_left = "Authors", footer_center = "PlutoSlides.jl",  max_width=string(max_width,"%"), font_family = font_family, font_size = fontsize_html, color_subtitle_bg = main_color)
+PlutoSlides.slidemode(footer_left="Authors", footer_center=md"PlutoSlides.jl", max_width=string(max_width, "%"), font_family=font_family, font_size=fontsize_html, color_subtitle_bg=main_color, h3_title=true)
 
 # ╔═╡ 2ddc54a2-ea61-4372-a205-dc2a5d97a391
 aa = @bind n NumberField(2:1000)
@@ -264,16 +261,16 @@ x = range(0, 10, length=n)
 y = sin.(x)
 
 # ╔═╡ 846deb1e-ba12-4815-acb0-8ade3bff4e2b
-y_noisy = @. sin(x) + 0.1*randn()
+y_noisy = @. sin(x) + 0.1 * randn()
 
 # ╔═╡ 8b3bd7f0-6a04-42e9-a113-0e5466e22c68
 Columns(md"""
 A plot in Julia with `Plots.jl`
-""", 
-	   begin
-	plt = plot(x, y, label="sin(x)")
-	plot!(plt, x, y_noisy, seriestype=:scatter, label="data")
-end)
+""",
+    begin
+        plt = plot(x, y, label="sin(x)")
+        plot!(plt, x, y_noisy, seriestype=:scatter, label="data")
+    end)
 
 # ╔═╡ f1a98bbb-8474-4da8-94ef-229c1a52ef17
 @markdown("""
@@ -281,7 +278,10 @@ That's the same ``n`` as before by the way ``n = `` $(aa)
 """)
 
 # ╔═╡ 5fe14d97-497d-40ae-8066-fed7dcd18927
-rand(n*2)
+A = rand(n, 5)
+
+# ╔═╡ 08435588-4c00-485d-a5b2-7a666c59d1aa
+A * B
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -973,7 +973,7 @@ version = "0.1.6"
 deps = ["HypertextLiteral", "PlutoUI", "Printf"]
 path = "C:\\Users\\metivier\\.julia\\dev\\PlutoSlides"
 uuid = "ccaada3e-fbb3-407e-96e9-78c3ad6e4026"
-version = "0.0.3"
+version = "0.0.4"
 
 [[deps.PlutoTeachingTools]]
 deps = ["Downloads", "HypertextLiteral", "Latexify", "Markdown", "PlutoUI"]
@@ -1510,16 +1510,16 @@ version = "1.9.2+0"
 # ╠═2ec9713f-dad8-4eb3-af26-5523905b0f41
 # ╠═846deb1e-ba12-4815-acb0-8ade3bff4e2b
 # ╟─8b3bd7f0-6a04-42e9-a113-0e5466e22c68
-# ╟─33bcdc05-83ed-4071-bbe9-e93753de3b92
-# ╠═816aa436-b68a-4af9-8ebe-b825e3b9a7ca
 # ╟─c9a502d8-7856-46ca-bc47-5566c29908ed
+# ╟─a12e0d99-3f30-4fd0-81b0-78153cf6ed4c
 # ╟─f1a98bbb-8474-4da8-94ef-229c1a52ef17
 # ╠═5fe14d97-497d-40ae-8066-fed7dcd18927
 # ╟─0ba7fe0b-3a5f-4a68-a13c-3f1bfabffb53
-# ╟─57df203b-fb73-4067-bb09-506cda1ca8a8
 # ╠═38b39ef6-b0ac-4964-8262-d7c8afc3db01
 # ╟─b27c5860-a6ec-4c74-bdb5-b7f2b605dbf4
 # ╠═08435588-4c00-485d-a5b2-7a666c59d1aa
+# ╟─33bcdc05-83ed-4071-bbe9-e93753de3b92
+# ╠═816aa436-b68a-4af9-8ebe-b825e3b9a7ca
 # ╟─b19406af-c48c-4f39-9ae9-be79070b2d4a
 # ╟─06b554bc-5b6f-49c4-8f45-90b5fee60d8b
 # ╟─4db8ab89-aa29-4b3a-94e6-bc24b84b732b
