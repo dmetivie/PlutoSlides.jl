@@ -80,7 +80,7 @@ function slidemode(; h3_title=true, footer_left=" ", footer_center="", max_width
         --ps-color-h3-border: $(color_h3_border);
         --ps-color-h3-bg: $(color_h3_bg);
     }
-    $(isnothing(font_family) ? "" : "body, main, .markdown, pluto-output, html, h1, h2, h3, h4, h5, h6, #slide-footer-band, #slide-footer-left, #slide-footer-center, #slide-indicator, .my-title-slide { font-family: $(font_family) !important; }")
+    $(isnothing(font_family) ? "" : "body, main, .markdown, pluto-output, html, h1, h2, h3, h4, h5, h6, #slide-footer-band, .my-title-slide { font-family: $(font_family) !important; }")
     $(isnothing(font_size) ? "" : "body, main, .markdown, pluto-output, html { font-size: $(font_size)px; }")
     """
 

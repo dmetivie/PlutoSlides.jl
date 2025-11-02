@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.20.18
+# v0.20.19
 
 using Markdown
 using InteractiveUtils
@@ -36,6 +36,11 @@ using Plots
 
 # ╔═╡ e719a33e-13f8-449e-a8f3-3f16c5ecbed0
 import MarkdownLiteral: @markdown
+
+# ╔═╡ 2aff06d6-cf3c-4bc9-bfdc-ca3f9e24ed09
+md"""
+Authors PlutoSlides.jl
+"""
 
 # ╔═╡ 19b05b91-1e11-43dd-ae84-5e064e7466d3
 button_slide_mode()
@@ -103,12 +108,17 @@ md"""
 
 # ╔═╡ a12e0d99-3f30-4fd0-81b0-78153cf6ed4c
 md"""
-This `h2` slides needs to be divided into two `h3`!
+This `h2` slides can be divided into two `h3`!
 """
 
 # ╔═╡ 0ba7fe0b-3a5f-4a68-a13c-3f1bfabffb53
 md"""
 ### Subsub title 1
+"""
+
+# ╔═╡ bcd56f3e-be12-478c-bc40-5d41de133a89
+md"""
+The other matrix:
 """
 
 # ╔═╡ 38b39ef6-b0ac-4964-8262-d7c8afc3db01
@@ -117,6 +127,11 @@ B = rand(5, 5)
 # ╔═╡ b27c5860-a6ec-4c74-bdb5-b7f2b605dbf4
 md"""
 ### Subsub title 2
+"""
+
+# ╔═╡ da8b64ed-3e26-4739-bc74-1a45e067da29
+md"""
+Final matrix multiplication:
 """
 
 # ╔═╡ 33bcdc05-83ed-4071-bbe9-e93753de3b92
@@ -274,7 +289,8 @@ A plot in Julia with `Plots.jl`
 
 # ╔═╡ f1a98bbb-8474-4da8-94ef-229c1a52ef17
 @markdown("""
-That's the same ``n`` as before by the way ``n = `` $(aa)
+By the way that's the same ``n`` as before ``n = `` $(aa). 
+Changing it here updates every other slide using ``n`` (I mean that's just Pluto) without affecting the slide display (that's the hardest part to do).
 """)
 
 # ╔═╡ 5fe14d97-497d-40ae-8066-fed7dcd18927
@@ -973,7 +989,7 @@ version = "0.1.6"
 deps = ["HypertextLiteral", "PlutoUI", "Printf"]
 path = "C:\\Users\\metivier\\.julia\\dev\\PlutoSlides"
 uuid = "ccaada3e-fbb3-407e-96e9-78c3ad6e4026"
-version = "0.0.4"
+version = "0.0.5"
 
 [[deps.PlutoTeachingTools]]
 deps = ["Downloads", "HypertextLiteral", "Latexify", "Markdown", "PlutoUI"]
@@ -1492,6 +1508,7 @@ version = "1.9.2+0"
 # ╠═e719a33e-13f8-449e-a8f3-3f16c5ecbed0
 # ╠═538e71c7-e425-466e-b004-5e4ed4bf026c
 # ╠═ea9e8cfe-402d-4d9e-95b1-147615196a79
+# ╟─2aff06d6-cf3c-4bc9-bfdc-ca3f9e24ed09
 # ╟─19b05b91-1e11-43dd-ae84-5e064e7466d3
 # ╟─2fc6ee50-10ad-4356-a963-d646559231ae
 # ╟─a8750d23-8b47-4314-970d-865673c82b21
@@ -1515,8 +1532,10 @@ version = "1.9.2+0"
 # ╟─f1a98bbb-8474-4da8-94ef-229c1a52ef17
 # ╠═5fe14d97-497d-40ae-8066-fed7dcd18927
 # ╟─0ba7fe0b-3a5f-4a68-a13c-3f1bfabffb53
+# ╟─bcd56f3e-be12-478c-bc40-5d41de133a89
 # ╠═38b39ef6-b0ac-4964-8262-d7c8afc3db01
 # ╟─b27c5860-a6ec-4c74-bdb5-b7f2b605dbf4
+# ╟─da8b64ed-3e26-4739-bc74-1a45e067da29
 # ╠═08435588-4c00-485d-a5b2-7a666c59d1aa
 # ╟─33bcdc05-83ed-4071-bbe9-e93753de3b92
 # ╠═816aa436-b68a-4af9-8ebe-b825e3b9a7ca
