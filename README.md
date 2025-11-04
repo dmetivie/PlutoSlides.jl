@@ -1,11 +1,6 @@
-# PlutoSlides 
+# PlutoSlides
 
 ![logo](https://raw.githubusercontent.com/dmetivie/PlutoSlides.jl/master/assets/logo_pluto_slides.svg)
-
-<!-- [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://dmetivie.github.io/PlutoSlides.jl/stable/)
-[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://dmetivie.github.io/PlutoSlides.jl/dev/) -->
-<!-- [![Build Status](https://github.com/dmetivie/PlutoSlides.jl/actions/workflows/CI.yml/badge.svg?branch=master)](https://github.com/dmetivie/PlutoSlides.jl/actions/workflows/CI.yml?query=branch%3Amaster) -->
-<!-- [![Coverage](https://codecov.io/gh/dmetivie/PlutoSlides.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/dmetivie/PlutoSlides.jl) -->
 
 Who doesn't love [Pluto.jl](https://plutojl.org/)?
 Who doesn't love a nicely formatted slideshow like Beamer or reveal.js used by Quarto?
@@ -13,11 +8,13 @@ This package combines the two[^Disclaimer]! Gets the interactivity of Pluto with
 
 [^Disclaimer]: Actually, it tries to do so! As I have no knowledge of Javascript, almost no comprehension of HTML and CSS, I turned to LLMs to help me out. So this package is very much vibe coding.
 
-It is not yet registered in the General registry, but you can install it from my local registry with
+It is not yet registered in the General registry, but you can install it from my local registry (or directly with the repo url) with
+
 ```julia
 julia> import Pkg; 
 julia> Pkg.pkg"registry add https://github.com/dmetivie/LocalRegistry"
 ```
+
 Then add it to your Pluto notebook with like any other package.
 
 ![Example](https://raw.githubusercontent.com/dmetivie/PlutoSlides.jl/master/assets/example.gif)
@@ -82,5 +79,6 @@ There is probably a lot of room for improvement, and better ways to do things, s
 - [ ] Template like Beamer themes, e.g. Madrid, Berlin.
 - [ ] More testing (I have only tested on my computer, with Firefox).
 - [ ] h3 title with the h2 top right title in the band (currently it adds a new band bellow h2 title band).
+- [ ] The fonts of the footer band I think do not match the rest of the slide.
 - [ ] Option to remove slide counter, add/remove total slide number.
-- [ ] No title band slide if empty h2 title `## ` title is provided? Or like an option?
+- [ ] No title band slide if empty h2 title `##` title is provided? Or like an option?
