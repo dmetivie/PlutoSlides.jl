@@ -43,10 +43,10 @@ Authors PlutoSlides.jl
 """
 
 # ╔═╡ 19b05b91-1e11-43dd-ae84-5e064e7466d3
-button_slide_mode()
+slide_mode_button()
 
 # ╔═╡ 2fc6ee50-10ad-4356-a963-d646559231ae
-myTitle(
+slide_mode_title(
     title="PlutoSlides.jl: the Pluto slideshow!",
     author="David Métivier",
     footnote=md"[^Note]: This is not an official Pluto Project",
@@ -94,7 +94,7 @@ md"""
 """
 
 # ╔═╡ e737be8e-6980-44ed-aaa9-030477561837
-@doc PlutoSlides.slidemode()
+@doc PlutoSlides.slide_mode_settings()
 
 # ╔═╡ 620103da-14c3-43ba-8d9c-25722f18426c
 md"""
@@ -259,7 +259,7 @@ Font Family $(@bind font_family Select(COMMON_FONT_STACKS))
 """
 
 # ╔═╡ ea9e8cfe-402d-4d9e-95b1-147615196a79
-PlutoSlides.slidemode(footer_left="Authors", footer_center=md"PlutoSlides.jl", max_width=string(max_width, "%"), font_family=font_family, font_size=fontsize_html, color_subtitle_bg=main_color, h3_title=true)
+PlutoSlides.slide_mode_settings(footer_left="Authors", footer_center=md"PlutoSlides.jl", max_width=string(max_width, "%"), font_family=font_family, font_size=fontsize_html, color_subtitle_bg=main_color, h3_title=true)
 
 # ╔═╡ 2ddc54a2-ea61-4372-a205-dc2a5d97a391
 aa = @bind n NumberField(2:1000, default = 100)

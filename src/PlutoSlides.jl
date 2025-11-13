@@ -6,7 +6,7 @@ using Printf
 include("colors.jl")
 
 """
-    slidemode(; h3_title=true, footer_left=" ", footer_center="", max_width="100%", font_family=nothing, font_size=nothing,
+    slide_mode_settings(; h3_title=true, footer_left=" ", footer_center="", max_width="100%", font_family=nothing, font_size=nothing,
     color_subtitle_bg="#3333B3", color_band_text="#ffffff",
     color_title_bg=mix_black(color_subtitle_bg, 0.50), 
     color_title_right_bg=color_subtitle_bg,
@@ -31,22 +31,22 @@ Configure slide mode for PlutoSlides presentations.
 **Examples**
 ```julia
 # Basic usage (full width)
-slidemode(footer_left="My Presentation", footer_center="Conference 2025")
+slide_mode_settings(footer_left="My Presentation", footer_center="Conference 2025")
 
 # Custom width for wider screens
-slidemode(footer_left="My Presentation", footer_center="Conference 2025", max_width="1800px")
+slide_mode_settings(footer_left="My Presentation", footer_center="Conference 2025", max_width="1800px")
 
 # Narrow width for smaller screens or projectors
-slidemode(footer_left="My Presentation", footer_center="Conference 2025", max_width="1200px")
+slide_mode_settings(footer_left="My Presentation", footer_center="Conference 2025", max_width="1200px")
 
 # Set typography globally
-slidemode(footer_left="My Presentation", footer_center="Conference 2025", font_family="'Fira Sans', Helvetica, Arial, sans-serif", font_size=18)
+slide_mode_settings(footer_left="My Presentation", footer_center="Conference 2025", font_family="'Fira Sans', Helvetica, Arial, sans-serif", font_size=18)
 
 # Customize palette (set right; others derive automatically like Beamer)
-slidemode(color_footer_right_bg="#ff7f50")
+slide_mode_settings(color_footer_right_bg="#ff7f50")
 ```
 """
-function slidemode(; h3_title=true, footer_left=" ", footer_center="", max_width="100%", font_family=nothing, font_size=nothing,
+function slide_mode_settings(; h3_title=true, footer_left=" ", footer_center="", max_width="100%", font_family=nothing, font_size=nothing,
     color_subtitle_bg="#3333B3", color_band_text="#ffffff",
     color_title_bg=mix_black(color_subtitle_bg, 0.50), 
     color_title_right_bg=color_subtitle_bg,
@@ -101,7 +101,7 @@ function slidemode(; h3_title=true, footer_left=" ", footer_center="", max_width
      """)
 end
 
-function button_slide_mode()
+function slide_mode_button()
     return @htl("""
     <span>
         <input id="toggle_slide_input" type="checkbox">
@@ -147,7 +147,7 @@ function myWebPage(url::AbstractString; width="75%", ratio="55%", title="", offs
 end
 
 """
-    myTitle(; title, author, figures, footnote=nothing)
+    slide_mode_title(; title, author, figures, footnote=nothing)
 
 Display a formatted title slide for a Pluto presentation.
 
@@ -158,17 +158,17 @@ Display a formatted title slide for a Pluto presentation.
 - `footnote`: Optional Markdown or HTML footnote.
 
 # Example
-myTitle(
+slide_mode_title(
     title=html"<b>My Presentation</b>",
     author=html"<center>Jane Doe</center>",
     figures=[Resource("logo.png", :width => 100)]
 )
 """
-function myTitle(; title=nothing,
+function slide_mode_title(; title=nothing,
     author=nothing,
     footnote=nothing,
     figures=nothing,
-    color_myTitle="#3333B3")
+    color="#3333B3")
     if isa(figures, AbstractArray)
         figs = [@htl("<div>$f</div>") for f in figures]
     else
@@ -189,7 +189,7 @@ function myTitle(; title=nothing,
     	padding: 2em;
     }
     .title-band {
-    	background-color: $(color_myTitle);
+    	background-color: $(color);
     	color: var(--ps-color-band-text, white);
     	padding: 1em 2em;
     	font-size: 2rem;
@@ -300,6 +300,6 @@ function pause(n::Integer)
     return @htl("<span class='pause-marker' data-fragment='$(n)' style='display:none;'></span>")
 end
 
-export myTitle, button_slide_mode, slidemode, myWebPage, notebook_font_size, pause
+export slide_mode_title, slide_mode_button, slide_mode_settings, myWebPage, notebook_font_size, pause
 
 end

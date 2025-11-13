@@ -19,6 +19,29 @@ Then add it to your Pluto notebook with like any other package.
 
 ![Example](https://raw.githubusercontent.com/dmetivie/PlutoSlides.jl/master/assets/example.gif)
 
+## Usage
+
+In a Pluto notebook, after installing the package, you can enable slide mode with
+
+```julia
+using PlutoSlides
+
+# this will make the notebook width/font etc like the slides (check the docstring for options)
+# this is if you want to work on your notebook without the slide mode enabled but keeping same style
+slide_mode_settings(footer_left="Authors", footer_center=md"PlutoSlides.jl")
+
+# you can add an (h1) title slide with
+slide_mode_title(
+    title="PlutoSlides.jl: the Pluto slideshow!",
+    author="You",
+    footnote=md"[^Note]: This is not an official Pluto Project",
+    figures=[Resource("https://raw.githubusercontent.com/dmetivie/PlutoSlides.jl/refs/heads/master/assets/logo_pluto_slides.svg", :with => "100%")]
+)
+
+# then click it to enable/disable slide mode
+slide_mode_button()
+```
+
 ## Features
 
 - Slide mode: it will display `# Section`, `## Subsection/Slide`, and `### Subsubsection` as different slides. The convention is similar as in Pluto's presentation mode (so the original presentation mode should also work).  
