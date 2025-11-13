@@ -102,10 +102,22 @@ function slidemode(; h3_title=true, footer_left=" ", footer_center="", max_width
 end
 
 function button_slide_mode()
-    return html"""
-    <input id="toggle_slide_input" type="checkbox">
-    <button onclick="toggle_slide_input.click()">⧉ Slide Mode</button>
-    """
+    return @htl("""
+    <span>
+        <input id="toggle_slide_input" type="checkbox">
+        <button>⧉ Slide Mode</button>
+        
+        <script>
+        const span = currentScript.parentElement
+        const checkbox = span.querySelector("input")
+        const button = span.querySelector("button")
+        
+        button.addEventListener("click", () => {
+            checkbox.click()
+        })
+        </script>
+    </span>
+    """)
 end
 function myWebPage(url::AbstractString; width="75%", ratio="55%", title="", offset=0)
     # Normalize offset to a CSS length

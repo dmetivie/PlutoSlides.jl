@@ -402,11 +402,19 @@
 
     // Observe the Pluto-generated button's toggle
     function watchPlutoToggleInput() {
-        const checkbox = document.querySelector("#toggle_slide_input")
-        if (!checkbox) return
-
-        checkbox.addEventListener("change", () => {
-            toggleSlides()
+        // Find all toggle checkboxes (in case there are multiple)
+        const checkboxes = document.querySelectorAll("input[type='checkbox']#toggle_slide_input")
+        
+        checkboxes.forEach(checkbox => {
+            // Check if we already added a listener (to avoid duplicates)
+            if (checkbox.dataset.listenerAdded) return
+            
+            checkbox.addEventListener("change", () => {
+                toggleSlides()
+            })
+            
+            // Mark that we added a listener
+            checkbox.dataset.listenerAdded = "true"
         })
     }
 
@@ -421,6 +429,7 @@
 
         const observer = new MutationObserver((mutations) => {
             let shouldReapplySlideState = false
+            let shouldRewatchToggle = false
             
             mutations.forEach((mutation) => {
                 // Check if any pluto-cell was added, removed, or its content changed
@@ -429,6 +438,13 @@
                     if (target.matches('pluto-cell') || target.closest('pluto-cell') || 
                         mutation.addedNodes.length > 0 || mutation.removedNodes.length > 0) {
                         shouldReapplySlideState = true
+                        // Check if a toggle button was added
+                        mutation.addedNodes.forEach(node => {
+                            if (node.nodeType === 1 && 
+                                (node.querySelector && node.querySelector("#toggle_slide_input"))) {
+                                shouldRewatchToggle = true
+                            }
+                        })
                     }
                 }
             })
@@ -440,6 +456,10 @@
                         showSlide(currentSlideIndex, currentFragmentIndex, false)
                     }
                 })
+            }
+            
+            if (shouldRewatchToggle) {
+                watchPlutoToggleInput()
             }
         })
 
