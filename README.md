@@ -99,7 +99,7 @@ There is probably a lot of room for improvement, and better ways to do things, s
 - [ ] Better scalability/formatting of notebooks for different screens and font sizes. There is `max_width` option, but it is not perfect. Maybe a `max_height` option could be useful too?
 - [ ] PDF export of the slides.
 - [ ] Make the Pluto screen recording work nicely with slide mode.
-- [ ] Template like Beamer themes, e.g. Madrid, Berlin.
+- [ ] Template like Beamer themes, e.g. Madrid, Berlin. Possibility to have templates with logo on each slide.
 - [ ] More testing (I have only tested on my computer, with Firefox).
 - [ ] h3 title with the h2 top right title in the band (currently it adds a new band bellow h2 title band).
 - [ ] The fonts of the footer band I think do not match the rest of the slide.
