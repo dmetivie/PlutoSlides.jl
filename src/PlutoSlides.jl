@@ -119,13 +119,17 @@ function slide_mode_button()
     </span>
     """)
 end
-function myWebPage(url::AbstractString; width="75%", ratio="55%", title="", offset=0)
+
+function myWebPage(url::AbstractString; width="75%", ratio="50%", title="", offset=0, center=true)
     # Normalize offset to a CSS length
     offset_css = offset isa AbstractString ? offset : string(offset, "px")
     # Use a negative value to shift content up by `offset`
     neg_offset = startswith(offset_css, '-') ? offset_css : "-" * offset_css
     # Increase iframe height if offset is numeric to avoid cropping
     height_style = offset isa Real ? "calc(100% + $(abs(offset))px)" : "100%"
+    # Center horizontally using left+transform, or align to left edge
+    left_style = center ? "50%" : "0%"
+    transform_style = center ? "translateX(-50%)" : "none"
 
     return htl"""
     <div style="position: relative; padding-top: $(ratio); overflow: hidden;">
@@ -134,7 +138,8 @@ function myWebPage(url::AbstractString; width="75%", ratio="55%", title="", offs
             style="
                 position: absolute;
                 top: $(neg_offset);
-                left: 0%;
+                left: $(left_style);
+                transform: $(transform_style);
                 width: $(width);
                 height: $(height_style);
                 border: none;
