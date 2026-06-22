@@ -358,7 +358,7 @@
         const subtitleBand = document.getElementById("slide-subtitle-band");
 
         // Get the heights of the title and subtitle bands
-        const subtitleHeight = 15//subtitleBand?.offsetHeight || 0;
+        const subtitleHeight = 0//subtitleBand?.offsetHeight || 0;
 
         // Check if current slide is an h3 slide
         const currentSlide = slides[currentSlideIndex];
@@ -376,6 +376,7 @@
             if (otherContent) {
                 additionalOffset = 2.5 * 16; // Example: 2.5em in pixels (assuming 16px base font size)
             }
+            additionalOffset -= 20; // Adjust for subtitle height since h2 is in title band
         } else {
             // Normal mode: check h2 cell for additional content
             const h2Cell = currentSlide.find(cell => cell.querySelector("pluto-output h2"));
@@ -387,6 +388,7 @@
                 if (otherContent) {
                     additionalOffset = 2.5 * 16; // Example: 2.5em in pixels (assuming 16px base font size)
                 }
+                additionalOffset -= 17; // Adjust for subtitle height since h2 is in title band
             }
         }
 
