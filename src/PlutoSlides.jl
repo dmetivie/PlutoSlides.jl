@@ -103,17 +103,29 @@ end
 
 function slide_mode_button()
     return @htl("""
-    <span>
-        <input id="toggle_slide_input" type="checkbox">
+    <span class="pluto-slides-toggle">
         <button>⧉ Slide Mode</button>
-        
+
         <script>
         const span = currentScript.parentElement
-        const checkbox = span.querySelector("input")
         const button = span.querySelector("button")
-        
+
+        // Drive the toggle through the stable global exposed by slidework.js.
+        // This handler is re-attached every time the cell renders, so the button
+        // keeps working even after the cell is re-executed (no F5 needed).
         button.addEventListener("click", () => {
-            checkbox.click()
+            const tryToggle = (tries) => {
+                if (window.PlutoSlides && typeof window.PlutoSlides.toggle === "function") {
+                    window.PlutoSlides.toggle()
+                } else if (tries > 0) {
+                    // slidework.js may still be loading; retry briefly.
+                    setTimeout(() => tryToggle(tries - 1), 50)
+                } else {
+                    // Last resort: notify whenever the script finishes loading.
+                    document.dispatchEvent(new CustomEvent("pluto-slides-toggle"))
+                }
+            }
+            tryToggle(20)
         })
         </script>
     </span>

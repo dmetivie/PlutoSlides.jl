@@ -1,4 +1,10 @@
 (() => {
+    // Initialize only once per page, even if slide_mode_settings (and therefore
+    // this script) is re-run. Prevents duplicate observers / desynced state.
+    // Reload the page (F5) to load an updated version of this file.
+    if (window.__plutoSlidesInit) return
+    window.__plutoSlidesInit = true
+
     let slides = []
     let current = []
     let currentSlideIndex = 0
@@ -534,6 +540,13 @@
     }
 
     let mutationObserver = null
+
+    // Expose a stable, global entry point so the Slide Mode button can drive the
+    // toggle directly instead of relying on id lookup + listener attachment
+    // (which broke whenever the button cell re-rendered).
+    window.PlutoSlides = window.PlutoSlides || {}
+    window.PlutoSlides.toggle = toggleSlides
+    document.addEventListener("pluto-slides-toggle", () => toggleSlides())
 
     function waitForPluto() {
         if (document.querySelector("pluto-cell")) {
