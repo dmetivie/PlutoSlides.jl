@@ -1,7 +1,7 @@
 name = "PlutoSlides"
 uuid = "ccaada3e-fbb3-407e-96e9-78c3ad6e4026"
 authors = ["David Métivier <david.metivier@inrae.fr>"]
-version = "0.1.1"
+version = "0.2.0"
 
 [deps]
 HypertextLiteral = "ac1192a8-f4b3-4bfe-ba22-af5b92cd3ab2"

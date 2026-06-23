@@ -6,6 +6,29 @@
     let inSlideMode = false
     let h3TitleMode = false
 
+    // Debounce timer for observer-driven reapply.
+    let reapplyTimer = null
+
+    // Cells belonging to the slide currently on screen. Used so the observer can
+    // tell a "current" cell (legitimately visible) apart from a stray cell that
+    // lost its slide-hidden class after Pluto rewrote its `class` attribute.
+    let currentSlideCells = new Set()
+
+    // IDs of UI we inject ourselves. Mutations inside these must NOT trigger a
+    // reapply, otherwise updating the slide number / band text would feed the
+    // MutationObserver and create an endless loop.
+    const OWN_UI_IDS = [
+        "slide-footer-band", "slide-title-band", "slide-title-band-right",
+        "slide-subtitle-band", "slide-controls", "slide-config"
+    ]
+
+    // Only write textContent when it actually changes. Assigning textContent
+    // always replaces the text node (a childList mutation), which would
+    // otherwise re-trigger the MutationObserver endlessly.
+    function setText(el, value) {
+        if (el && el.textContent !== value) el.textContent = value
+    }
+
     // Create and insert control bar into the DOM
     function injectSlideControls() {
         if (document.getElementById("slide-controls")) return
@@ -92,6 +115,10 @@
         
         slides[currentSlideIndex].forEach(cell => cell.classList.remove("slide-hidden"));
 
+        // Remember which cells legitimately belong to the visible slide, so the
+        // observer doesn't mistake them for stray (polluting) cells.
+        currentSlideCells = new Set(slides[currentSlideIndex]);
+
         // Handle fragments (pause functionality)
         const slideCells = slides[currentSlideIndex]
         const pauseMarkers = []
@@ -150,7 +177,7 @@
         // Update slide number (keep same number for all fragments)
         const number = document.getElementById("slide-number");
         if (number) {
-            number.textContent = `${currentSlideIndex}`;            
+            setText(number, `${currentSlideIndex}`);
         }
 
         const titleBand = document.getElementById("slide-title-band");
@@ -195,22 +222,22 @@
                 if (title && subtitle && h2Text) break;
             }
 
-            titleBand.textContent = title;
+            setText(titleBand, title);
             titleBand.style.display = title ? "block" : "none";
             
             // Right band: show h2 if h3_title mode AND h3 slide
             if (h3TitleMode && isH3Slide) {
-                titleBandRight.textContent = h2Text;
+                setText(titleBandRight, h2Text);
             } else {
-                titleBandRight.textContent = "";
+                setText(titleBandRight, "");
             }
             titleBandRight.style.display = title ? "block" : "none";
             
             // Subtitle band: show h3 if h3_title mode AND h3 slide, otherwise h2
             if (h3TitleMode && isH3Slide) {
-                subtitleBand.textContent = h3Text;
+                setText(subtitleBand, h3Text);
             } else {
-                subtitleBand.textContent = subtitle;
+                setText(subtitleBand, subtitle);
             }
             subtitleBand.style.display = (subtitle || h3Text) ? "block" : "none";
         }
@@ -265,6 +292,10 @@
             if (mutationObserver) {
                 mutationObserver.disconnect();
                 mutationObserver = null;
+            }
+            if (reapplyTimer) {
+                clearTimeout(reapplyTimer);
+                reapplyTimer = null;
             }
         }
     }
@@ -432,34 +463,60 @@
         const observer = new MutationObserver((mutations) => {
             let shouldReapplySlideState = false
             let shouldRewatchToggle = false
-            
-            mutations.forEach((mutation) => {
-                // Check if any pluto-cell was added, removed, or its content changed
-                if (mutation.type === 'childList') {
-                    const target = mutation.target
-                    if (target.matches('pluto-cell') || target.closest('pluto-cell') || 
-                        mutation.addedNodes.length > 0 || mutation.removedNodes.length > 0) {
-                        shouldReapplySlideState = true
-                        // Check if a toggle button was added
-                        mutation.addedNodes.forEach(node => {
-                            if (node.nodeType === 1 && 
-                                (node.querySelector && node.querySelector("#toggle_slide_input"))) {
-                                shouldRewatchToggle = true
-                            }
-                        })
-                    }
+
+            for (const mutation of mutations) {
+                const target = mutation.target
+
+                // Ignore mutations inside the UI we inject ourselves (footer,
+                // title/subtitle bands, controls). Updating their text must not
+                // feed this observer, or we get an endless reapply loop.
+                if (target.nodeType === 1 &&
+                    OWN_UI_IDS.some(id => target.id === id || target.closest?.(`#${id}`))) {
+                    continue
                 }
-            })
+
+                if (mutation.type === 'attributes') {
+                    // Pluto rewrites a cell's `class` attribute when its run state
+                    // changes (running -> done). That wipes our `slide-hidden`
+                    // class, briefly revealing a cell that belongs to another
+                    // slide. Re-hide it synchronously right here: the observer
+                    // callback runs as a microtask (before the browser paints),
+                    // so there is no visible flash. Adding the class back is a
+                    // no-op once present, so this cannot loop.
+                    if (target.nodeType === 1 && target.matches?.('pluto-cell') &&
+                        !target.classList.contains('slide-hidden') &&
+                        !currentSlideCells.has(target)) {
+                        target.classList.add('slide-hidden')
+                    }
+                    continue
+                }
+
+                if (mutation.type !== 'childList') continue
+
+                // Only react to structural changes around real notebook cells.
+                if (target.matches?.('pluto-cell') || target.closest?.('pluto-cell') ||
+                    mutation.addedNodes.length > 0 || mutation.removedNodes.length > 0) {
+                    shouldReapplySlideState = true
+                    mutation.addedNodes.forEach(node => {
+                        if (node.nodeType === 1 &&
+                            (node.querySelector && node.querySelector("#toggle_slide_input"))) {
+                            shouldRewatchToggle = true
+                        }
+                    })
+                }
+            }
 
             if (shouldReapplySlideState && inSlideMode) {
-                // Reapply current slide state without scrolling
-                requestAnimationFrame(() => {
+                // Debounce: coalesce bursts of reactive updates into one reapply.
+                if (reapplyTimer) clearTimeout(reapplyTimer)
+                reapplyTimer = setTimeout(() => {
+                    reapplyTimer = null
                     if (inSlideMode) {
                         showSlide(currentSlideIndex, currentFragmentIndex, false)
                     }
-                })
+                }, 150)
             }
-            
+
             if (shouldRewatchToggle) {
                 watchPlutoToggleInput()
             }
@@ -468,7 +525,9 @@
         // Observe the entire document for changes
         observer.observe(document.body, {
             childList: true,
-            subtree: true
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['class']
         })
 
         return observer
