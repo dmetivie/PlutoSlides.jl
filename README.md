@@ -2,22 +2,37 @@
 
 ![logo](https://raw.githubusercontent.com/dmetivie/PlutoSlides.jl/master/assets/logo_pluto_slides.svg)
 
-Who doesn't love [Pluto.jl](https://plutojl.org/)?
+Who doesn't love [Pluto.jl](https://plutojl.org/)? Coding, and seeing the results immediately thanks to reactivity...
 Who doesn't love a nicely formatted slideshow like Beamer or reveal.js used by Quarto?
-This package combines the two[^Disclaimer]! Gets the interactivity of Pluto with a slideshow format.
+This package aims to combine the two[^Disclaimer]! Gets Pluto with a slideshow format.
 
 [^Disclaimer]: Actually, it tries to do so! As I have no knowledge of Javascript, almost no comprehension of HTML and CSS, I turned to LLMs to help me out. So this package is very much vibe coding.
 
-It is not yet registered in the General registry, but you can install it from my local registry (or directly with the repo url) with
+![Example](https://raw.githubusercontent.com/dmetivie/PlutoSlides.jl/master/assets/example.gif)
 
+Note that the `html` version of the Pluto notebook can activate the slide mode ! See this [Julia presentation](https://pluto.land/n/k1hq5qtm) for example.
+
+> [!WARNING]
+> Pluto already has a [presentation mode](https://plutojl.org/en/docs/presentation/). This package is not an official Pluto project, and it is not meant to replace the original presentation mode. It is just a different way to display your Pluto notebook as a slideshow, with some additional features.
+
+## Installation
+
+It is not yet registered in the General registry, but you can
+
+- Use the Julia 1.12 `[sources]` in the project of your notebook to specify where to find the package [see here](https://discourse.julialang.org/t/pluto-1-0-release/137296#p-638767-automatic-pkg-management-5)
+```julia
+[sources]
+PlutoSlides = {url = "https://github.com/dmetivie/PlutoSlides.jl"}
+```
+
+- Or install it from my local registry with
 ```julia
 julia> import Pkg; 
 julia> Pkg.pkg"registry add https://github.com/dmetivie/LocalRegistry"
 ```
 
-Then add it to your Pluto notebook with like any other package.
+Then add it to your Pluto notebook with like any other package `using PlutoSlides` in the notebook.
 
-![Example](https://raw.githubusercontent.com/dmetivie/PlutoSlides.jl/master/assets/example.gif)
 
 ## Usage
 
@@ -55,13 +70,14 @@ slide_mode_button()
 ## Warnings
 
 > [!WARNING]
-> **Display**: Keep in mind that the display of the slides (vertical and horizontal) depends on your screen size.
+> **Display**: Keep in mind that the display of the slides (vertical and horizontal) depends on your screen size. I now prefer to zoom with `ctrl`+`+` to enlarge the slides fonts (instead of changing the font size in the code). When I develop I always check that the slides are displayed correctly on my laptop screen at the resolution I will use for the presentation.
 
 > [!WARNING]  
 > **Experimental**: This package is very experimental and not well tested. Sometimes a good old `F5` (refresh) might be needed.
 
 > [!WARNING]
 > **Performance**: On some of my larger notebooks, I noticed a huge performance drop. Is it related to the number of slides or something else? I don't know. If you have an idea, please discuss it on the related issue [#3](https://github.com/dmetivie/PlutoSlides.jl/issues/3).
+> > It seems that this was fixed in PlutoSlides v0.2.0!
 
 ## Workflow
 
