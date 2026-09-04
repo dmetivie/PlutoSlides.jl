@@ -55,6 +55,29 @@ slide_mode_title(
 
 # then click it to enable/disable slide mode
 slide_mode_button()
+
+# ╔═╡ c9a502d8-7856-46ca-bc47-5566c29908ed
+md"""
+## Subsubtitles
+"""
+
+# ╔═╡ 4cf38fc9-e6f8-45cd-a874-7afdf307f59a
+md"""
+Currently, for correct display of titles, you need to write `h1`, `h2`, and `h3` titles in separate markdown cells without any other content.
+"""
+
+# ╔═╡ a12e0d99-3f30-4fd0-81b0-78153cf6ed4c
+md"""
+This `h2` slides can be divided into two `h3`!
+"""
+
+# ╔═╡ e08a2697-bf8f-40b9-8fbe-50ff6544d4b7
+1+1
+
+# ╔═╡ 0ba7fe0b-3a5f-4a68-a13c-3f1bfabffb53
+md"""
+### Subsub title 1
+"""
 ```
 
 ## Features
@@ -71,6 +94,32 @@ slide_mode_button()
 
 > [!WARNING]
 > **Display**: Keep in mind that the display of the slides (vertical and horizontal) depends on your screen size. I now prefer to zoom with `ctrl`+`+` to enlarge the slides fonts (instead of changing the font size in the code). When I develop I always check that the slides are displayed correctly on my laptop screen at the resolution I will use for the presentation.
+
+> [!WARNING]
+> **Title slides**: Currently, for correct display and detection of titles, you need to write `h1`, `h2`, and `h3` titles in separate markdown cells without any other content.
+> 
+> For example, 
+> ```julia
+> md"""
+> ## SubTitle h2
+> """
+> md"""
+> Text of h2
+> """
+> md"""
+> ### SubSubTitle h3
+> """
+> md"""
+> Text of h3
+> """
+> ```
+> DO NOT write
+> ```julia
+> md"""
+> ## SubTitle h2
+> Text of h2
+> """
+> ```
 
 > [!WARNING]  
 > **Experimental**: This package is very experimental and not well tested. Sometimes a good old `F5` (refresh) might be needed.
@@ -111,13 +160,20 @@ There is probably a lot of room for improvement, and better ways to do things, s
 
 ## TODO
 
-- [ ] Address the performance issue on some notebooks see issue [#3](https://github.com/dmetivie/PlutoSlides.jl/issues/3)
-- [ ] Better scalability/formatting of notebooks for different screens and font sizes. There is `max_width` option, but it is not perfect. Maybe a `max_height` option could be useful too?
-- [ ] PDF export of the slides.
-- [ ] Make the Pluto screen recording work nicely with slide mode.
-- [ ] Template like Beamer themes, e.g. Madrid, Berlin. Possibility to have templates with logo on each slide.
+### General:
+- [X] Address the performance issue on some notebooks see issue [#3](https://github.com/dmetivie/PlutoSlides.jl/issues/3). **I hope it is fixed in v0.2.0.**
 - [ ] More testing (I have only tested on my computer, with Firefox).
+- [ ] Pause feature does not work in all cases. 
+
+### Layout:
+- [ ] Ability to detect and display better the h2, h3 titles in the notebook. Currently, it is very strict and requires them to be in separate markdown cells without any other content.
+- [ ] Better scalability/formatting of notebooks for different screens and font sizes. There is `max_width` option, but it is not perfect. Maybe a `max_height` option could be useful too?
 - [ ] h3 title with the h2 top right title in the band (currently it adds a new band bellow h2 title band).
 - [ ] The fonts of the footer band I think do not match the rest of the slide.
 - [ ] Option to remove slide counter, add/remove total slide number.
 - [ ] No title band slide if empty h2 title `##` title is provided? Or like an option?
+
+### Features:
+- [ ] PDF export of the slides.
+- [ ] Make the Pluto screen recording work nicely with slide mode.
+- [ ] Template like Beamer themes, e.g. Madrid, Berlin. Possibility to have templates with logo on each slide.
