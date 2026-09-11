@@ -44,23 +44,41 @@ slide_mode_settings(footer_left="My Presentation", footer_center="Conference 202
 
 # Customize palette (set right; others derive automatically like Beamer)
 slide_mode_settings(color_footer_right_bg="#ff7f50")
+
+# Use a built-in Beamer-like theme
+slide_mode_settings(theme=:Berlin, footer_left="My Presentation")
+
+# Theme + a logo on every slide (slide mode only)
+slide_mode_settings(theme=:Madrid, logo=Resource("https://julialang.org/assets/infra/logo.svg"), logo_height=50)
+
+# Several logos with individual positions
+slide_mode_settings(
+    logo=[LocalResource("uni.png"), md"![](https://example.com/lab.png)"],
+    logo_position=["top-right", "bottom-left"],
+    logo_height=["48px", "36px"],
+)
+
+# Place a logo by hand instead of using an anchor
+slide_mode_settings(logo="logo.png", logo_position=(top="12%", right="3em"))
+
+# Dead-center, using transform to compensate for the logo's own size
+slide_mode_settings(
+    logo="watermark.png",
+    logo_position=(top="50%", left="50%", transform="translate(-50%, -50%)"),
+    logo_opacity=0.15,
+)
 ```
 """
-function slide_mode_settings(; h3_title=true, footer_left=" ", footer_center="", max_width="100%", font_family=nothing, font_size=nothing,
-    color_subtitle_bg="#3333B3", color_band_text="#ffffff",
-    color_title_bg=mix_black(color_subtitle_bg, 0.50), 
-    color_title_right_bg=color_subtitle_bg,
-    color_controls_bg=color_subtitle_bg,
-    color_footer_right_bg=color_subtitle_bg,
-    color_footer_center_bg=mix_black(color_footer_right_bg, 0.25),
-    color_footer_left_bg=mix_black(color_footer_right_bg, 0.50),
-    color_h1="#000000", color_h3="#333333", color_h3_border=color_subtitle_bg, color_h3_bg=mix_black(color_footer_right_bg, 0.25))
+    logo=nothing, logo_position="top-right", logo_height=nothing, logo_opacity=nothing,
+    logo_offset_x=nothing, logo_offset_y=nothing,
     css_code = read(joinpath(@__DIR__, "..", "css", "always.css"), String)
     css_code_slide = read(joinpath(@__DIR__, "..", "css", "slidecss.css"), String)
     # Add custom max-width styling
     custom_width = """
     main {
         max-width: $(max_width) !important;
+        margin-left: 1%;
+        margin-right: 2% !important;
     }
     """
 
@@ -84,6 +102,8 @@ function slide_mode_settings(; h3_title=true, footer_left=" ", footer_center="",
     $(isnothing(font_size) ? "" : "body, main, .markdown, pluto-output, html { font-size: $(font_size)px; }")
     """
 
+    logo_block = _logo_block(; logo, logo_position, logo_height, logo_opacity, logo_offset_x, logo_offset_y)
+
     return @htl("""
      <div id="slide-config" 
           data-footer-left="$(footer_left)" 
@@ -97,8 +117,111 @@ function slide_mode_settings(; h3_title=true, footer_left=" ", footer_center="",
      $(custom_fonts)
 
      </style>
+  $(logo_block)
   $(PlutoUI.LocalResource(joinpath(@__DIR__, "..", "js", "slidework.js")))
      """)
+end
+
+# Normalize a value to a CSS length: numbers become pixels, everything else is
+# passed through unchanged (so "60px", "4em", "10%" all work).
+_css_len(x::Real) = string(x, "px")
+_css_len(x) = string(x)
+
+# Treat a single logo / option as a 1-element vector; pass arrays through.
+_as_vec(x) = x isa AbstractArray ? collect(x) : Any[x]
+
+# Recycle a scalar option to length `n` so per-logo options can also be given as
+# a single shared value.
+function _recycle(x, n)
+    v = _as_vec(x)
+    length(v) == n && return v
+    length(v) == 1 && return fill(v[1], n)
+    throw(ArgumentError("expected 1 or $n values, got $(length(v))"))
+end
+
+# Normalize one logo to content that actually renders.
+#
+# `PlutoUI.Resource` guesses its MIME type from the file *extension*, so a
+# perfectly good image URL without one (e.g. "https://example.org/logo", or a
+# CMS route that serves a PNG) falls back to an empty `<data>` element and the
+# logo silently disappears. To avoid that trap, plain strings and resources with
+# an unusable MIME type are rendered as a plain `<img>`; everything else
+# (Markdown, raw HTML, an inline `<svg>`, an `<iframe>`, ...) is passed through
+# untouched.
+_is_media_mime(m) = !isnothing(m) && any(p -> startswith(string(m), p), ("image/", "video/", "audio/"))
+
+_logo_content(x::AbstractString) = isfile(x) ? _logo_content(PlutoUI.LocalResource(x)) : @htl("<img src=$(x)>")
+_logo_content(r::PlutoUI.Resource) = _is_media_mime(r.mime) ? r : @htl("<img src=$(r.src)>")
+_logo_content(x) = x
+
+# Predefined placement anchors; each has a matching `.ps-logo.pos-*` rule in
+# css/slidecss.css and is nudged by `logo_offset_x` / `logo_offset_y`.
+const LOGO_ANCHORS = ("top-right", "top-left", "bottom-right", "bottom-left",
+    "top-center", "bottom-center")
+
+# Resolve one `logo_position` entry into (css class, inline placement rules).
+#
+# A `String` picks one of `LOGO_ANCHORS`. A `NamedTuple` / `Dict` / `(x, y)` tuple
+# instead places the logo by hand: `top`, `bottom`, `left`, `right` and `transform`
+# are written straight into the element's style. Manual placement is absolute, so
+# `logo_offset_x` / `logo_offset_y` (which only nudge an anchor) no longer apply --
+# put the offset in the coordinate itself.
+function _logo_placement(p::AbstractString)
+    s = String(p)
+    s in LOGO_ANCHORS || throw(ArgumentError(
+        "Unknown logo_position $(repr(s)). Use one of $(LOGO_ANCHORS), or place the " *
+        "logo by hand with e.g. logo_position = (top = \"15%\", left = \"4em\")."))
+    return ("pos-$(s)", "")
+end
+
+function _logo_placement(p::Union{NamedTuple,AbstractDict})
+    allowed = (:top, :bottom, :left, :right, :transform)
+    rules = IOBuffer()
+    seen = Symbol[]
+    for (k, v) in pairs(p)
+        key = Symbol(k)
+        key in allowed || throw(ArgumentError(
+            "Unknown logo_position key $(repr(key)). Allowed keys: $(allowed)."))
+        isnothing(v) && continue
+        push!(seen, key)
+        print(rules, key, ":", key === :transform ? string(v) : _css_len(v), ";")
+    end
+    # Pin whichever axis the caller left out, so placement never falls back to the
+    # element's static position. Only one edge per axis is ever emitted: setting
+    # both `top` and `bottom` on a fixed-height box makes the browser drop one.
+    (:top in seen || :bottom in seen) || print(rules, "top:0;")
+    (:left in seen || :right in seen) || print(rules, "left:0;")
+    return ("pos-custom", String(take!(rules)))
+end
+
+# `(x, y)` shorthand for `(left = x, top = y)`.
+_logo_placement(p::Tuple{Any,Any}) = _logo_placement((left=p[1], top=p[2]))
+
+# Build the hidden logo holder. Each logo is arbitrary HTML-able content
+# (`Resource`, `LocalResource`, `md"..."`, raw HTML, ...). slidework.js relocates
+# these nodes into a fixed `#slide-logo-layer` that is only visible in slide mode.
+function _logo_block(; logo=nothing, logo_position="top-right", logo_height=nothing,
+    logo_opacity=nothing, logo_offset_x=nothing, logo_offset_y=nothing)
+    isnothing(logo) && return nothing
+    logos = _as_vec(logo)
+    n = length(logos)
+    pos = _recycle(logo_position, n)
+    hgt = _recycle(logo_height, n)
+    opa = _recycle(logo_opacity, n)
+    ox = _recycle(logo_offset_x, n)
+    oy = _recycle(logo_offset_y, n)
+    items = map(1:n) do i
+        cls, placement = _logo_placement(pos[i])
+        style = string(
+            placement,
+            isnothing(hgt[i]) ? "" : "--ps-logo-height:$(_css_len(hgt[i]));",
+            isnothing(opa[i]) ? "" : "--ps-logo-opacity:$(opa[i]);",
+            isnothing(ox[i]) ? "" : "--ps-logo-x:$(_css_len(ox[i]));",
+            isnothing(oy[i]) ? "" : "--ps-logo-y:$(_css_len(oy[i]));",
+        )
+        @htl("""<div class="ps-logo $(cls)" style="$(style)">$(_logo_content(logos[i]))</div>""")
+    end
+    return @htl("""<div id="slide-logo-source" style="display:none">$(items...)</div>""")
 end
 
 function slide_mode_button()

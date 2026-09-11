@@ -216,3 +216,73 @@ body.slide-mode #slide-footer-band {
     background: var(--ps-color-footer-right-bg, #ff7f50);
     padding: 0em 0.4em;
 }
+
+/* Logo layer: holds one or more logos, relocated to <body> by slidework.js.
+   Only visible while presenting (body.slide-mode), never in edit mode. */
+#slide-logo-layer {
+    display: none;
+}
+
+body.slide-mode #slide-logo-layer {
+    display: block;
+}
+
+.ps-logo {
+    position: fixed;
+    z-index: 1002;
+    height: var(--ps-logo-height, 48px);
+    opacity: var(--ps-logo-opacity, 1);
+    pointer-events: none;
+}
+
+/* Make image-based logos (Resource/LocalResource/md image/inline svg) fit the box
+   height; the box width then shrinks to the image aspect ratio. */
+.ps-logo img,
+.ps-logo svg,
+.ps-logo video {
+    height: 100%;
+    width: auto;
+    display: block;
+}
+
+/* Predefined positions. Per-logo offsets come from --ps-logo-x / --ps-logo-y. */
+.ps-logo.pos-top-right {
+    top: var(--ps-logo-y, 0.4em);
+    right: var(--ps-logo-x, 0.6em);
+}
+
+.ps-logo.pos-top-left {
+    top: var(--ps-logo-y, 0.4em);
+    left: var(--ps-logo-x, 0.6em);
+}
+
+.ps-logo.pos-bottom-right {
+    bottom: var(--ps-logo-y, 2.4em);
+    right: var(--ps-logo-x, 0.6em);
+}
+
+.ps-logo.pos-bottom-left {
+    bottom: var(--ps-logo-y, 2.4em);
+    left: var(--ps-logo-x, 0.6em);
+}
+
+.ps-logo.pos-top-center {
+    top: var(--ps-logo-y, 0.4em);
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.ps-logo.pos-bottom-center {
+    bottom: var(--ps-logo-y, 2.4em);
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Manual placement: `logo_position = (top = "15%", left = "4em")`. The concrete
+   top / bottom / left / right / transform values are written inline by
+   `_logo_block`, so this class carries no positioning of its own -- it exists only
+   as a styling hook. Do not add top/left here: an inline `bottom` plus a class
+   `top` would over-constrain the fixed-height box and the browser would drop one. */
+.ps-logo.pos-custom {
+    /* positioned inline by PlutoSlides._logo_placement */
+}

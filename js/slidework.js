@@ -25,7 +25,7 @@
     // MutationObserver and create an endless loop.
     const OWN_UI_IDS = [
         "slide-footer-band", "slide-title-band", "slide-title-band-right",
-        "slide-subtitle-band", "slide-controls", "slide-config"
+        "slide-subtitle-band", "slide-controls", "slide-config", "slide-logo-layer"
     ]
 
     // Only write textContent when it actually changes. Assigning textContent
@@ -81,6 +81,30 @@
         document.getElementById("prev-btn")?.addEventListener("click", () => changeSlide(-1))
         document.getElementById("next-btn")?.addEventListener("click", () => changeSlide(1))
         document.getElementById("toggle-btn")?.addEventListener("click", toggleSlides)
+
+    // Relocate logo nodes rendered by slide_mode_settings (inside #slide-logo-source,
+    // which lives in a pluto-cell and would be hidden in slide mode) into a fixed,
+    // body-level layer. The layer is only visible in slide mode (CSS). Idempotent:
+    // safe to call multiple times and after the settings cell renders late.
+    function injectLogos() {
+        // Cheap early-out. This is called on every slide change so that
+        // re-running slide_mode_settings (very common: the settings cell is
+        // usually bound to sliders / color pickers) refreshes the logos live
+        // instead of leaving the previously relocated copies on screen.
+        const sources = document.querySelectorAll("#slide-logo-source")
+        if (sources.length === 0) return
+        let layer = document.getElementById("slide-logo-layer")
+        if (!layer) {
+            layer = document.createElement("div")
+            layer.id = "slide-logo-layer"
+            document.body.appendChild(layer)
+        }
+        // Drop previously relocated logos so a re-run replaces them.
+        layer.innerHTML = ""
+        sources.forEach(source => {
+            while (source.firstChild) layer.appendChild(source.firstChild)
+            source.remove()
+        })
     }
 
     let allCells = []  // declare at top scope
@@ -118,6 +142,10 @@
 
         // Re-gather slides with fresh references if needed
         gatherSlides();
+
+        // Pick up logos from a freshly re-rendered settings cell. No-op
+        // (single getElementById-class lookup) unless that actually happened.
+        injectLogos();
         
         slides[currentSlideIndex].forEach(cell => cell.classList.remove("slide-hidden"));
 
@@ -259,6 +287,8 @@
             if (h3TitleMode) {
                 document.body.classList.add("h3-title-mode");
             }
+            // In case the settings cell rendered after initial injection.
+            injectLogos();
             gatherSlides();
             showSlide(0, 0);
 
