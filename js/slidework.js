@@ -126,6 +126,54 @@
         if (current.length > 0) slides.push(current)
     }
 
+    // Compute the title/subtitle band content for a given slide index. Shared
+    // by showSlide (live display) and buildPrintPages (PDF export) so the two
+    // never drift apart.
+    function computeSlideBands(slideIndex) {
+        const slideCells = slides[slideIndex]
+        const h1Cell = slideCells.find(cell => cell.querySelector("pluto-output h1"))
+        if (h1Cell) {
+            return { isTitleSlide: true, title: "", titleRight: "", subtitle: "", showTitle: false, showSubtitle: false }
+        }
+
+        const h3Cell = slideCells.find(cell => cell.querySelector("pluto-output h3"))
+        const isH3Slide = h3Cell !== undefined
+
+        // Normal slides: show left band with h1, right band empty, subtitle with h2
+        let title = "", subtitle = "", h2Text = "", h3Text = ""
+        for (let i = slideIndex; i >= 0; i--) {
+            if (!title) {
+                const h1 = slides[i].find(cell => cell.querySelector("pluto-output h1"));
+                if (h1) title = h1.querySelector("h1")?.textContent ?? "";
+            }
+            if (!subtitle) {
+                const h2 = slides[i].find(cell => cell.querySelector("pluto-output h2"));
+                if (h2) subtitle = h2.querySelector("h2")?.textContent ?? "";
+            }
+            if (!h2Text) {
+                const h2 = slides[i].find(cell => cell.querySelector("pluto-output h2"));
+                if (h2) h2Text = h2.querySelector("h2")?.textContent ?? "";
+            }
+            if (!h3Text && i === slideIndex) {
+                const h3 = slides[i].find(cell => cell.querySelector("pluto-output h3"));
+                if (h3) h3Text = h3.querySelector("h3")?.textContent ?? "";
+            }
+            if (title && subtitle && h2Text) break;
+        }
+
+        // Right band: show h2 if h3_title mode AND h3 slide
+        const titleRight = (h3TitleMode && isH3Slide) ? h2Text : ""
+        // Subtitle band: show h3 if h3_title mode AND h3 slide, otherwise h2
+        const subtitleText = (h3TitleMode && isH3Slide) ? h3Text : subtitle
+
+        return {
+            isTitleSlide: false,
+            title, titleRight, subtitle: subtitleText,
+            showTitle: !!title,
+            showSubtitle: !!(subtitle || h3Text),
+        }
+    }
+
     function showSlide(index, fragmentIndex = 0, shouldScroll = true) {
         const newSlideIndex = Math.max(0, Math.min(slides.length - 1, index));
         
@@ -218,62 +266,22 @@
         const titleBandRight = document.getElementById("slide-title-band-right");
         const subtitleBand = document.getElementById("slide-subtitle-band");
 
-        const h1Cell = slides[currentSlideIndex].find(cell =>
-            cell.querySelector("pluto-output h1")
-        );
+        const bands = computeSlideBands(currentSlideIndex);
 
-        if (h1Cell) {
+        if (bands.isTitleSlide) {
             // Title slide: hide all bands
             titleBand.style.display = "none";
             titleBandRight.style.display = "none";
             subtitleBand.style.display = "none";
         } else {
-            // Check if current slide is an h3 slide
-            const h3Cell = slides[currentSlideIndex].find(cell =>
-                cell.querySelector("pluto-output h3")
-            );
-            const isH3Slide = h3Cell !== undefined;
+            setText(titleBand, bands.title);
+            titleBand.style.display = bands.showTitle ? "block" : "none";
 
-            // Normal slides: show left band with h1, right band empty, subtitle with h2
-            let title = "", subtitle = "", h2Text = "", h3Text = "";
-            for (let i = currentSlideIndex; i >= 0; i--) {
-                if (!title) {
-                    const h1 = slides[i].find(cell => cell.querySelector("pluto-output h1"));
-                    if (h1) title = h1.querySelector("h1")?.textContent ?? "";
-                }
-                if (!subtitle) {
-                    const h2 = slides[i].find(cell => cell.querySelector("pluto-output h2"));
-                    if (h2) subtitle = h2.querySelector("h2")?.textContent ?? "";
-                }
-                if (!h2Text) {
-                    const h2 = slides[i].find(cell => cell.querySelector("pluto-output h2"));
-                    if (h2) h2Text = h2.querySelector("h2")?.textContent ?? "";
-                }
-                if (!h3Text && i === currentSlideIndex) {
-                    const h3 = slides[i].find(cell => cell.querySelector("pluto-output h3"));
-                    if (h3) h3Text = h3.querySelector("h3")?.textContent ?? "";
-                }
-                if (title && subtitle && h2Text) break;
-            }
+            setText(titleBandRight, bands.titleRight);
+            titleBandRight.style.display = bands.showTitle ? "block" : "none";
 
-            setText(titleBand, title);
-            titleBand.style.display = title ? "block" : "none";
-            
-            // Right band: show h2 if h3_title mode AND h3 slide
-            if (h3TitleMode && isH3Slide) {
-                setText(titleBandRight, h2Text);
-            } else {
-                setText(titleBandRight, "");
-            }
-            titleBandRight.style.display = title ? "block" : "none";
-            
-            // Subtitle band: show h3 if h3_title mode AND h3 slide, otherwise h2
-            if (h3TitleMode && isH3Slide) {
-                setText(subtitleBand, h3Text);
-            } else {
-                setText(subtitleBand, subtitle);
-            }
-            subtitleBand.style.display = (subtitle || h3Text) ? "block" : "none";
+            setText(subtitleBand, bands.subtitle);
+            subtitleBand.style.display = bands.showSubtitle ? "block" : "none";
         }
 
         // Update notebook offset
@@ -578,9 +586,24 @@
     window.PlutoSlides.toggle = toggleSlides
     document.addEventListener("pluto-slides-toggle", () => toggleSlides())
 
+    // Internal API consumed by js/print.js (kept separate since PDF export is
+    // an optional, independently-loaded feature). Exposes live state via
+    // getters/setters since the underlying variables are reassigned over time.
+    window.PlutoSlides._internal = {
+        gatherSlides, computeSlideBands, showSlide, setupMutationObserver,
+        get slides() { return slides },
+        get currentSlideIndex() { return currentSlideIndex },
+        get currentFragmentIndex() { return currentFragmentIndex },
+        get inSlideMode() { return inSlideMode },
+        get h3TitleMode() { return h3TitleMode },
+        get mutationObserver() { return mutationObserver },
+        setMutationObserver(o) { mutationObserver = o },
+    }
+
     function waitForPluto() {
         if (document.querySelector("pluto-cell")) {
             injectSlideControls()
+            injectLogos()
             watchPlutoToggleInput()
         } else {
             requestAnimationFrame(waitForPluto)
