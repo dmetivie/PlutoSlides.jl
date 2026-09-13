@@ -83,7 +83,12 @@ body.slide-mode {
     /* Takes up half the screen width */
     background: var(--ps-color-title-bg, #804028);
     /* Dark burnt orange background */
-    color: var(--ps-color-band-text, #ffffff);
+    background-image: var(--ps-band-overlay, none);
+    /* Optional gloss/gradient painted over the band color; themes set it */
+    border-radius: 0 0 0 var(--ps-band-radius, 0);
+    /* Only the free corner rounds: this band touches the top and left edges,
+       and its right edge is the seam with the other half of the headline. */
+    color: var(--ps-color-title-text, #ffffff);
     /* White text for contrast */
     /* Use unified font */
     font-family: var(--ps-font-family);
@@ -101,8 +106,8 @@ body.slide-mode {
     /* Places above most other elements */
     display: none;
     /* Hidden by default, shown via JS */
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-    /* Soft drop shadow for depth */
+    box-shadow: var(--ps-title-shadow, 0 1px 4px rgba(0, 0, 0, 0.1));
+    /* Soft drop shadow for depth; flat themes set that variable to none */
     /* pointer-events: none; */
     /* Allows clicks to pass through */
 }
@@ -119,7 +124,9 @@ body.slide-mode {
     /* Takes up half the screen width */
     background: var(--ps-color-title-right-bg, #4472C4);
     /* Different color for right band */
-    color: var(--ps-color-band-text, #ffffff);
+    background-image: var(--ps-band-overlay, none);
+    border-radius: 0 0 var(--ps-band-radius, 0) 0;
+    color: var(--ps-color-title-text, #ffffff);
     /* White text for contrast */
     /* Use unified font */
     font-family: var(--ps-font-family);
@@ -155,7 +162,11 @@ body.slide-mode {
     /* Full width */
     background: var(--ps-color-subtitle-bg, #ff7f50);
     /* Coral background for contrast */
-    color: var(--ps-color-band-text, #ffffff);
+    background-image: var(--ps-band-overlay, none);
+    border-radius: 0 0 var(--ps-band-radius, 0) var(--ps-band-radius, 0);
+    /* A rule under the band, for themes whose subtitle carries no fill */
+    border-bottom: var(--ps-subtitle-border, none);
+    color: var(--ps-color-subtitle-text, #ffffff);
     /* White subtitle text */
     /* Use unified font */
     font-family: var(--ps-font-family);
@@ -163,15 +174,15 @@ body.slide-mode {
     /* Larger text to mimic Beamer subtitle (~18pt) */
     font-weight: 600;
     /* Bold subtitle for emphasis */
-    text-align: left;
-    /* Align subtitle text to the left */
+    text-align: var(--ps-subtitle-align, left);
+    /* Align subtitle text to the left (themes may centre it) */
     z-index: 1000;
     /* Stacked just below the title band */
     padding: 1.1em 0.5em 0.25em 0.5em;
     /* Thicker padding, especially bottom, to allow vertical centering */
     display: none;
     /* Hidden by default */
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--ps-subtitle-shadow, 0 2px 6px rgba(0, 0, 0, 0.1));
     /* Subtle shadow for separation */
     /* pointer-events: none; */
     /* Let mouse events go through it */
@@ -183,7 +194,9 @@ body.slide-mode {
     bottom: 0;
     left: 0;
     width: 100%;
-    color: var(--ps-color-band-text, #ffffff);
+    /* A hairline above the footer, for themes whose footer carries no fill */
+    border-top: var(--ps-footer-border, none);
+    color: var(--ps-color-footer-text, #ffffff);
     font-size: 0.9rem;
     z-index: 1001;
     /* pointer-events: none; */
@@ -202,18 +215,23 @@ body.slide-mode #slide-footer-band {
     text-align: center;
     width: 33.33%;
     background: var(--ps-color-footer-left-bg, #804028);
+    background-image: var(--ps-band-overlay, none);
+    border-radius: var(--ps-band-radius, 0) 0 0 0;
 }
 
 #slide-footer-center {
     text-align: center;
     width: 33.33%;
     background: var(--ps-color-footer-center-bg, #BF5F3C);
+    background-image: var(--ps-band-overlay, none);
 }
 
 #slide-indicator {
     text-align: right;
     width: 33.33%;
     background: var(--ps-color-footer-right-bg, #ff7f50);
+    background-image: var(--ps-band-overlay, none);
+    border-radius: 0 var(--ps-band-radius, 0) 0 0;
     padding: 0em 0.4em;
 }
 

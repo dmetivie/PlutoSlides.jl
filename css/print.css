@@ -79,7 +79,8 @@
         height: 7.5in;
         overflow: hidden;
         box-sizing: border-box;
-        background: #ffffff;
+        /* Themes with a dark slide surface set --ps-color-page-bg. */
+        background: var(--ps-color-page-bg, #ffffff);
     }
 
     /* .pdf-title-slide is set by buildPrintPages() on slides that have an h1
@@ -100,14 +101,14 @@
     .pdf-title-band-right {
         position: absolute;
         top: 0;
-        color: var(--ps-color-band-text, #ffffff);
+        color: var(--ps-color-title-text, #ffffff);
         font-family: var(--ps-font-family);
         font-size: 0.9rem;
         font-weight: 600;
         padding: 0.25em 1em;
         min-height: 1.65rem;
         box-sizing: border-box;
-        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+        box-shadow: var(--ps-title-shadow, 0 1px 4px rgba(0, 0, 0, 0.1));
         z-index: 3;
     }
 
@@ -115,6 +116,8 @@
         left: 0;
         width: 50%;
         background: var(--ps-color-title-bg, #804028);
+        background-image: var(--ps-band-overlay, none);
+        border-radius: 0 0 0 var(--ps-band-radius, 0);
         text-align: right;
     }
 
@@ -122,6 +125,8 @@
         left: 50%;
         width: 50%;
         background: var(--ps-color-title-right-bg, #4472C4);
+        background-image: var(--ps-band-overlay, none);
+        border-radius: 0 0 var(--ps-band-radius, 0) 0;
         text-align: left;
     }
 
@@ -131,14 +136,17 @@
         left: 0;
         width: 100%;
         background: var(--ps-color-subtitle-bg, #ff7f50);
-        color: var(--ps-color-band-text, #ffffff);
+        background-image: var(--ps-band-overlay, none);
+        border-radius: 0 0 var(--ps-band-radius, 0) var(--ps-band-radius, 0);
+        border-bottom: var(--ps-subtitle-border, none);
+        color: var(--ps-color-subtitle-text, #ffffff);
         font-family: var(--ps-font-family);
         font-size: 1.9rem;
         font-weight: 600;
-        text-align: left;
+        text-align: var(--ps-subtitle-align, left);
         padding: 1.1em 0.5em 0.25em 0.5em;
         box-sizing: border-box;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        box-shadow: var(--ps-subtitle-shadow, 0 2px 6px rgba(0, 0, 0, 0.1));
         z-index: 2;
     }
 
@@ -147,7 +155,8 @@
         bottom: 0;
         left: 0;
         width: 100%;
-        color: var(--ps-color-band-text, #ffffff);
+        border-top: var(--ps-footer-border, none);
+        color: var(--ps-color-footer-text, #ffffff);
         font-family: var(--ps-font-family);
         font-size: 0.9rem;
         display: flex;
@@ -166,14 +175,19 @@
 
     .pdf-footer-left {
         background: var(--ps-color-footer-left-bg, #804028);
+        background-image: var(--ps-band-overlay, none);
+        border-radius: var(--ps-band-radius, 0) 0 0 0;
     }
 
     .pdf-footer-center {
         background: var(--ps-color-footer-center-bg, #BF5F3C);
+        background-image: var(--ps-band-overlay, none);
     }
 
     .pdf-footer-right {
         background: var(--ps-color-footer-right-bg, #ff7f50);
+        background-image: var(--ps-band-overlay, none);
+        border-radius: 0 var(--ps-band-radius, 0) 0 0;
         text-align: right;
         padding: 0 0.4em;
     }
