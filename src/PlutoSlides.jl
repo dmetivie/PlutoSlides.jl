@@ -22,6 +22,19 @@ Configure slide mode for PlutoSlides presentations.
 - `footer_left`: Text to display in the left footer section
 - `footer_center`: Text to display in the center footer section
 - `max_width`: Maximum width of the notebook content (default: "100%")
+- `pdf_aspect`: Shape of a slide in the PDF export, as width / height. Defaults to
+  the browser window's own ratio, so a printed slide looks like the live one -- the browser
+  fits it to the page *width*, which on a relatively taller sheet (16:9 on A4 landscape)
+  leaves the bottom fifth blank. Set it to the paper's ratio to fill the sheet instead;
+  the slide keeps the window's pixel width either way, so only its height moves and the
+  content stays at screen proportions. Accepts a number (`16/9`), a ratio string
+  (`"16:9"`), a tuple (`(297, 210)`), or a name: `"screen"`, `"a4"`, `"letter"`.
+- `pdf_stretch`: Extra vertical room in the PDF export, as a multiplier on the slide's
+  height only (default `1`). `1.1` makes a printed slide 10% taller than the browser
+  window while keeping its width, so the horizontal scale is untouched and the slide
+  simply reaches further down the sheet. Useful to reclaim part of the blank band a
+  `"screen"`-shaped slide leaves on a taller sheet without going all the way to
+  `pdf_aspect="a4"`; past the paper's own ratio the bottom of the slide is cut off.
 - `font_family`: Optional CSS font-family stack to use everywhere (e.g., "'Fira Sans', Helvetica, Arial, sans-serif")
 - `font_size`: Optional base font size in pixels; affects rem/em-based sizing (e.g., 16, 18, 20)
 - `color_*`: Palette colors for bands and headings. By default, the footer center and left colors are derived from the right color using Beamer-like mixes with black:
@@ -38,6 +51,12 @@ slide_mode_settings(footer_left="My Presentation", footer_center="Conference 202
 
 # Narrow width for smaller screens or projectors
 slide_mode_settings(footer_left="My Presentation", footer_center="Conference 2025", max_width="1200px")
+
+# Fill an A4 landscape sheet when exporting to PDF, instead of leaving the bottom blank
+slide_mode_settings(footer_left="My Presentation", pdf_aspect="a4")
+
+# Or keep the screen's shape and just claim 10% more height, same width
+slide_mode_settings(footer_left="My Presentation", pdf_stretch=1.1)
 
 # Set typography globally
 slide_mode_settings(footer_left="My Presentation", footer_center="Conference 2025", font_family="'Fira Sans', Helvetica, Arial, sans-serif", font_size=18)
@@ -69,10 +88,13 @@ slide_mode_settings(
 )
 ```
 """
+function slide_mode_settings(; theme=nothing, h3_title=true, footer_left=" ", footer_center="", max_width="98%",
+    pdf_aspect="a4", pdf_stretch=0.8,
     logo=nothing, logo_position="top-right", logo_height=nothing, logo_opacity=nothing,
     logo_offset_x=nothing, logo_offset_y=nothing,
     css_code = read(joinpath(@__DIR__, "..", "css", "always.css"), String)
     css_code_slide = read(joinpath(@__DIR__, "..", "css", "slidecss.css"), String)
+    css_code_print = read(joinpath(@__DIR__, "..", "css", "print.css"), String)
     # Add custom max-width styling
     custom_width = """
     main {
@@ -103,21 +125,27 @@ slide_mode_settings(
     """
 
     logo_block = _logo_block(; logo, logo_position, logo_height, logo_opacity, logo_offset_x, logo_offset_y)
+    aspect = _pdf_aspect(pdf_aspect)
+    stretch = _pdf_stretch(pdf_stretch)
 
     return @htl("""
      <div id="slide-config" 
           data-footer-left="$(footer_left)" 
           data-footer-center="$(footer_center)"
           data-h3-title="$(h3_title)" 
+          data-pdf-aspect="$(isnothing(aspect) ? "" : aspect)"
+          data-pdf-stretch="$(stretch)"
           style="display: none;"></div>
      <style>
      $(css_code_slide)
      $(css_code)
+     $(css_code_print)
      $(custom_width)
      $(custom_fonts)
 
      </style>
   $(logo_block)
+  $(PlutoUI.LocalResource(joinpath(@__DIR__, "..", "js", "print.js")))
   $(PlutoUI.LocalResource(joinpath(@__DIR__, "..", "js", "slidework.js")))
      """)
 end

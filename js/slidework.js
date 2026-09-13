@@ -56,6 +56,7 @@
                 <button id="prev-btn">←</button>
                 <button id="toggle-btn">⧉</button>
                 <button id="next-btn">→</button>
+                <button id="export-pdf-btn" title="Export slides to PDF">🖨</button>
             </span>
             <span id="slide-number"></span>
         </div>
@@ -81,6 +82,10 @@
         document.getElementById("prev-btn")?.addEventListener("click", () => changeSlide(-1))
         document.getElementById("next-btn")?.addEventListener("click", () => changeSlide(1))
         document.getElementById("toggle-btn")?.addEventListener("click", toggleSlides)
+        // Defined in js/print.js (loaded right after this file); indirected
+        // through the shared namespace so the two files stay decoupled.
+        document.getElementById("export-pdf-btn")?.addEventListener("click", () => window.PlutoSlides.exportPDF?.())
+    }
 
     // Relocate logo nodes rendered by slide_mode_settings (inside #slide-logo-source,
     // which lives in a pluto-cell and would be hidden in slide mode) into a fixed,
@@ -428,18 +433,22 @@
         }
     })
 
-    function updateNotebookOffset() {
-        const notebook = document.querySelector("pluto-notebook");
-        const subtitleBand = document.getElementById("slide-subtitle-band");
-
+    // Vertical gap between the top of the notebook column and the first cell of
+    // a slide: a constant clearance for the bands, plus a bit more when the
+    // heading cell carries content of its own below the heading. Split out of
+    // updateNotebookOffset so the PDF export (js/print.js) can reproduce the
+    // live offset page by page instead of guessing one value for the whole deck.
+    function computeNotebookOffset(slideIndex) {
         // Get the heights of the title and subtitle bands
         const subtitleHeight = 15//subtitleBand?.offsetHeight || 0;
 
+        const currentSlide = slides[slideIndex];
+        if (!currentSlide) return subtitleHeight;
+
         // Check if current slide is an h3 slide
-        const currentSlide = slides[currentSlideIndex];
         const h3Cell = currentSlide.find(cell => cell.querySelector("pluto-output h3"));
         const isH3Slide = h3Cell !== undefined;
-        
+
         let additionalOffset = 0;
 
         // In h3_title mode on h3 slides, check h3 cell for additional content
@@ -467,12 +476,14 @@
             }
         }
 
-        // Calculate the total offset
-        const totalOffset = additionalOffset + subtitleHeight;
+        return additionalOffset + subtitleHeight;
+    }
 
+    function updateNotebookOffset() {
         // Apply the offset as a margin to the notebook
+        const notebook = document.querySelector("pluto-notebook");
         if (notebook) {
-            notebook.style.marginTop = `${totalOffset}px`;
+            notebook.style.marginTop = `${computeNotebookOffset(currentSlideIndex)}px`;
         }
     }
 
@@ -590,7 +601,7 @@
     // an optional, independently-loaded feature). Exposes live state via
     // getters/setters since the underlying variables are reassigned over time.
     window.PlutoSlides._internal = {
-        gatherSlides, computeSlideBands, showSlide, setupMutationObserver,
+        gatherSlides, computeSlideBands, computeNotebookOffset, showSlide, setupMutationObserver,
         get slides() { return slides },
         get currentSlideIndex() { return currentSlideIndex },
         get currentFragmentIndex() { return currentFragmentIndex },

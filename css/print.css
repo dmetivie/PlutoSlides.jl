@@ -1,0 +1,209 @@
+/* ===================== PDF export (print) ===================== */
+/* window.PlutoSlides.exportPDF() (js/print.js) builds one sheet per slide
+   and prints it with the browser's native dialog ("Save as PDF"). It also forces
+   body.slide-mode/.h3-title-mode, so the heading/chrome rules in slidecss.css
+   (h1/h3 styling, hiding #pluto-nav, duplicate h2, etc.) apply to the print
+   pages unchanged. Scoped to @media print + body.pdf-export-mode so a stray
+   Ctrl+P of the raw notebook is never affected.
+
+   Two boxes per slide, both sized inline by buildPrintPages():
+     .pdf-sheet  one page - takes the full page height, top-aligns the slide;
+     .pdf-page   the slide, at the live viewport's exact pixel size, so it keeps
+                 the screen's aspect ratio - at the cost of leaving the bottom
+                 of a relatively taller sheet (A4 landscape) blank.
+   Bands, fonts, images and plots are all sized in absolute rem/px, so they only
+   keep their on-screen proportions if the box they are laid out in has the
+   on-screen pixel width; getting from there to the paper is left to the
+   browser's own print scaling. See the long note at the top of js/print.js -
+   in particular, nothing here may be sized with 100vw.
+
+   Band sizing (font-size/padding/min-height/box-shadow) is copied 1:1 from the
+   live #slide-title-band/#slide-title-band-right/#slide-subtitle-band/
+   #slide-footer-band rules in slidecss.css, so a printed slide matches the
+   live slide-mode look. Only position (fixed -> absolute, one copy per slide
+   instead of one viewport-wide singleton) differs out of necessity. */
+
+@page {
+    size: 13.333in 7.5in;
+    margin: 0;
+}
+
+@media print {
+
+    /* Chrome/Edge/Firefox don't print background colors by default (the
+       dialog's "Background graphics" option is off) - without this, every
+       band/logo/theme background prints transparent and whatever sits behind
+       it (page background, cell content) shows through. Forcing "exact"
+       makes printed colors always match the screen, regardless of that
+       checkbox. Inherited, so setting it once here covers all descendants. */
+    html,
+    body {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    body.pdf-export-mode>*:not(#pdf-export-container) {
+        display: none !important;
+    }
+
+    /* One sheet per slide: the page break lives here, and the slide is
+       centred on it. Sized inline by buildPrintPages() - width in pixels, never
+       100vw, because a viewport-sized box never overflows the nominal page and
+       the browser then applies no shrink-to-fit, which is what makes a printed
+       slide look zoomed. */
+    .pdf-sheet {
+        display: flex;
+        /* Top-aligned, never centred. A centred flex item that overflows
+           spills equally at BOTH ends and the top half is unreachable, which
+           silently ate the title band off every slide; any leftover height
+           therefore goes below the slide, where it costs nothing. */
+        align-items: flex-start;
+        justify-content: center;
+        overflow: hidden;
+        break-after: page;
+        page-break-after: always;
+    }
+
+    .pdf-sheet:last-of-type {
+        break-after: auto;
+        page-break-after: auto;
+    }
+
+    /* The slide itself, at the live viewport's pixel size (written inline), so
+       it carries the screen's aspect ratio and its content the screen's
+       proportions. */
+    .pdf-page {
+        position: relative;
+        flex: none;
+        width: 13.333in;
+        height: 7.5in;
+        overflow: hidden;
+        box-sizing: border-box;
+        background: #ffffff;
+    }
+
+    /* .pdf-title-slide is set by buildPrintPages() on slides that have an h1
+       and therefore no bands. It carries no rule of its own (the content column
+       is positioned from the measured live <main>, bands or no bands) and is
+       kept purely as a styling hook. */
+
+    /* Values below are copied 1:1 from the live #slide-title-band /
+       #slide-title-band-right / #slide-subtitle-band / #slide-footer-band
+       rules in slidecss.css, so a printed slide looks the same as presenting
+       it - only position:fixed->absolute (per-slide instead of viewport-wide)
+       and z-index (there's no other page content to layer against) differ.
+       Note the live design deliberately overlaps title and subtitle at
+       top:0: the subtitle's large padding-top pushes its text below the
+       title, while the title's higher z-index keeps it painted over the
+       subtitle's box. Reproduced here with the same z-index ordering. */
+    .pdf-title-band,
+    .pdf-title-band-right {
+        position: absolute;
+        top: 0;
+        color: var(--ps-color-band-text, #ffffff);
+        font-family: var(--ps-font-family);
+        font-size: 0.9rem;
+        font-weight: 600;
+        padding: 0.25em 1em;
+        min-height: 1.65rem;
+        box-sizing: border-box;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+        z-index: 3;
+    }
+
+    .pdf-title-band {
+        left: 0;
+        width: 50%;
+        background: var(--ps-color-title-bg, #804028);
+        text-align: right;
+    }
+
+    .pdf-title-band-right {
+        left: 50%;
+        width: 50%;
+        background: var(--ps-color-title-right-bg, #4472C4);
+        text-align: left;
+    }
+
+    .pdf-subtitle-band {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background: var(--ps-color-subtitle-bg, #ff7f50);
+        color: var(--ps-color-band-text, #ffffff);
+        font-family: var(--ps-font-family);
+        font-size: 1.9rem;
+        font-weight: 600;
+        text-align: left;
+        padding: 1.1em 0.5em 0.25em 0.5em;
+        box-sizing: border-box;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        z-index: 2;
+    }
+
+    .pdf-footer-band {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        color: var(--ps-color-band-text, #ffffff);
+        font-family: var(--ps-font-family);
+        font-size: 0.9rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 3;
+    }
+
+    .pdf-footer-left,
+    .pdf-footer-center,
+    .pdf-footer-right {
+        text-align: center;
+        width: 33.33%;
+        box-sizing: border-box;
+    }
+
+    .pdf-footer-left {
+        background: var(--ps-color-footer-left-bg, #804028);
+    }
+
+    .pdf-footer-center {
+        background: var(--ps-color-footer-center-bg, #BF5F3C);
+    }
+
+    .pdf-footer-right {
+        background: var(--ps-color-footer-right-bg, #ff7f50);
+        text-align: right;
+        padding: 0 0.4em;
+    }
+
+    .pdf-logo-layer {
+        position: absolute;
+        inset: 0;
+        z-index: 3;
+        pointer-events: none;
+    }
+
+    .pdf-page .ps-logo {
+        position: absolute !important;
+    }
+
+    /* The content column. top / left / right / padding are written inline by
+       buildPrintPages(), copied from the live <main> so printed text wraps and
+       scales exactly like it does on screen; what is left here is only the
+       fallback for the unlikely case that <main> cannot be measured.
+       No overflow:hidden and no reserved bottom gap: like the live view,
+       content may reach the very bottom of the slide, and the footer band
+       (higher z-index) simply paints over the last sliver of it. .pdf-page
+       clips whatever runs past the slide. */
+    .pdf-content {
+        position: absolute;
+        z-index: 1;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        box-sizing: border-box;
+    }
+}
