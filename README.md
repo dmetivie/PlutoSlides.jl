@@ -85,7 +85,9 @@ md"""
 - Slide mode: it will display `# Section`, `## Subsection/Slide`, and `### Subsubsection` as different slides. The convention is similar as in Pluto's presentation mode (so the original presentation mode should also work).  
 - Title slide and section titles bands: The last title appears in a band at the top of the slide.
 - Slide counter: it will display the current slide number and the total number of slides. (Making this optional is a planned feature.)
-- Appearance (fontsize, font family, colors): you can customize the appearance of the slides with various options.
+- Appearance (fontsize, font family, colors): you can customize the appearance of the slides with various options, or pick a whole Beamer-like `theme` (see [Themes](#themes)).
+- Logo(s): show one or several logos/images on every slide, with predefined or manual positioning (`logo`, `logo_position`, see the `slide_mode_settings` docstring).
+- PDF export: a print button turns the deck into a real PDF via the browser's own print dialog (see [PDF export](#pdf-export)).
 - Navigation: you can navigate through the slides with the arrow keys, or with a click on the left/right part of the screen and leave slide mode.
 - Title slide: it will display the title (`# Title`) of the notebook as the title slide.
 - `pause(n)` command: it will create a pause in the slide, allowing you to reveal content step by step. It is very experimental and seems to work inside markdown cells like
@@ -174,6 +176,71 @@ There is probably a lot of room for improvement, and better ways to do things, s
 - [ ] No title band slide if empty h2 title `##` title is provided? Or like an option?
 
 ### Features:
-- [ ] PDF export of the slides.
+- [X] PDF export of the slides. **See [PDF export](#pdf-export); pauses are not yet split into separate pages.**. Super experimental. Tested on my laptop with Firefox with Print to PDF.
 - [ ] Make the Pluto screen recording work nicely with slide mode.
-- [ ] Template like Beamer themes, e.g. Madrid, Berlin. Possibility to have templates with logo on each slide.
+- [X] Template like Beamer themes, e.g. Madrid, Berlin. Possibility to have templates with logo on each slide. **See [Themes](#themes) and the `logo` option.**
+
+# Experimental features
+
+## PDF export
+
+Click the printer icon (🖨) in the slide-mode controls to turn the current deck into a
+PDF, using the browser's native print dialog ("Save as PDF"). Two `slide_mode_settings`
+keywords control the page shape:
+
+- `pdf_aspect`: shape of a printed slide, as width/height. Defaults to the live browser
+  window's own ratio (so the print looks like what you saw on screen), which on a
+  relatively taller sheet leaves a blank band at the bottom. Set it to the paper's ratio
+  (e.g. `"a4"`, `"letter"`, `16/9`, `"16:9"`, `(297, 210)`) to fill the sheet instead.
+- `pdf_stretch`: extra vertical room as a multiplier on the slide's height only (default
+  `1`), to reclaim part of that blank band without going all the way to the paper's
+  shape.
+
+```julia
+# Fill an A4 landscape sheet instead of leaving the bottom blank
+slide_mode_settings(footer_left="My Presentation", pdf_aspect="a4")
+
+# Or keep the screen's shape and just claim 10% more height
+slide_mode_settings(footer_left="My Presentation", pdf_stretch=1.1)
+```
+
+> [!WARNING]
+> This has only been tuned against **Firefox's "Save to PDF"** on **A4 landscape**
+> paper. Chromium-based browsers should also work (they honor `pdf_aspect` exactly,
+> without Firefox's letterboxing), but are less tested.
+>
+> Known limitations: the export prints every slide fully revealed as a single page --
+> `pause(n)` steps are not split into separate pages. Vertical spacing can also differ
+> slightly between a fullscreen and a non-fullscreen browser window.
+
+## Themes
+
+Pass a built-in Beamer-like theme instead of setting colors one by one:
+
+```julia
+slide_mode_settings(theme=:Warsaw, footer_left="My Presentation")
+
+available_themes()                    # list all theme names
+available_themes(; descriptions=true) # ... with a one-line description of each
+```
+
+A theme sets a whole look (palette *and* band style: gloss, rounding, shadow, rules),
+and any explicit keyword you also pass still overrides it, like Beamer's `\usetheme`
+followed by a `\setbeamercolor`. The built-ins come in six families:
+
+| family | themes | look |
+|:--|:--|:--|
+| split | `:Madrid` (default), `:Coral` | headline cut in two, three-tone footer, soft shadow |
+| shaded | `:Berlin`, `:Warsaw` | the same bands, glossy and deeply shadowed |
+| smooth bars | `:Singapore`, `:Copenhagen` | flat bars with rounded free corners |
+| plain | `:Boadilla`, `:Journal` | no fills: rules and colored text only, no headline |
+| block | `:Rochester`, `:Frankfurt` | no headline, one solid band for the frametitle |
+| dark | `:Dracula`, `:Dark` | dark slide surface with light text |
+
+You can also pass a `NamedTuple`/`Dict` of overrides to `theme=` for a fully custom
+inline theme. See the `slide_mode_settings` docstring for the full list of band-style
+keywords (`band_overlay`, `band_radius`, `band_shadow`, `subtitle_border`,
+`footer_border`, `subtitle_align`, `show_title_band`, ...).
+
+> [!WARNING]
+> Dark themes repaint the slide surface itself. Check any plot with a transparent background before presenting with one.
