@@ -274,7 +274,8 @@ PlutoSlides.slide_mode_settings(footer_left="Authors", footer_center=md"PlutoSli
     pdf_aspect="a4", pdf_stretch=0.80,#1.0495,
     logo = [Resource("https://raw.githubusercontent.com/dmetivie/PlutoSlides.jl/master/assets/logo_pluto_slides.svg")],
     logo_position = [(bottom="3.5%", right="0.5%")],
-    logo_height = ["50px"])
+    logo_height = ["50px"],
+    theme="Madrid")
 
 # ╔═╡ 2ddc54a2-ea61-4372-a205-dc2a5d97a391
 aa = @bind n NumberField(2:1000, default = 100)
