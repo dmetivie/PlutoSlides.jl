@@ -7,7 +7,7 @@ include("colors.jl")
 include("themes.jl")
 
 """
-    slide_mode_settings(; h3_title=true, footer_left=" ", footer_center="", max_width="100%", font_family=nothing, font_size=nothing,
+    slide_mode_settings(; h3_title=true, footer_left=" ", footer_center="", max_width="100%", font_family=nothing, font_size=19,
     color_subtitle_bg="#3333B3", color_band_text="#ffffff",
     color_title_bg=mix_black(color_subtitle_bg, 0.50), 
     color_title_right_bg=color_subtitle_bg,
@@ -71,7 +71,13 @@ Configure slide mode for PlutoSlides presentations.
   `"screen"`-shaped slide leaves on a taller sheet without going all the way to
   `pdf_aspect="a4"`; past the paper's own ratio the bottom of the slide is cut off.
 - `font_family`: Optional CSS font-family stack to use everywhere (e.g., "'Fira Sans', Helvetica, Arial, sans-serif")
-- `font_size`: Optional base font size in pixels; affects rem/em-based sizing (e.g., 16, 18, 20)
+- `font_size`: Base font size in pixels, default `19`. It is set on the page root, so
+  everything sized in rem/em -- the bands, the headings, Pluto's own typography -- scales
+  with it, and so does the PDF export. A browser's own default is 16px, which is a
+  comfortable size to read a notebook at and a small one to read off a projector; 19
+  is the middle ground that fits a `98%`-wide slide without reflowing most decks.
+  Pass `nothing` to emit no font-size rule at all and keep whatever Pluto's stylesheet
+  (or your browser zoom) decides.
 - `color_*`: Palette colors for bands and headings. By default, the footer center and left colors are derived from the right color using Beamer-like mixes with black:
     - center = mix_black(right, 0.25)
     - left   = mix_black(right, 0.50)
@@ -157,7 +163,7 @@ slide_mode_settings(
 """
 function slide_mode_settings(; theme=nothing, h3_title=true, footer_left=" ", footer_center="", max_width="98%",
     pdf_aspect="a4", pdf_stretch=0.8,
-    font_family=_theme_get(theme, :font_family, nothing), font_size=_theme_get(theme, :font_size, nothing),
+    font_family=_theme_get(theme, :font_family, nothing), font_size=_theme_get(theme, :font_size, 19),
     logo=nothing, logo_position="top-right", logo_height=nothing, logo_opacity=nothing,
     logo_offset_x=nothing, logo_offset_y=nothing,
     color_subtitle_bg=_theme_get(theme, :color_subtitle_bg, "#3333B3"),

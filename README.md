@@ -96,6 +96,8 @@ md"""
 
 > [!WARNING]
 > **Display**: Keep in mind that the display of the slides (vertical and horizontal) depends on your screen size. I now prefer to zoom with `ctrl`+`+` to enlarge the slides fonts (instead of changing the font size in the code). When I develop I always check that the slides are displayed correctly on my laptop screen at the resolution I will use for the presentation.
+>
+> The base font size is `19` px by default (a browser's own default is 16, which is small on a projector). Everything else is sized in rem/em, so changing it rescales the whole slide, PDF export included: `slide_mode_settings(font_size=22)`, or `font_size=nothing` to leave the notebook's own size alone.
 
 > [!WARNING]
 > **Title slides**: Currently, for correct display and detection of titles, you need to write `h1`, `h2`, and `h3` titles in separate markdown cells without any other content.

@@ -114,6 +114,33 @@
 
     let allCells = []  // declare at top scope
 
+    // True for a cell whose output is an h2 and nothing else. Alone on a slide,
+    // such a cell shows an empty page: slide mode renders every h2 in the band
+    // rather than in the flow.
+    function isBareH2Cell(cell) {
+        const output = cell.querySelector("pluto-output")
+        const h2 = output?.querySelector("h2")
+        if (!h2) return false
+        return output.textContent.replace(h2.textContent, "").trim() === ""
+    }
+
+    // Close a slide, folding a bare h2 into the h3 slide that follows it: on its
+    // own that h2 is a blank page whose only content is a band title, and the
+    // h3 slide right after repeats that same title in its band anyway. The h2
+    // cell is kept at the head of the merged slide (its heading is display:none
+    // in slide mode, so it adds nothing visible) because computeSlideBands
+    // reads the section name back out of the cells of the slide.
+    function pushSlide(slide) {
+        const previous = slides[slides.length - 1]
+        const foldable = previous && previous.length === 1 && isBareH2Cell(previous[0]) &&
+            slide[0].querySelector("pluto-output h3") !== null
+        if (foldable) {
+            slides[slides.length - 1] = previous.concat(slide)
+        } else {
+            slides.push(slide)
+        }
+    }
+
     function gatherSlides() {
         slides = []
         current = []
@@ -122,13 +149,13 @@
         for (const cell of allCells) {
             const hasHeading = cell.querySelector("pluto-output h1, pluto-output h2, pluto-output h3") !== null
             if (hasHeading) {
-                if (current.length > 0) slides.push(current)
+                if (current.length > 0) pushSlide(current)
                 current = [cell]
             } else {
                 current.push(cell)
             }
         }
-        if (current.length > 0) slides.push(current)
+        if (current.length > 0) pushSlide(current)
     }
 
     // Compute the title/subtitle band content for a given slide index. Shared
@@ -462,8 +489,12 @@
             }
             // additionalOffset -= 20; // Adjust for subtitle height since h2 is in title band
         } else {
-            // Normal mode: check h2 cell for additional content
-            const h2Cell = currentSlide.find(cell => cell.querySelector("pluto-output h2"));
+            // Normal mode: check h2 cell for additional content. An h2 folded
+            // in from the blank slide before an h3 (see pushSlide) is not
+            // content of this slide, so it must not shift it: skip it and leave
+            // the h3 slide with the offset it had before the fold.
+            const h2Cell = currentSlide.find(cell =>
+                cell.querySelector("pluto-output h2") && !(isH3Slide && isBareH2Cell(cell)));
             if (h2Cell) {
                 const h2Content = h2Cell.querySelector("h2").textContent.trim();
                 const otherContent = h2Cell.textContent.replace(h2Content, "").trim();

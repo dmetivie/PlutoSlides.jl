@@ -145,6 +145,14 @@ md"""
 Final matrix multiplication:
 """
 
+# ╔═╡ dad08817-7cce-47dc-bd3f-703b3d257470
+md"""
+### Other sub with webpage
+"""
+
+# ╔═╡ 30c727be-321e-474d-a277-14c9221e1f62
+myWebPage("https://julialang.org/")
+
 # ╔═╡ 33bcdc05-83ed-4071-bbe9-e93753de3b92
 md"""
 ## Pause feature
@@ -1549,6 +1557,8 @@ version = "1.13.0+0"
 # ╟─b27c5860-a6ec-4c74-bdb5-b7f2b605dbf4
 # ╟─da8b64ed-3e26-4739-bc74-1a45e067da29
 # ╠═795ef7d5-e187-4c38-938a-a08c9c354c30
+# ╟─dad08817-7cce-47dc-bd3f-703b3d257470
+# ╠═30c727be-321e-474d-a277-14c9221e1f62
 # ╟─33bcdc05-83ed-4071-bbe9-e93753de3b92
 # ╟─816aa436-b68a-4af9-8ebe-b825e3b9a7ca
 # ╟─b19406af-c48c-4f39-9ae9-be79070b2d4a
