@@ -332,6 +332,29 @@
 
         document.body.appendChild(container)
 
+        // Reparenting an <iframe> (unlike an <img>, which keeps its already
+        // decoded bitmap) discards its browsing context and starts a fresh
+        // navigation, so every myWebPage() embed on the slide is blank again
+        // right after the move above - only images survived it because
+        // nothing about an image's rendering is tied to DOM position. Give
+        // each moved iframe a chance to reload before printing, capped so one
+        // slow/unreachable embed cannot hang the export forever. Content the
+        // page itself loads asynchronously after `load` fires (e.g. a widget
+        // script rendering a Twitter/X embed) can still miss the print, and a
+        // site that refuses to be framed at all (`X-Frame-Options` / CSP
+        // `frame-ancestors`) stays blank no matter how long this waits.
+        const IFRAME_RELOAD_TIMEOUT_MS = 4000
+        const iframes = Array.from(container.querySelectorAll("iframe"))
+        const framesReady = iframes.length === 0
+            ? Promise.resolve()
+            : Promise.race([
+                Promise.all(iframes.map(frame => new Promise(resolve => {
+                    frame.addEventListener("load", resolve, { once: true })
+                    frame.addEventListener("error", resolve, { once: true })
+                }))),
+                new Promise(resolve => setTimeout(resolve, IFRAME_RELOAD_TIMEOUT_MS)),
+            ])
+
         let cleaned = false
         function cleanup() {
             if (cleaned) return
@@ -376,7 +399,7 @@
         window.addEventListener("afterprint", cleanup, { once: true })
         window.addEventListener("focus", cleanup, { once: true })
 
-        window.print()
+        framesReady.then(() => window.print())
     }
 
     window.PlutoSlides.exportPDF = buildPrintPages
