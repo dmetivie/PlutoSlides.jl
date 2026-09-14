@@ -102,6 +102,14 @@ md"""
 ## Plotting
 """
 
+# ╔═╡ 4076b62d-c325-4c3f-9f8c-67c313d1f7e7
+@markdown("""
+``n = `` $(aa)
+""")
+
+# ╔═╡ 846deb1e-ba12-4815-acb0-8ade3bff4e2b
+y_noisy = @. sin(x) + 0.1 * randn()
+
 # ╔═╡ c9a502d8-7856-46ca-bc47-5566c29908ed
 md"""
 ## Subsubtitles
@@ -118,6 +126,12 @@ md"""
 md"""
 This `h2` slides can be divided into two `h3`!
 """
+
+# ╔═╡ f1a98bbb-8474-4da8-94ef-229c1a52ef17
+@markdown("""
+By the way that's the same ``n`` as before ``n = `` $(aa). 
+Changing it here updates every other slide using ``n`` (I mean that's just Pluto) without affecting the slide display (that's the hardest part to do).
+""")
 
 # ╔═╡ e08a2697-bf8f-40b9-8fbe-50ff6544d4b7
 1+1
@@ -288,19 +302,11 @@ PlutoSlides.slide_mode_settings(footer_left="Authors", footer_center=md"PlutoSli
 # ╔═╡ 2ddc54a2-ea61-4372-a205-dc2a5d97a391
 aa = @bind n NumberField(2:1000, default = 100)
 
-# ╔═╡ 4076b62d-c325-4c3f-9f8c-67c313d1f7e7
-@markdown("""
-``n = `` $(aa)
-""")
-
 # ╔═╡ 4d3381a4-2e3b-458e-96ec-c70febb2a019
 x = range(0, 10, length=n)
 
 # ╔═╡ 2ec9713f-dad8-4eb3-af26-5523905b0f41
 y = sin.(x)
-
-# ╔═╡ 846deb1e-ba12-4815-acb0-8ade3bff4e2b
-y_noisy = @. sin(x) + 0.1 * randn()
 
 # ╔═╡ 8b3bd7f0-6a04-42e9-a113-0e5466e22c68
 Columns(md"""
@@ -310,12 +316,6 @@ A plot in Julia with `Plots.jl`
         plt = plot(x, y, label="sin(x)")
         plot!(plt, x, y_noisy, seriestype=:scatter, label="data")
     end)
-
-# ╔═╡ f1a98bbb-8474-4da8-94ef-229c1a52ef17
-@markdown("""
-By the way that's the same ``n`` as before ``n = `` $(aa). 
-Changing it here updates every other slide using ``n`` (I mean that's just Pluto) without affecting the slide display (that's the hardest part to do).
-""")
 
 # ╔═╡ 5fe14d97-497d-40ae-8066-fed7dcd18927
 A = rand(n, 5)
