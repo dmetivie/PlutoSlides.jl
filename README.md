@@ -83,24 +83,25 @@ md"""
 ## Features
 
 - Slide mode: it will display `# Section`, `## Subsection/Slide`, and `### Subsubsection` as different slides. The convention is similar as in Pluto's presentation mode (so the original presentation mode should also work).  
-- Title slide and section titles bands: The last title appears in a band at the top of the slide.
+- Title slide: it will display the title (`# Title`) of the notebook as the title slide.
+- Slide and section titles (# or ## or ###). A title band display the inner most heading (## or ###) and a thin band on top of the slide will display the outer most heading (# or ##) of the current slide.
 - Slide counter: it will display the current slide number and the total number of slides. (Making this optional is a planned feature.)
 - Appearance (fontsize, font family, colors): you can customize the appearance of the slides with various options, or pick a whole Beamer-like `theme` (see [Themes](#themes)).
 - Logo(s): show one or several logos/images on every slide, with predefined or manual positioning (`logo`, `logo_position`, see the `slide_mode_settings` docstring).
-- PDF export: a print button turns the deck into a real PDF via the browser's own print dialog (see [PDF export](#pdf-export)).
+- PDF export (**experimental**): a print button turns the deck into a real PDF via the browser's own print dialog (see [PDF export](#pdf-export)).
 - Navigation: you can navigate through the slides with the arrow keys, or with a click on the left/right part of the screen and leave slide mode.
-- Title slide: it will display the title (`# Title`) of the notebook as the title slide.
 - `pause(n)` command: it will create a pause in the slide, allowing you to reveal content step by step. It is very experimental and seems to work inside markdown cells like
 
 ## Warnings
 
 > [!WARNING]
-> **Display**: Keep in mind that the display of the slides (vertical and horizontal) depends on your screen size. I now prefer to zoom with `ctrl`+`+` to enlarge the slides fonts (instead of changing the font size in the code). When I develop I always check that the slides are displayed correctly on my laptop screen at the resolution I will use for the presentation.
+> **Display**: Keep in mind that the display of the slides (vertical and horizontal) depends on your screen size. I currently did not found a way to ensure reproducible rendering across, laptot and browser. I sometime use the browser zoom with `ctrl`+`+` to enlarge the slides fonts (instead of changing the font size in the code). 
+> When I develop I always check that the slides are displayed correctly on my laptop screen at the resolution I will use for the presentation.
 >
 > The base font size is `19` px by default (a browser's own default is 16, which is small on a projector). Everything else is sized in rem/em, so changing it rescales the whole slide, PDF export included: `slide_mode_settings(font_size=22)`, or `font_size=nothing` to leave the notebook's own size alone.
 
 > [!WARNING]
-> **Title slides**: Currently, for correct display and detection of titles, you need to write `h1`, `h2`, and `h3` titles in separate markdown cells without any other content.
+> **Title slides**: Currently, for correct display and detection of titles, you need to write `h1` (#), `h2` (##), and `h3` (###) titles in separate markdown cells without any other content.
 > 
 > For example, 
 > ```julia
@@ -129,8 +130,8 @@ md"""
 > **Experimental**: This package is very experimental and not well tested. Sometimes a good old `F5` (refresh) might be needed.
 
 > [!WARNING]
-> **Performance**: On some of my larger notebooks, I noticed a huge performance drop. Is it related to the number of slides or something else? I don't know. If you have an idea, please discuss it on the related issue [#3](https://github.com/dmetivie/PlutoSlides.jl/issues/3).
-> > It seems that this was fixed in PlutoSlides v0.2.0!
+> **Performance**: I had issues with performance on some notebooks, see issue (see [#3](https://github.com/dmetivie/PlutoSlides.jl/issues/3)), it seems it has been fixed in PlutoSlides.jl v0.2.0!
+> However, if you find issues do not hesitate to open an issue or a PR with a MWE.
 
 ## Workflow
 
@@ -150,7 +151,7 @@ If you don't have a second screen e.g. **on the road**, you can just open the no
 > [!TIP]
 > **LLMs**: LLM coding assistants are so powerful that they can really help with HTML, Markdown, etc.
 > Using them inside your IDE with `import Pluto;Pluto.run(auto_reload_from_file=true)` is really powerful[^LLMs].
-> It can easily convert existing LaTeX Beamer slides to a Pluto notebook.
+> It can convert existing LaTeX Beamer slides to a Pluto notebook.
 > To add a cell, they sometimes can even generate correct Pluto unique cell id `# ╟─xxxx` that is recognized by Pluto. In case this does not work, you can always add the cell on the notebook and it will appear on the `.jl` script.
 
 [^LLMs]: This is not specific to `PlutoSlides.jl`, but for Pluto in general.
@@ -160,7 +161,7 @@ If you don't have a second screen e.g. **on the road**, you can just open the no
 I was not completely satisfied by the look of the [presentation mode of Pluto](https://plutojl.org/en/docs/presentation/), which did not look like my usual Beamer presentations.
 Modifying this classic presentation mode is not completely straightforward, because it requires some choice, might depend on the size of your screen and so on ([see here](https://github.com/fonsp/Pluto.jl/discussions/3226)).
 However, I still wanted to try and end up creating this package in case you find it useful.
-There is probably a lot of room for improvement, and better ways to do things, so feel free to open an issue or a PR.
+There is a lot of room for improvement, and better ways to do things, so feel free to open an issue or a PR.
 
 ## TODO
 
@@ -175,16 +176,16 @@ There is probably a lot of room for improvement, and better ways to do things, s
 - [ ] h3 title with the h2 top right title in the band (currently it adds a new band bellow h2 title band).
 - [ ] The fonts of the footer band I think do not match the rest of the slide.
 - [ ] Option to remove slide counter, add/remove total slide number.
-- [ ] No title band slide if empty h2 title `##` title is provided? Or like an option?
+- [X] No title band slide if empty h2 title `##` title is provided? Or like an option?
 
 ### Features:
 - [X] PDF export of the slides. **See [PDF export](#pdf-export); pauses are not yet split into separate pages.**. Super experimental. Tested on my laptop with Firefox with Print to PDF.
-- [ ] Make the Pluto screen recording work nicely with slide mode.
+- [ ] Make the Pluto screen recording work nicely with slide mode. *Screen recording with your computer is probably the best way to record currently.*
 - [X] Template like Beamer themes, e.g. Madrid, Berlin. Possibility to have templates with logo on each slide. **See [Themes](#themes) and the `logo` option.**
 
-# Experimental features
+## Experimental features to test
 
-## PDF export
+### PDF export
 
 Click the printer icon (🖨) in the slide-mode controls to turn the current deck into a
 PDF, using the browser's native print dialog ("Save as PDF"). Two `slide_mode_settings`
@@ -215,7 +216,7 @@ slide_mode_settings(footer_left="My Presentation", pdf_stretch=1.1)
 > `pause(n)` steps are not split into separate pages. Vertical spacing can also differ
 > slightly between a fullscreen and a non-fullscreen browser window.
 
-## Themes
+### Themes
 
 Pass a built-in Beamer-like theme instead of setting colors one by one:
 
