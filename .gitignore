@@ -4,3 +4,5 @@
 /Manifest*.toml
 /docs/Manifest*.toml
 /docs/build/
+/docs/src/assets/edit_pluto.pdf
+/docs/src/assets/notebook_test_doc.html

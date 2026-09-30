@@ -7,6 +7,17 @@ CurrentModule = PlutoSlides
 Everything on this page is a keyword of [`slide_mode_settings`](@ref). The style also
 applies to the notebook outside slide mode, so what you edit looks like what you present.
 
+## Try it
+
+Below is the static HTML export of the example notebook: click **⧉ Slide Mode** to
+present it. The theme, font, color and logo controls need a running Julia, so they only
+work in Pluto (run the notebook or click *Edit or run this notebook* at the top).
+
+```@raw html
+<iframe src="../assets/notebook_test_doc.html" style="width:100%; aspect-ratio:16/10; border:1px solid #ccc; border-radius:6px;" loading="lazy" allowfullscreen></iframe>
+<p><a href="../assets/notebook_test_doc.html" target="_blank">Open it full page</a></p>
+```
+
 ## Layout and fonts
 
 ```julia

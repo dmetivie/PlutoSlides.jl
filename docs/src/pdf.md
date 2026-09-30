@@ -14,7 +14,8 @@ CurrentModule = PlutoSlides
 2. Click the printer button (🖨) in the slide controls.
 3. In the browser's print dialog, choose *Save to PDF*.
 
-Each slide becomes one page, with its bands, footer and logos.
+Each slide becomes one page, with its bands, footer and logos. See
+[this example PDF](assets/edit_pluto.pdf).
 
 ## Page shape
 
