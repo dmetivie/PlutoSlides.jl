@@ -1,0 +1,16 @@
+/* Landing page colors: Pluto's selection blue, PlutoSlides' default band
+   color (#3333B3), and the purple of the Pluto/Julia logo. */
+:root {
+    --landing-name-color: transparent;
+    --landing-name-background: linear-gradient(120deg, #375bbd 20%, #3333b3 55%, #945bb0);
+    --landing-glow: linear-gradient(-45deg, #375bbd80 50%, #945bb080 50%);
+}
+
+/* Lighter stops on the dark themes. */
+html.theme--documenter-dark,
+html.theme--catppuccin-frappe,
+html.theme--catppuccin-macchiato,
+html.theme--catppuccin-mocha {
+    --landing-name-background: linear-gradient(120deg, #7f9cf5 20%, #8a86f0 55%, #c08fdc);
+    --landing-glow: linear-gradient(-45deg, #4f6fd080 50%, #9a64b880 50%);
+}

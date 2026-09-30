@@ -4,11 +4,12 @@
 
 Who doesn't love [Pluto.jl](https://plutojl.org/)? Coding, and seeing the results immediately thanks to reactivity...
 Who doesn't love a nicely formatted slideshow like Beamer or reveal.js used by Quarto?
-This package aims to combine the two[^Disclaimer]! Gets Pluto with a slideshow format.
-
-[^Disclaimer]: Actually, it tries to do so! As I have no knowledge of Javascript, almost no comprehension of HTML and CSS, I turned to LLMs to help me out. So this package is very much vibe coding.
+This package aims to combine the two! Gets Pluto with a slideshow format.
 
 ![Example](https://raw.githubusercontent.com/dmetivie/PlutoSlides.jl/master/assets/example.gif)
+
+> [!WARNING]
+> Disclaimer: As I had no knowledge of Javascript, basics of HTML and CSS, I turned to AI/LLMs to help me out. So this package is very much vibe coded. I did read the code and tried to understand it, but I am sure there are better ways to do things. 
 
 Note that the `html` version of the Pluto notebook can activate the slide mode ! See this [Julia presentation](https://pluto.land/n/k1hq5qtm) for example.
 
@@ -79,19 +80,6 @@ md"""
 ### Subsub title 1
 """
 ```
-
-## Features
-
-- Slide mode: it will display `# Section`, `## Subsection/Slide`, and `### Subsubsection` as different slides. The convention is similar as in Pluto's presentation mode (so the original presentation mode should also work).  
-- Title slide: it will display the title (`# Title`) of the notebook as the title slide.
-- Slide and section titles (# or ## or ###). A title band display the inner most heading (## or ###) and a thin band on top of the slide will display the outer most heading (# or ##) of the current slide.
-- Slide counter: it will display the current slide number and the total number of slides. (Making this optional is a planned feature.)
-- Appearance (fontsize, font family, colors): you can customize the appearance of the slides with various options, or pick a whole Beamer-like `theme` (see [Themes](#themes)).
-- Logo(s): show one or several logos/images on every slide, with predefined or manual positioning (`logo`, `logo_position`, see the `slide_mode_settings` docstring).
-- PDF export (**experimental**): a print button turns the deck into a real PDF via the browser's own print dialog (see [PDF export](#pdf-export)).
-- Navigation: you can navigate through the slides with the arrow keys, or with a click on the left/right part of the screen and leave slide mode.
-- `pause(n)` command: it will create a pause in the slide, allowing you to reveal content step by step. It is very experimental and seems to work inside markdown cells like
-
 ## Warnings
 
 > [!WARNING]
@@ -135,26 +123,7 @@ md"""
 
 ## Workflow
 
-My typical workflow **at work** is
-
-1. Open a Pluto notebook with `import Pluto;Pluto.run(auto_reload_from_file=true)`
-2. Have the `.jl` script open in a larger screen
-3. Using the laptop I'll use for the presentation as a second screen using full screen of your navigator, I open the Pluto notebook. This is the only way to be sure that what will be displayed is exactly what I want.
-4. Edit either the `.jl` script or the Pluto notebook. The notebook will reload automatically.
-
-If you don't have a second screen e.g. **on the road**, you can just open the notebook on your presentation laptop.
-
-> [!TIP]
-> You can have very simple Markdown layout, but thanks to `@htl` macro, you can have much more complex one, with output of code (figures, numbers etc.) entangled with text using interpolation `@htl"My text is $(x)"`.
-> For that `HypertextLiteral.jl` and `MarkdownLiteral.jl` packages are great.
-
-> [!TIP]
-> **LLMs**: LLM coding assistants are so powerful that they can really help with HTML, Markdown, etc.
-> Using them inside your IDE with `import Pluto;Pluto.run(auto_reload_from_file=true)` is really powerful[^LLMs].
-> It can convert existing LaTeX Beamer slides to a Pluto notebook.
-> To add a cell, they sometimes can even generate correct Pluto unique cell id `# ╟─xxxx` that is recognized by Pluto. In case this does not work, you can always add the cell on the notebook and it will appear on the `.jl` script.
-
-[^LLMs]: This is not specific to `PlutoSlides.jl`, but for Pluto in general.
+See the [suggested workflow](https://dmetivie.github.io/PlutoSlides.jl/dev/workflow/) in the documentation.
 
 ## Origin story
 

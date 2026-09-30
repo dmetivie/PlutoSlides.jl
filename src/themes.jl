@@ -181,29 +181,8 @@ const THEME_DESCRIPTIONS = Dict{Symbol,String}(
     available_themes() -> Vector{Symbol}
     available_themes(; descriptions = true) -> Vector{Pair{Symbol,String}}
 
-Return the names of the built-in PlutoSlides themes, usable as
-`slide_mode_settings(theme = :Warsaw)`. Pass `descriptions = true` to get each
-name paired with a one-line description of the look.
-
-Themes mimic Beamer's: they set a coherent palette *and* a band style (fills,
-gloss, rounding, shadow, rules) that you can still override with explicit
-keywords. They come in six families:
-
-| family | themes | look |
-|:--|:--|:--|
-| split | `:Madrid` (default), `:Coral` | headline cut in two, three-tone footer, soft shadow |
-| shaded | `:Berlin`, `:Warsaw` | the same bands, glossy and deeply shadowed |
-| smooth bars | `:Singapore`, `:Copenhagen` | flat bars with rounded free corners |
-| plain | `:Boadilla`, `:Journal` | no fills: rules and coloured text only, no headline |
-| block | `:Rochester`, `:Frankfurt` | no headline, one solid band for the frametitle |
-| dark | `:Dracula`, `:Dark` | dark slide surface with light text |
-
-# Examples
-```julia
-slide_mode_settings(theme = :Warsaw)                       # a whole look
-slide_mode_settings(theme = :Warsaw, band_radius = "10px")  # ... with rounded bars
-available_themes(; descriptions = true)                     # what each one looks like
-```
+Names of the built-in themes for `slide_mode_settings(theme = ...)`, optionally
+paired with a one-line description of each.
 """
 function available_themes(; descriptions::Bool=false)
     names = sort(collect(keys(THEMES)))
