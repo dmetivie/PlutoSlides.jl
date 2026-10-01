@@ -18,10 +18,10 @@ The page might take a few seconds to load.
 ```@raw html
 <style>
 /* This page only: let the main column use the full window width. */
-#documenter .docs-main { max-width: none !important; }
+#documenter .docs-main { max-width: 75% !important; }
 /* The deck is laid out on a laptop-sized screen (1600x1000) and scaled down to fit. */
 .ps-tryit { position: relative; width: 100%; aspect-ratio: 16/10; overflow: hidden; border: 1px solid #ccc; border-radius: 6px; }
-.ps-tryit iframe { position: absolute; top: 0; left: 0; width: 1600px; height: 1000px; border: 0; transform-origin: 0 0; }
+.ps-tryit iframe { position: absolute; top: 0; left: 0; width: 1300px; height: 1000px; border: 0; transform-origin: 0 0; }
 </style>
 <div class="ps-tryit">
   <iframe src="https://pluto.land/n/8ysfskpg" loading="lazy" allowfullscreen></iframe>

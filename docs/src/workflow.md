@@ -1,4 +1,4 @@
-# Suggested workflow and tips
+# [Suggested workflow and tips](@id Suggested-workflow)
 
 ```@meta
 CurrentModule = PlutoSlides
@@ -73,7 +73,7 @@ figures, widgets...), interpolate them with `@htl` from
 [HypertextLiteral.jl](https://github.com/JuliaPluto/HypertextLiteral.jl) or `@markdown` from
 [MarkdownLiteral.jl](https://github.com/JuliaPluto/MarkdownLiteral.jl):
 
-Do use a lot `[PlutoTeachingTools.Columns](https://github.com/JuliaPluto/PlutoTeachingTools.jl/blob/2b8121f4cc6d9778bef7ee4d35ccf08b9f0165d2/src/present.jl#L37)` to put figures, result of code and text side by side, or to put multiple figures on the same slide.
+Do use a lot [`PlutoTeachingTools.Columns`](https://github.com/JuliaPluto/PlutoTeachingTools.jl/blob/2b8121f4cc6d9778bef7ee4d35ccf08b9f0165d2/src/present.jl#L37) to put figures, result of code and text side by side, or to put multiple figures on the same slide.
 
 !!! note
     I did not succeed yet in having Pluto code cell next to a Markdown cell. This would be cool
