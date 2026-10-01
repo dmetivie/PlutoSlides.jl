@@ -94,6 +94,9 @@ keywords of [`slide_mode_button`](@ref) open it directly in slide mode instead:
 | `start_in_slide_mode_html` | `false` | the notebook's HTML export (a file, pluto.land, an `<iframe>`...) |
 | `start_in_slide_mode_notebook` | `false` | the notebook running in Pluto |
 
+`start_slide` (default `0`) picks the slide they open on, numbered as in the slide
+counter (`0` is the first slide); a number past the last slide opens the last one.
+
 ```julia
 slide_mode_button(start_in_slide_mode_html=true)  # export a deck that opens as slides
 ```

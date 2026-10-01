@@ -626,7 +626,7 @@
     // (which broke whenever the button cell re-rendered).
     window.PlutoSlides = window.PlutoSlides || {}
     window.PlutoSlides.toggle = toggleSlides
-    window.PlutoSlides.startInSlideMode = () => startInSlideMode()
+    window.PlutoSlides.startInSlideMode = (slide) => startInSlideMode(slide)
     document.addEventListener("pluto-slides-toggle", () => toggleSlides())
 
     // Internal API consumed by js/print.js (kept separate since PDF export is
@@ -647,7 +647,8 @@
     // Slide Mode button when `start_in_slide_mode_*` is set. Waits until the
     // number of cells has stopped changing (a static export renders them
     // progressively), so every slide exists before they are gathered.
-    function startInSlideMode() {
+    // `slide` is the slide to open on, as shown by the slide counter (0 = first).
+    function startInSlideMode(slide = 0) {
         let lastCount = -1
         let stableFor = 0
         const check = () => {
@@ -655,7 +656,10 @@
             stableFor = count === lastCount ? stableFor + 1 : 0
             lastCount = count
             if (stableFor >= 3) {
-                if (!inSlideMode) toggleSlides()
+                if (!inSlideMode) {
+                    toggleSlides()
+                    if (slide > 0) showSlide(slide, 0)
+                }
             } else {
                 setTimeout(check, 200)
             }

@@ -333,14 +333,17 @@ function _logo_block(; logo=nothing, logo_position="top-right", logo_height=noth
 end
 
 """
-    slide_mode_button(; start_in_slide_mode_html=false, start_in_slide_mode_notebook=false)
+    slide_mode_button(; start_in_slide_mode_html=false, start_in_slide_mode_notebook=false, start_slide=0)
 
 A button that toggles slide mode on and off. Needs [`slide_mode_settings`](@ref) in the notebook.
 
 Set `start_in_slide_mode_html=true` to open the notebook's HTML export directly in slide
 mode, and `start_in_slide_mode_notebook=true` to do the same when it runs in Pluto.
+`start_slide` is the slide they open on, numbered as in the slide counter (`0` = first).
 """
-function slide_mode_button(; start_in_slide_mode_html=false, start_in_slide_mode_notebook=false)
+function slide_mode_button(; start_in_slide_mode_html=false, start_in_slide_mode_notebook=false, start_slide=0)
+    start_slide isa Integer && start_slide >= 0 ||
+        throw(ArgumentError("start_slide must be a non-negative integer, got $(repr(start_slide))."))
     return @htl("""
     <span class="pluto-slides-toggle">
         <button>⧉ Slide Mode</button>
@@ -375,7 +378,7 @@ function slide_mode_button(; start_in_slide_mode_html=false, start_in_slide_mode
             window.__plutoSlidesAutoStarted = true
             const tryStart = (tries) => {
                 if (typeof window.PlutoSlides?.startInSlideMode === "function") {
-                    window.PlutoSlides.startInSlideMode()
+                    window.PlutoSlides.startInSlideMode($(start_slide))
                 } else if (tries > 0) {
                     // slidework.js comes with slide_mode_settings, which may render later.
                     setTimeout(() => tryStart(tries - 1), 100)
