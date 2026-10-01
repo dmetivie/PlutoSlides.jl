@@ -626,6 +626,7 @@
     // (which broke whenever the button cell re-rendered).
     window.PlutoSlides = window.PlutoSlides || {}
     window.PlutoSlides.toggle = toggleSlides
+    window.PlutoSlides.startInSlideMode = () => startInSlideMode()
     document.addEventListener("pluto-slides-toggle", () => toggleSlides())
 
     // Internal API consumed by js/print.js (kept separate since PDF export is
@@ -640,6 +641,26 @@
         get h3TitleMode() { return h3TitleMode },
         get mutationObserver() { return mutationObserver },
         setMutationObserver(o) { mutationObserver = o },
+    }
+
+    // Enter slide mode once the notebook has finished rendering. Called by the
+    // Slide Mode button when `start_in_slide_mode_*` is set. Waits until the
+    // number of cells has stopped changing (a static export renders them
+    // progressively), so every slide exists before they are gathered.
+    function startInSlideMode() {
+        let lastCount = -1
+        let stableFor = 0
+        const check = () => {
+            const count = document.querySelectorAll("pluto-cell").length
+            stableFor = count === lastCount ? stableFor + 1 : 0
+            lastCount = count
+            if (stableFor >= 3) {
+                if (!inSlideMode) toggleSlides()
+            } else {
+                setTimeout(check, 200)
+            }
+        }
+        check()
     }
 
     function waitForPluto() {

@@ -43,7 +43,7 @@ Authors PlutoSlides.jl
 """
 
 # ╔═╡ 19b05b91-1e11-43dd-ae84-5e064e7466d3
-slide_mode_button()
+slide_mode_button(start_in_slide_mode_html=true)
 
 # ╔═╡ a8750d23-8b47-4314-970d-865673c82b21
 md"""
@@ -84,7 +84,7 @@ Font size $(@bind fontsize_html NumberField(1:100, default=19))
 
 # ╔═╡ 82a9cdbc-ec90-4e19-8338-4d031b1dcc73
 md"""
-Max Width  $(@bind max_width Slider(70:100, default=98, show_value=true))%
+Max Width  $(@bind max_width PlutoUI.Slider(70:100, default=98, show_value=true))%
 """
 
 # ╔═╡ 6f314bab-3738-47ea-919e-98ed049a38ac
@@ -106,9 +106,6 @@ md"""
 
 # ╔═╡ 57b56690-aef9-4a0f-bc2c-c29fc9481872
 
-
-# ╔═╡ e737be8e-6980-44ed-aaa9-030477561837
-HiddenDocs(:slide_mode_settings())
 
 # ╔═╡ 620103da-14c3-43ba-8d9c-25722f18426c
 md"""
@@ -291,7 +288,8 @@ Font Family $(@bind font_family Select(COMMON_FONT_STACKS))
 """
 
 # ╔═╡ ea9e8cfe-402d-4d9e-95b1-147615196a79
-PlutoSlides.slide_mode_settings(footer_left="Authors", footer_center=md"PlutoSlides.jl", max_width=string(max_width, "%"), font_family=font_family, font_size=fontsize_html, h3_title=true,
+PlutoSlides.slide_mode_settings(
+    footer_left="Authors", footer_center=md"PlutoSlides.jl", max_width=string(max_width, "%"), font_family=font_family, font_size=fontsize_html, h3_title=true,
     pdf_aspect="a4", pdf_stretch=0.80,#1.0495,
     logo = [Resource("https://raw.githubusercontent.com/dmetivie/PlutoSlides.jl/master/assets/logo_pluto_slides.svg")],
     logo_position = [(bottom="3.5%", right="0.5%")],
@@ -339,6 +337,25 @@ A = rand(n, 5)
 # ╔═╡ 795ef7d5-e187-4c38-938a-a08c9c354c30
 A*B
 
+# ╔═╡ f6efe2bb-afd9-4150-b4bb-b4c0e00fa9ef
+
+
+# ╔═╡ ec081723-d982-4a2a-937c-816f0979d422
+HiddenDocs(mod, name) = details(
+	@htl("Show docstring for <code>$name</code>"), 
+	@htl """
+	<div class="pluto-docs-binding">
+	<span id="$(name)">$(name)</span>
+	$(Base.Docs.doc(Base.Docs.Binding(mod, name)))
+	</div>
+	""")
+
+# ╔═╡ ff29ed8f-1060-4b1d-a3ea-bba35ea55a75
+HiddenDocs(name::Symbol) = HiddenDocs(PlutoSlides, name)
+
+# ╔═╡ e737be8e-6980-44ed-aaa9-030477561837
+HiddenDocs(:slide_mode_settings)
+
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
@@ -358,7 +375,7 @@ CairoMakie = "~0.15.15"
 HypertextLiteral = "~1.0.0"
 MarkdownLiteral = "~0.1.5"
 PlutoLinks = "~0.1.8"
-PlutoSlides = "~0.2.2"
+PlutoSlides = "~0.3.0"
 PlutoTeachingTools = "~0.4.7"
 PlutoUI = "~0.7.83"
 """
@@ -369,7 +386,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.13.1"
 manifest_format = "2.1"
-project_hash = "807172a9a93a21cc30cb580f4d49cebf92b82231"
+project_hash = "ece213ef30a9f26962527d4f51f9ff3b9a7ba85c"
 
 [[deps.AbstractFFTs]]
 deps = ["LinearAlgebra"]
@@ -384,10 +401,10 @@ weakdeps = ["ChainRulesCore", "Test"]
     AbstractFFTsTestExt = "Test"
 
 [[deps.AbstractPlutoDingetjes]]
-git-tree-sha1 = "6c3913f4e9bdf6ba3c08041a446fb1332716cbc2"
+git-tree-sha1 = "e71ee7b4aa06b045259a7d6101e1cb45ad140bce"
 registries = "General"
 uuid = "6e696c72-6542-2067-7265-42206c756150"
-version = "1.4.0"
+version = "1.4.1"
 
 [[deps.AbstractTrees]]
 git-tree-sha1 = "2d9c9a55f9c93e8887ad391fbae72f8ef55e1177"
@@ -584,10 +601,10 @@ version = "3.31.0"
 
 [[deps.ColorTypes]]
 deps = ["FixedPointNumbers", "Random"]
-git-tree-sha1 = "67e11ee83a43eb71ddc950302c53bf33f0690dfe"
+git-tree-sha1 = "61761f58648aa7217445f24f841839b78c712232"
 registries = "General"
 uuid = "3da002f7-5984-5a60-b8a6-cbb66c0b333f"
-version = "0.12.1"
+version = "0.12.3"
 weakdeps = ["StyledStrings"]
 
     [deps.ColorTypes.extensions]
@@ -799,10 +816,10 @@ version = "2.8.4+0"
 
 [[deps.FFMPEG_jll]]
 deps = ["Artifacts", "Bzip2_jll", "FreeType2_jll", "FriBidi_jll", "JLLWrappers", "LAME_jll", "Libdl", "Ogg_jll", "OpenSSL_jll", "Opus_jll", "PCRE2_jll", "Zlib_jll", "libaom_jll", "libass_jll", "libfdk_aac_jll", "libva_jll", "libvorbis_jll", "x264_jll", "x265_jll"]
-git-tree-sha1 = "e3c081ec777297fb8fc433012d15a6eaf806b4d2"
+git-tree-sha1 = "d9d3cd382f2c999f684e6bfa4039fcc16c153b6f"
 registries = "General"
 uuid = "b22a6f82-2f65-5046-a5b2-351ab43fb4e5"
-version = "9.0.1+0"
+version = "9.0.2+0"
 
 [[deps.FFTA]]
 deps = ["AbstractFFTs", "DocStringExtensions", "LinearAlgebra", "MuladdMacro", "Primes", "Random", "Reexport"]
@@ -1223,11 +1240,11 @@ uuid = "aacddb02-875f-59d6-b918-886e6ef4fbf8"
 version = "3.2.0+1"
 
 [[deps.JuliaInterpreter]]
-deps = ["CodeTracking", "InteractiveUtils", "Random", "UUIDs"]
-git-tree-sha1 = "c3d401f110454b4ea24a76be33f6ee0d7d385103"
+deps = ["CodeTracking", "InteractiveUtils", "Random"]
+git-tree-sha1 = "24a00d415eac260385b0f260340457664a7b2bca"
 registries = "General"
 uuid = "aa1ae85d-cabe-5617-a682-6adf51b2e16a"
-version = "0.11.4"
+version = "0.11.5"
 
 [[deps.JuliaSyntaxHighlighting]]
 deps = ["StyledStrings"]
@@ -1392,10 +1409,10 @@ version = "1.11.0"
 
 [[deps.LoweredCodeUtils]]
 deps = ["CodeTracking", "Compiler", "JuliaInterpreter"]
-git-tree-sha1 = "1d4c737ab26f51ceed52ab2019c09b7660eb7440"
+git-tree-sha1 = "e16fd69604bef06cb3fe9da09b315005c9c34564"
 registries = "General"
 uuid = "6f1432cf-f94c-5a45-995e-cdbf5db27b0b"
-version = "3.8.0"
+version = "3.9.0"
 
 [[deps.MIMEs]]
 git-tree-sha1 = "c64d943587f7187e751162b3b84445bbbd79f691"
@@ -1669,10 +1686,10 @@ uuid = "0ff47ea0-7a50-410d-8455-4348d5de0420"
 version = "0.1.8"
 
 [[deps.PlutoSlides]]
-deps = ["HypertextLiteral", "PlutoUI", "Printf"]
+deps = ["Base64", "HypertextLiteral", "MIMEs", "PlutoUI", "Printf"]
 path = "C:\\Users\\metivier\\.julia\\dev\\PlutoSlides"
 uuid = "ccaada3e-fbb3-407e-96e9-78c3ad6e4026"
-version = "0.2.2"
+version = "0.3.0"
 
 [[deps.PlutoTeachingTools]]
 deps = ["Downloads", "HypertextLiteral", "Latexify", "Markdown", "PlutoUI"]
@@ -1703,10 +1720,10 @@ version = "1.3.4"
 
 [[deps.Preferences]]
 deps = ["TOML"]
-git-tree-sha1 = "8b770b60760d4451834fe79dd483e318eee709c4"
+git-tree-sha1 = "5005266de4bfe50e53ff44a5cb5c540b6e47a254"
 registries = "General"
 uuid = "21216c6a-2e73-6563-6e65-726566657250"
-version = "1.5.2"
+version = "1.6.0"
 
 [[deps.Primes]]
 deps = ["IntegerMathUtils"]
@@ -1802,10 +1819,10 @@ version = "1.3.1"
 
 [[deps.Revise]]
 deps = ["CRC32c", "CodeTracking", "FileWatching", "JuliaInterpreter", "LibGit2", "LoweredCodeUtils", "OrderedCollections", "Preferences", "REPL", "UUIDs"]
-git-tree-sha1 = "ab0f5630e37968bc49b8c4cedd3279a7d30b9486"
+git-tree-sha1 = "82ac67271b84f674fccccbc9f92b106941fb8c65"
 registries = "General"
 uuid = "295af30f-e4ad-537b-8983-00126c2a3abe"
-version = "3.17.0"
+version = "3.17.1"
 weakdeps = ["Distributed"]
 
     [deps.Revise.extensions]
@@ -2366,7 +2383,7 @@ uuid = "23338594-aafe-5451-b93e-139f81909106"
 # ╠═538e71c7-e425-466e-b004-5e4ed4bf026c
 # ╠═ea9e8cfe-402d-4d9e-95b1-147615196a79
 # ╟─2aff06d6-cf3c-4bc9-bfdc-ca3f9e24ed09
-# ╟─19b05b91-1e11-43dd-ae84-5e064e7466d3
+# ╠═19b05b91-1e11-43dd-ae84-5e064e7466d3
 # ╟─2fc6ee50-10ad-4356-a963-d646559231ae
 # ╟─a8750d23-8b47-4314-970d-865673c82b21
 # ╟─a27a9dc4-58c1-4703-8e4a-f6e8eed6080a
@@ -2379,7 +2396,7 @@ uuid = "23338594-aafe-5451-b93e-139f81909106"
 # ╟─6f314bab-3738-47ea-919e-98ed049a38ac
 # ╟─6d981650-6ec6-4324-8c9c-ca0fd10e0401
 # ╟─57b56690-aef9-4a0f-bc2c-c29fc9481872
-# ╠═e737be8e-6980-44ed-aaa9-030477561837
+# ╟─e737be8e-6980-44ed-aaa9-030477561837
 # ╟─620103da-14c3-43ba-8d9c-25722f18426c
 # ╠═b54106f9-1885-4ae5-8f35-46edc2718806
 # ╟─4076b62d-c325-4c3f-9f8c-67c313d1f7e7
@@ -2412,5 +2429,8 @@ uuid = "23338594-aafe-5451-b93e-139f81909106"
 # ╟─38eaf5f1-c8f8-4371-8f12-7505eb7c1ace
 # ╠═756fe1d4-a59d-4a7d-98cd-8c375a547623
 # ╠═2ddc54a2-ea61-4372-a205-dc2a5d97a391
+# ╠═f6efe2bb-afd9-4150-b4bb-b4c0e00fa9ef
+# ╠═ec081723-d982-4a2a-937c-816f0979d422
+# ╠═ff29ed8f-1060-4b1d-a3ea-bba35ea55a75
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

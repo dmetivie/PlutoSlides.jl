@@ -34,6 +34,7 @@ makedocs(
     format=fmt,
     pages=[
         "Home" => "index.md",
+        "Try it!" => "tryit.md",
         "Style and themes" => "style.md",
         "PDF export" => "pdf.md",
         "Suggested workflow" => "workflow.md",

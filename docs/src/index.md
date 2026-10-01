@@ -83,6 +83,24 @@ Click **⧉ Slide Mode**, then move with the arrow keys or by clicking the left/
 of the screen. The HTML export of the notebook keeps the button, so a deck shared on
 [pluto.land](https://pluto.land/n/k1hq5qtm) can be presented from the browser.
 
+### Starting in slide mode
+
+By default a notebook opens as a notebook, and you enter slide mode with the button. Two
+keywords of [`slide_mode_button`](@ref) open it directly in slide mode instead:
+
+| keyword | default | opens in slide mode... |
+|:--|:--|:--|
+| `start_in_slide_mode_html` | `false` | the notebook's HTML export (a file, pluto.land, an `<iframe>`...) |
+| `start_in_slide_mode_notebook` | `false` | the notebook running in Pluto |
+
+```julia
+slide_mode_button(start_in_slide_mode_html=true)  # export a deck that opens as slides
+```
+
+The two are separate so that a deck can open as slides for its audience while you still
+edit it as a notebook. Slide mode starts once, when the page loads: rerunning the cell
+does not toggle it again, and the button still leaves and re-enters slide mode.
+
 ## Writing slides
 
 Slides are cut at headings, like in Pluto's presentation mode:
@@ -150,6 +168,7 @@ myWebPage("https://julialang.org"; width="90%", ratio="45%", offset=80)
 
 ## Next steps
 
+- [Try it!](@ref): the example deck, right in the browser.
 - [Style and themes](@ref): fonts, themes, colors, bands and logos.
 - [PDF export](@ref): print the deck.
 - [Suggested workflow](@ref): editing and checking a deck efficiently.

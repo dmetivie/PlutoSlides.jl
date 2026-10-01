@@ -3,6 +3,8 @@ module PlutoSlides
 using HypertextLiteral: @htl, @htl_str
 using PlutoUI
 using Printf
+import Base64
+import MIMEs
 include("colors.jl")
 include("themes.jl")
 
@@ -185,8 +187,8 @@ $(theme_vars)    }
 
      </style>
   $(logo_block)
-  $(PlutoUI.LocalResource(joinpath(@__DIR__, "..", "js", "slidework.js")))
-  $(PlutoUI.LocalResource(joinpath(@__DIR__, "..", "js", "print.js")))
+  $(_local_resource(joinpath(@__DIR__, "..", "js", "slidework.js")))
+  $(_local_resource(joinpath(@__DIR__, "..", "js", "print.js")))
      """)
 end
 
@@ -256,7 +258,7 @@ end
 # untouched.
 _is_media_mime(m) = !isnothing(m) && any(p -> startswith(string(m), p), ("image/", "video/", "audio/"))
 
-_logo_content(x::AbstractString) = isfile(x) ? _logo_content(PlutoUI.LocalResource(x)) : @htl("<img src=$(x)>")
+_logo_content(x::AbstractString) = isfile(x) ? _logo_content(_local_resource(x)) : @htl("<img src=$(x)>")
 _logo_content(r::PlutoUI.Resource) = _is_media_mime(r.mime) ? r : @htl("<img src=$(r.src)>")
 _logo_content(x) = x
 
@@ -331,11 +333,14 @@ function _logo_block(; logo=nothing, logo_position="top-right", logo_height=noth
 end
 
 """
-    slide_mode_button()
+    slide_mode_button(; start_in_slide_mode_html=false, start_in_slide_mode_notebook=false)
 
 A button that toggles slide mode on and off. Needs [`slide_mode_settings`](@ref) in the notebook.
+
+Set `start_in_slide_mode_html=true` to open the notebook's HTML export directly in slide
+mode, and `start_in_slide_mode_notebook=true` to do the same when it runs in Pluto.
 """
-function slide_mode_button()
+function slide_mode_button(; start_in_slide_mode_html=false, start_in_slide_mode_notebook=false)
     return @htl("""
     <span class="pluto-slides-toggle">
         <button>⧉ Slide Mode</button>
@@ -361,6 +366,23 @@ function slide_mode_button()
             }
             tryToggle(20)
         })
+
+        // Optionally start in slide mode, once per page load (re-running this
+        // cell must not toggle again). Static HTML exports set `pluto_statefile`.
+        const is_export = Boolean(window.pluto_statefile)
+        const start = is_export ? $(start_in_slide_mode_html) : $(start_in_slide_mode_notebook)
+        if (start && !window.__plutoSlidesAutoStarted) {
+            window.__plutoSlidesAutoStarted = true
+            const tryStart = (tries) => {
+                if (typeof window.PlutoSlides?.startInSlideMode === "function") {
+                    window.PlutoSlides.startInSlideMode()
+                } else if (tries > 0) {
+                    // slidework.js comes with slide_mode_settings, which may render later.
+                    setTimeout(() => tryStart(tries - 1), 100)
+                }
+            }
+            tryStart(100)
+        }
         </script>
     </span>
     """)
@@ -495,6 +517,15 @@ function slide_mode_title(; title=nothing,
     """)
 end
 
+# Same as `PlutoUI.LocalResource(path, html_attributes...)`, except that the MIME type
+# is guessed from the file extension alone: PlutoUI parses the whole path as a URI,
+# which throws on any path containing a space (e.g. `C:\Users\Jane Doe\...`).
+function _local_resource(path::AbstractString, html_attributes::Pair...)
+    mime = MIMEs.mime_from_extension(lowercase(splitext(path)[2]), nothing)
+    src = "data:$(something(mime, ""));base64,$(Base64.base64encode(read(path)))"
+    return PlutoUI.Resource(src, mime, html_attributes)
+end
+
 """
     PlutoUI.LocalResource(dir, path, html_attributes::Pair...)
 
@@ -505,7 +536,7 @@ function PlutoUI.LocalResource(dir::AbstractString, path::AbstractString, html_a
     # Quick direct check (path may already include subfolders)
     direct = joinpath(dir, path)
     if isfile(direct)
-        return PlutoUI.LocalResource(direct)
+        return _local_resource(direct, html_attributes...)
     end
 
     roots = String[]
@@ -520,7 +551,7 @@ function PlutoUI.LocalResource(dir::AbstractString, path::AbstractString, html_a
         throw(ArgumentError("File '$path' not found under directory '$dir'"))
     end
 
-    return PlutoUI.LocalResource(joinpath(roots[idx], path), html_attributes...)
+    return _local_resource(joinpath(roots[idx], path), html_attributes...)
 end
 
 """
