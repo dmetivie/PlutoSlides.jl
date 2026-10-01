@@ -2,6 +2,8 @@
 
 ![logo](https://raw.githubusercontent.com/dmetivie/PlutoSlides.jl/master/assets/logo_pluto_slides.svg)
 
+[![Docs](https://img.shields.io/badge/docs-dev-blue.svg)](https://dmetivie.github.io/PlutoSlides.jl)
+
 Who doesn't love [Pluto.jl](https://plutojl.org/)? Coding, and seeing the results immediately thanks to reactivity...
 Who doesn't love a nicely formatted slideshow like Beamer or reveal.js used by Quarto?
 This package aims to combine the two! Gets Pluto with a slideshow format.
@@ -9,7 +11,7 @@ This package aims to combine the two! Gets Pluto with a slideshow format.
 ![Example](https://raw.githubusercontent.com/dmetivie/PlutoSlides.jl/master/assets/example.gif)
 
 > [!WARNING]
-> Disclaimer: As I had no knowledge of Javascript, basics of HTML and CSS, I turned to AI/LLMs to help me out. So this package is very much vibe coded. I did read the code and tried to understand it, but I am sure there are better ways to do things. 
+> Disclaimer: As I had no knowledge of Javascript, basics of HTML and CSS, I turned to AI/LLMs to help me out. So this package is very much vibe coded. I did read the code and tried to understand it, but I am sure there are better ways to do things.
 
 Note that the `html` version of the Pluto notebook can activate the slide mode ! See this [Julia presentation](https://pluto.land/n/k1hq5qtm) for example.
 
@@ -21,19 +23,20 @@ Note that the `html` version of the Pluto notebook can activate the slide mode !
 It is not yet registered in the General registry, but you can
 
 - Use the Julia 1.12 `[sources]` in the project of your notebook to specify where to find the package [see here](https://discourse.julialang.org/t/pluto-1-0-release/137296#p-638767-automatic-pkg-management-5)
+
 ```julia
 [sources]
 PlutoSlides = {url = "https://github.com/dmetivie/PlutoSlides.jl"}
 ```
 
 - Or install it from my local registry with
+
 ```julia
 julia> import Pkg; 
 julia> Pkg.pkg"registry add https://github.com/dmetivie/LocalRegistry"
 ```
 
 Then add it to your Pluto notebook with like any other package `using PlutoSlides` in the notebook.
-
 
 ## Usage
 
@@ -80,18 +83,20 @@ md"""
 ### Subsub title 1
 """
 ```
+
 ## Warnings
 
 > [!WARNING]
-> **Display**: Keep in mind that the display of the slides (vertical and horizontal) depends on your screen size. I currently did not found a way to ensure reproducible rendering across, laptot and browser. I sometime use the browser zoom with `ctrl`+`+` to enlarge the slides fonts (instead of changing the font size in the code). 
+> **Display**: Keep in mind that the display of the slides (vertical and horizontal) depends on your screen size. I currently did not found a way to ensure reproducible rendering across, laptot and browser. I sometime use the browser zoom with `ctrl`+`+` to enlarge the slides fonts (instead of changing the font size in the code).
 > When I develop I always check that the slides are displayed correctly on my laptop screen at the resolution I will use for the presentation.
 >
 > The base font size is `19` px by default (a browser's own default is 16, which is small on a projector). Everything else is sized in rem/em, so changing it rescales the whole slide, PDF export included: `slide_mode_settings(font_size=22)`, or `font_size=nothing` to leave the notebook's own size alone.
 
 > [!WARNING]
 > **Title slides**: Currently, for correct display and detection of titles, you need to write `h1` (#), `h2` (##), and `h3` (###) titles in separate markdown cells without any other content.
-> 
-> For example, 
+>
+> For example,
+>
 > ```julia
 > md"""
 > ## SubTitle h2
@@ -106,7 +111,9 @@ md"""
 > Text of h3
 > """
 > ```
+>
 > DO NOT write
+>
 > ```julia
 > md"""
 > ## SubTitle h2
@@ -125,7 +132,7 @@ md"""
 
 See the [suggested workflow](https://dmetivie.github.io/PlutoSlides.jl/dev/workflow/) in the documentation.
 
-## Origin story
+**Origin story**
 
 I was not completely satisfied by the look of the [presentation mode of Pluto](https://plutojl.org/en/docs/presentation/), which did not look like my usual Beamer presentations.
 Modifying this classic presentation mode is not completely straightforward, because it requires some choice, might depend on the size of your screen and so on ([see here](https://github.com/fonsp/Pluto.jl/discussions/3226)).
@@ -134,12 +141,14 @@ There is a lot of room for improvement, and better ways to do things, so feel fr
 
 ## TODO
 
-### General:
+### General
+
 - [X] Address the performance issue on some notebooks see issue [#3](https://github.com/dmetivie/PlutoSlides.jl/issues/3). **I hope it is fixed in v0.2.0.**
 - [ ] More testing (I have only tested on my computer, with Firefox).
-- [ ] Pause feature does not work in all cases. 
+- [ ] Pause feature does not work in all cases.
 
-### Layout:
+### Layout
+
 - [ ] Ability to detect and display better the h2, h3 titles in the notebook. Currently, it is very strict and requires them to be in separate markdown cells without any other content.
 - [ ] Better scalability/formatting of notebooks for different screens and font sizes. There is `max_width` option, but it is not perfect. Maybe a `max_height` option could be useful too?
 - [ ] h3 title with the h2 top right title in the band (currently it adds a new band bellow h2 title band).
@@ -147,72 +156,8 @@ There is a lot of room for improvement, and better ways to do things, so feel fr
 - [ ] Option to remove slide counter, add/remove total slide number.
 - [X] No title band slide if empty h2 title `##` title is provided? Or like an option?
 
-### Features:
+### Features
+
 - [X] PDF export of the slides. **See [PDF export](#pdf-export); pauses are not yet split into separate pages.**. Super experimental. Tested on my laptop with Firefox with Print to PDF.
 - [ ] Make the Pluto screen recording work nicely with slide mode. *Screen recording with your computer is probably the best way to record currently.*
 - [X] Template like Beamer themes, e.g. Madrid, Berlin. Possibility to have templates with logo on each slide. **See [Themes](#themes) and the `logo` option.**
-
-## Experimental features to test
-
-### PDF export
-
-Click the printer icon (🖨) in the slide-mode controls to turn the current deck into a
-PDF, using the browser's native print dialog ("Save as PDF"). Two `slide_mode_settings`
-keywords control the page shape:
-
-- `pdf_aspect`: shape of a printed slide, as width/height. Defaults to the live browser
-  window's own ratio (so the print looks like what you saw on screen), which on a
-  relatively taller sheet leaves a blank band at the bottom. Set it to the paper's ratio
-  (e.g. `"a4"`, `"letter"`, `16/9`, `"16:9"`, `(297, 210)`) to fill the sheet instead.
-- `pdf_stretch`: extra vertical room as a multiplier on the slide's height only (default
-  `1`), to reclaim part of that blank band without going all the way to the paper's
-  shape.
-
-```julia
-# Fill an A4 landscape sheet instead of leaving the bottom blank
-slide_mode_settings(footer_left="My Presentation", pdf_aspect="a4")
-
-# Or keep the screen's shape and just claim 10% more height
-slide_mode_settings(footer_left="My Presentation", pdf_stretch=1.1)
-```
-
-> [!WARNING]
-> This has only been tuned against **Firefox's "Save to PDF"** on **A4 landscape**
-> paper. Chromium-based browsers should also work (they honor `pdf_aspect` exactly,
-> without Firefox's letterboxing), but are less tested.
->
-> Known limitations: the export prints every slide fully revealed as a single page --
-> `pause(n)` steps are not split into separate pages. Vertical spacing can also differ
-> slightly between a fullscreen and a non-fullscreen browser window.
-
-### Themes
-
-Pass a built-in Beamer-like theme instead of setting colors one by one:
-
-```julia
-slide_mode_settings(theme=:Warsaw, footer_left="My Presentation")
-
-available_themes()                    # list all theme names
-available_themes(; descriptions=true) # ... with a one-line description of each
-```
-
-A theme sets a whole look (palette *and* band style: gloss, rounding, shadow, rules),
-and any explicit keyword you also pass still overrides it, like Beamer's `\usetheme`
-followed by a `\setbeamercolor`. The built-ins come in six families:
-
-| family | themes | look |
-|:--|:--|:--|
-| split | `:Madrid` (default), `:Coral` | headline cut in two, three-tone footer, soft shadow |
-| shaded | `:Berlin`, `:Warsaw` | the same bands, glossy and deeply shadowed |
-| smooth bars | `:Singapore`, `:Copenhagen` | flat bars with rounded free corners |
-| plain | `:Boadilla`, `:Journal` | no fills: rules and colored text only, no headline |
-| block | `:Rochester`, `:Frankfurt` | no headline, one solid band for the frametitle |
-| dark | `:Dracula`, `:Dark` | dark slide surface with light text |
-
-You can also pass a `NamedTuple`/`Dict` of overrides to `theme=` for a fully custom
-inline theme. See the `slide_mode_settings` docstring for the full list of band-style
-keywords (`band_overlay`, `band_radius`, `band_shadow`, `subtitle_border`,
-`footer_border`, `subtitle_align`, `show_title_band`, ...).
-
-> [!WARNING]
-> Dark themes repaint the slide surface itself. Check any plot with a transparent background before presenting with one.

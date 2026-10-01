@@ -12,7 +12,7 @@ AUTHORS = join(PROJECT_TOML["authors"], ", ") * " and contributors"
 GITHUB = "https://github.com/dmetivie/PlutoSlides.jl"
 
 # Examples kept in the repo's assets/, copied into the docs at build time (git-ignored copies)
-for file in ("edit_pluto.pdf", "notebook_test_doc.html")
+for file in ("edit_pluto.pdf")
     cp(joinpath(@__DIR__, "..", "assets", file), joinpath(@__DIR__, "src", "assets", file); force=true)
 end
 

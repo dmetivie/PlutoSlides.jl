@@ -12,7 +12,7 @@ hero:
         link: "#Quick-start"
       - theme: brand
         text: See an example deck
-        link: https://pluto.land/n/k1hq5qtm
+        link: https://pluto.land/n/8ysfskpg
       - theme: alt
         text: View on GitHub
         link: https://github.com/dmetivie/PlutoSlides.jl
@@ -80,7 +80,8 @@ slide_mode_button()
 ```
 
 Click **⧉ Slide Mode**, then move with the arrow keys or by clicking the left/right side
-of the screen. The HTML export of the notebook keeps the button, so a deck shared on
+of the screen. Or use the escape key to escape the slide mode. 
+The HTML export of the notebook keeps the button, so a deck shared on
 [pluto.land](https://pluto.land/n/k1hq5qtm) can be presented from the browser.
 
 ### Starting in slide mode

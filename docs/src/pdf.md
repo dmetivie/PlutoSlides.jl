@@ -50,3 +50,4 @@ slide_mode_settings(pdf_aspect=16/9)
 
 - Each slide prints fully revealed: [`pause`](@ref) steps are not split into pages.
 - Vertical spacing can differ slightly between a full-screen and a windowed browser.
+- This is not pixel perfect e.g. there is a blank space at the right. Moreover, Julia types like `x::Float64` are rendered differently in the browser and in the PDF.
