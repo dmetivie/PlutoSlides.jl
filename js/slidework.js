@@ -460,14 +460,50 @@
         }
     })
 
+    // The font size the pixel constants in computeNotebookOffset were tuned at,
+    // i.e. the `font_size` default of slide_mode_settings.
+    const BASE_FONT_PX = 19
+
+    // How much bigger the page font is than BASE_FONT_PX, never below 1. The
+    // bands are sized in rem/em and so grow with the font, while the room Pluto
+    // itself leaves above the first cell (its preamble, --pluto-cell-spacing, the
+    // pluto-cell min-height) is a fixed number of pixels and does not -- so past
+    // the default size the subtitle band starts covering the top of the slide
+    // unless the offset below grows with it. Clamped at 1 because a smaller font
+    // only leaves the bands more room than they need, and a deck that sets no
+    // font_size (or a smaller one) is better off rendering exactly as it always
+    // did than reclaiming a few pixels.
+    function fontScale() {
+        const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize)
+        return rootFontSize > BASE_FONT_PX ? rootFontSize / BASE_FONT_PX : 1
+    }
+
+    // Height of the subtitle band in CSS pixels, derived from its style rather
+    // than measured with offsetHeight: the band is display:none on title slides
+    // and on whichever slide is on screen while the PDF export walks the deck,
+    // and a hidden element measures 0. getComputedStyle still resolves lengths
+    // for it, which is all this needs -- every one of them is in rem/em, so the
+    // result is proportional to the page font size.
+    function subtitleBandHeight() {
+        const band = document.getElementById("slide-subtitle-band")
+        if (!band) return 0
+        const style = getComputedStyle(band)
+        const fontSize = parseFloat(style.fontSize) || 0
+        // `line-height: normal` computes to the keyword, not a length.
+        const lineHeight = parseFloat(style.lineHeight) || 1.2 * fontSize
+        return (parseFloat(style.paddingTop) || 0) + lineHeight + (parseFloat(style.paddingBottom) || 0)
+    }
+
     // Vertical gap between the top of the notebook column and the first cell of
-    // a slide: a constant clearance for the bands, plus a bit more when the
+    // a slide: a constant clearance for the bands, plus however much the bands
+    // have outgrown that constant at this font size, plus a bit more when the
     // heading cell carries content of its own below the heading. Split out of
     // updateNotebookOffset so the PDF export (js/print.js) can reproduce the
     // live offset page by page instead of guessing one value for the whole deck.
     function computeNotebookOffset(slideIndex) {
+        const scale = fontScale();
         // Get the heights of the title and subtitle bands
-        const subtitleHeight = 15//subtitleBand?.offsetHeight || 0;
+        const subtitleHeight = 15 * scale//subtitleBand?.offsetHeight || 0;
 
         const currentSlide = slides[slideIndex];
         if (!currentSlide) return subtitleHeight;
@@ -485,7 +521,7 @@
 
             // If there's additional text beyond the subtitle, add extra offset
             if (otherContent) {
-                additionalOffset = 2.5 * 16; // Example: 2.5em in pixels (assuming 16px base font size)
+                additionalOffset = 2.5 * 16 * scale; // Example: 2.5em in pixels (assuming 16px base font size)
             }
             // additionalOffset -= 20; // Adjust for subtitle height since h2 is in title band
         } else {
@@ -501,13 +537,21 @@
 
                 // If there's additional text beyond the subtitle, add extra offset
                 if (otherContent) {
-                    additionalOffset = 2.5 * 16; // Example: 2.5em in pixels (assuming 16px base font size)
+                    additionalOffset = 2.5 * 16 * scale; // Example: 2.5em in pixels (assuming 16px base font size)
                 }
                 // additionalOffset -= 17; // Adjust for subtitle height since h2 is in title band
             }
         }
 
-        return additionalOffset + subtitleHeight;
+        // Push the content down by exactly what the subtitle band grew since
+        // BASE_FONT_PX (band height * (1 - 1/scale)), so a bigger font_size moves
+        // band and content together instead of sliding the text under the band.
+        // Zero at the default size, and on a slide that shows no subtitle band.
+        const bandGrowth = computeSlideBands(slideIndex).showSubtitle
+            ? subtitleBandHeight() * (1 - 1 / scale)
+            : 0;
+
+        return additionalOffset + subtitleHeight + bandGrowth;
     }
 
     function updateNotebookOffset() {
