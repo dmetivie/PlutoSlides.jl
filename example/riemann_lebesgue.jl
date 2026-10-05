@@ -89,7 +89,7 @@ $(pause())
 
 # ╔═╡ 5cfec84f-ca82-4966-b0af-3afdff9306c4
 md"""
-## Why? Oscillations cancel out
+## Intuition: Oscillations cancel out
 """
 
 # ╔═╡ f30f52a3-fd4d-42ff-97b6-11e3dab09c42
@@ -136,7 +136,7 @@ by continuity of translations in ``L^1``. ``\blacksquare``
 
 $(pause())
 
-**Bonus: a rate for free.** If ``f`` has bounded variation, ``\|f - f(\cdot + h)\|_{L^1} \le |h|\, \mathrm{TV}(f)``, so
+**Bonus: a rate for free.** If ``f`` has [bounded variation](https://en.wikipedia.org/wiki/Total_variation), ``\|f - f(\cdot + h)\|_{L^1} \le |h|\, \mathrm{TV}(f)``, so
 ```math
 |\hat f(\xi)| \le \frac{\pi\, \mathrm{TV}(f)}{2\,|\xi|}.
 ```
@@ -174,6 +174,13 @@ md"""
 ## Mixing is Riemann–Lebesgue
 """
 
+# ╔═╡ d8e9ca61-ef3c-4844-82b7-ff462326f54c
+md"""
+```math
+\partial_t f + v\, \partial_\theta f = 0, \qquad f(0, \theta, v) = \delta_0(\theta)\, g(v),\qquad \rho(t, \theta) = \int f(t, \theta, v)\, \mathrm{d}v
+```
+"""
+
 # ╔═╡ 96d5975c-7465-4017-aedb-eea994e05e7a
 md"""
 Fourier coefficients of the crowd on the circle:
@@ -190,12 +197,16 @@ Hence ``\rho(t, \theta) = \frac{1}{2\pi}\Big(1 + \sum_{k \ne 0} \hat g(kt)\, e^{
 
 $(pause())
 
-**The mixing rate is the decay rate of ``\hat g``, i.e. the regularity of the speed distribution:** jump ``\Rightarrow t^{-1}``, kink ``\Rightarrow t^{-2}``, …, Gaussian ``\Rightarrow e^{-\sigma^2 t^2/2}``.
+**The mixing rate is the decay rate of ``\hat g``, i.e. the regularity of the speed distribution:** jump ``\Rightarrow t^{-1}``, discontinuous first derivative ``\Rightarrow t^{-2}``, …, Gaussian ``\Rightarrow e^{-\sigma^2 t^2/2}``.
 
 $(pause())
 
-The kinetic density ``f`` itself never relaxes: it filaments in phase space and converges only weakly. This *phase mixing* is the mechanism behind Landau damping (Mouhot & Villani, 2011).
+The kinetic density ``f`` itself never relaxes: it filaments in phase space and converges only weakly. 
+This *phase mixing* is the mechanism behind Landau damping (Mouhot & Villani, 2011) a damping without dissipation (energy is conserved).
 """
+
+# ╔═╡ 52e8fe33-cbbc-4e18-b329-9ead4697692f
+mywebpage("https://link.springer.com/article/10.1007/s11511-011-0068-9")
 
 # ╔═╡ cc942ad9-c709-4aa5-937e-1d86b809175e
 md"""
@@ -226,7 +237,12 @@ $(pause(1))
 
 $(pause(2))
 
-3. **Marathon:** free transport moves each speed class as a traveling wave, yet the crowd mixes, with Fourier modes ``\hat g(kt)``. The smoother the speed distribution, the faster the mixing.
+3. **Marathon:** free transport moves each speed class as a traveling wave, yet the crowd mixes, with Fourier modes ``\hat g(kt)``. The smoother the speed distribution, the faster the mixing. This mechanism stabilizes plasma, this is the core of Landau damping!
+
+!!! note "Fun fact"
+    This mechanism is used in one of my work regarding [Power of Ensemble Diversity and Randomization for Energy Aggregation](https://www.nature.com/articles/s41598-019-41515-4) (Métivier et al., 2019, *Scientific Reports*). An ensemble of thermostatically controlled loads e.g. air conditioners turn on/off depending on the temperature. Their distribution actually help mixing them to stabilize the total energy of the ensemble.
+    $(Resource("https://media.springernature.com/full/springer-static/image/art%3A10.1038%2Fs41598-019-41515-4/MediaObjects/41598_2019_41515_Fig2_HTML.png", :width => 600))
+    $(Resource("https://media.springernature.com/full/springer-static/image/art%3A10.1038%2Fs41598-019-41515-4/MediaObjects/41598_2019_41515_Fig1_HTML.png", :width => 500))
 """
 
 # ╔═╡ f2bf9c55-0358-4832-8488-dfbc8c1582bb
@@ -330,7 +346,7 @@ begin
         lines!(ax1, x, @lift(-$g); color=:black, linestyle=:dash)
         lines!(ax1, x, y; color=:black)
 
-        ax2 = Axis(fig[1, 2]; xlabel=L"\xi", title=L"|\hat{g}(\xi)| \to 0", limits=(0, 30, 0, 1.05))
+        ax2 = Axis(fig[1, 2]; xlabel=L"\xi", title=L"|\hat{g}(\xi)| \to 0", limits=(0, 30, -0.02, 1.05))
         lines!(ax2, ξs, @lift(abs.(cf.($cancel_law, ξs))); color=:royalblue)
         scatter!(ax2, @lift([Point2f($cancel_ξ, abs($ĝ))]); color=:crimson, markersize=14)
         fig
@@ -1162,10 +1178,10 @@ version = "0.11.3"
 
 [[deps.HTTP]]
 deps = ["Base64", "CodecZlib", "Dates", "EnumX", "Logging", "PrecompileTools", "Random", "Reseau", "SHA", "URIs", "UUIDs", "Zlib_jll"]
-git-tree-sha1 = "255d90f16a26c52d5afe69981ef772f12796125b"
+git-tree-sha1 = "ed18c529d170d8431c9d91537520b6d3dec052ca"
 registries = "General"
 uuid = "cd3eb016-35fb-5094-929b-558a96fad6f3"
-version = "2.8.0"
+version = "2.9.0"
 
 [[deps.HarfBuzz_jll]]
 deps = ["Artifacts", "Cairo_jll", "Fontconfig_jll", "FreeType2_jll", "Glib_jll", "Graphite2_jll", "JLLWrappers", "Libdl", "Libffi_jll"]
@@ -1942,10 +1958,10 @@ version = "1.3.1"
 
 [[deps.Reseau]]
 deps = ["NetworkOptions", "OpenSSL_jll", "PrecompileTools", "Random", "SHA"]
-git-tree-sha1 = "1a152e648e0af6fdaa18c6379bd6debb712d64ea"
+git-tree-sha1 = "3c8cb8ecab28eec47a02d56a44d4929b85fbab55"
 registries = "General"
 uuid = "802f3686-a58f-41ce-bb0c-3c43c75bba36"
-version = "1.5.0"
+version = "1.6.0"
 
 [[deps.Rmath]]
 deps = ["Random", "Rmath_jll"]
@@ -2549,7 +2565,9 @@ uuid = "6e172099-2da4-46e7-8c3f-eb5f14eb67c6"
 # ╟─8bb7d35e-a20c-4893-8c34-f7d78219f5c0
 # ╟─d38d5089-8720-4fcd-bc20-c1d9a3b5b5f9
 # ╟─a8bb6fc9-c225-449e-ad6c-54304bb735ea
+# ╟─d8e9ca61-ef3c-4844-82b7-ff462326f54c
 # ╟─96d5975c-7465-4017-aedb-eea994e05e7a
+# ╠═52e8fe33-cbbc-4e18-b329-9ead4697692f
 # ╟─cc942ad9-c709-4aa5-937e-1d86b809175e
 # ╟─83713237-5973-4c51-853a-876654cf193b
 # ╟─eddaeb02-5570-4a51-8737-14bfb08686dd
