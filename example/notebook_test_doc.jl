@@ -166,7 +166,7 @@ md"""
 """
 
 # ╔═╡ 30c727be-321e-474d-a277-14c9221e1f62
-myWebPage("https://julialang.org/")
+webpage("https://julialang.org/")
 
 # ╔═╡ 0d557219-6b7c-4cbc-ad8c-e29d33786749
 md"""

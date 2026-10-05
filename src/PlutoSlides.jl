@@ -416,11 +416,6 @@ end
 Embed the web page at `url` in an `<iframe>`. `ratio` is the box height as a fraction of its
 width, `offset` crops that many px (or a CSS length) off the top of the page -- a negative
 `offset` instead pushes the page down, leaving a gap -- and `center` centers it horizontally.
-
-Named after `ShortCodes.webpage` from
-[ShortCodes.jl](https://github.com/hellemo/ShortCodes.jl) (MIT, (c) 2020 Lars Hellemo),
-which this rewrites: the frame is sized by a responsive aspect-ratio box instead of fixed
-pixel `height`/`width`, and `offset`/`center` are new.
 """
 function webpage(url::AbstractString; width="75%", ratio="50%", title="", offset=0, center=true)
     # Normalize offset to a CSS length

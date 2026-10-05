@@ -170,9 +170,11 @@ themed(theme, key, default) = _theme_get(theme, key, default)
         # A negative offset pushes the page down instead of cropping its top.
         @test occursin("top: 50px", repr(MIME"text/html"(), webpage("https://example.org"; offset=-50)))
         @test occursin("https://example.org", repr(MIME"text/html"(), webpage("https://example.org")))
-        # The old name still forwards to `webpage`.
-        @test repr(MIME"text/html"(), myWebPage("https://example.org"; offset=50)) ==
-              repr(MIME"text/html"(), webpage("https://example.org"; offset=50))
+        # The old name still forwards to `webpage`, and warns even under the default
+        # `--depwarn=no` that Pluto runs with (`depwarn(...; force=true)`).
+        old = @test_logs (:warn, "`myWebPage` is deprecated, use `webpage` instead.") repr(
+            MIME"text/html"(), myWebPage("https://example.org"; offset=50))
+        @test old == repr(MIME"text/html"(), webpage("https://example.org"; offset=50))
     end
 
     @testset "title slide" begin

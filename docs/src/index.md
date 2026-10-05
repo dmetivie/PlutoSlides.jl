@@ -4,7 +4,7 @@ layout: home
 
 hero:
     name: PlutoSlides.jl
-    text: Beamer-like slideshows for Pluto notebooks
+    text: Slideshows for Pluto notebooks
     tagline: Keep Pluto's reactivity, present it like a Beamer or reveal.js deck.
     actions:
       - theme: brand

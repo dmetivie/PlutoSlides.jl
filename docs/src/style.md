@@ -27,6 +27,8 @@ Everything is sized in `rem`/`em`, so `font_size` rescales the whole slide (band
 headings, PDF export). The browser default, 16 px, is small on a projector; 19 px fits a
 `98%`-wide slide without reflowing most decks.
 
+![Fonts](https://raw.githubusercontent.com/dmetivie/PlutoSlides.jl/master/assets/plutoslide_font.gif)
+
 ## Themes
 
 A theme sets a palette and a band style at once, like Beamer's `\usetheme`. Any keyword
@@ -62,6 +64,8 @@ slide_mode_settings(theme=my_theme)
     Dark themes repaint the slide background (in slide mode and PDF only, never in the
     editor). Check plots with a transparent background.
 
+![Theme](https://raw.githubusercontent.com/dmetivie/PlutoSlides.jl/master/assets/plutoslide_theme.gif)
+
 ## Colors
 
 Setting the structural color `color_subtitle_bg` is usually enough. The other bands derive
@@ -84,6 +88,8 @@ from it by mixing with black ([`mix_black`](@ref)) or, for the pale block behind
 ```julia
 slide_mode_settings(color_subtitle_bg="#ff7f50")  # the whole palette follows
 ```
+
+![Color](https://raw.githubusercontent.com/dmetivie/PlutoSlides.jl/master/assets/plutoslide_color.gif)
 
 ## Band style
 

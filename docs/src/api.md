@@ -9,6 +9,7 @@ slide_mode_settings
 slide_mode_title
 slide_mode_button
 pause
+webpage
 myWebPage
 available_themes
 mix_black

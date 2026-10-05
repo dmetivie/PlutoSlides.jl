@@ -11,7 +11,9 @@ This package aims to combine the two! Gets Pluto with a slideshow format.
 ![Example](https://raw.githubusercontent.com/dmetivie/PlutoSlides.jl/master/assets/example.gif)
 
 > [!WARNING]
-> Disclaimer: As I had no knowledge of Javascript, basics of HTML and CSS, I turned to AI/LLMs to help me out. So this package is very much vibe coded. I did read the code and tried to understand it, but I am sure there are better ways to do things.
+> **Written with LLM assistance.** I had no prior knowledge of JavaScript and only the basics of HTML and CSS, so most of the JavaScript and CSS in this package was written with the help of AI/LLM coding assistants. In short: this package is very much vibe coded.
+>
+> I did read the code and tried to understand it, but I cannot vouch for it the way I would for Julia code. If you spot something wrong, please [open an issue or a PR](https://github.com/dmetivie/PlutoSlides.jl/issues) — that is exactly the kind of feedback this package needs.
 
 Note that the `html` version of the Pluto notebook can activate the slide mode ! See this [Julia presentation](https://pluto.land/n/k1hq5qtm) for example.
 
@@ -140,6 +142,11 @@ I was not completely satisfied by the look of the [presentation mode of Pluto](h
 Modifying this classic presentation mode is not completely straightforward, because it requires some choice, might depend on the size of your screen and so on ([see here](https://github.com/fonsp/Pluto.jl/discussions/3226)).
 However, I still wanted to try and end up creating this package in case you find it useful.
 There is a lot of room for improvement, and better ways to do things, so feel free to open an issue or a PR.
+
+## Credits
+
+- [PlutoReport.jl](https://github.com/DhruvaSambrani/PlutoReport.jl) gave the initial motivation. I used it before writing this package.
+- `webpage` is a rewrite of `ShortCodes.webpage` from [ShortCodes.jl](https://github.com/hellemo/ShortCodes.jl), whose name and one-call `<iframe>` short code it keeps. This version sizes the frame with a responsive aspect-ratio box instead of fixed pixel `height`/`width`, and adds `offset` and `center`.
 
 ## TODO
 

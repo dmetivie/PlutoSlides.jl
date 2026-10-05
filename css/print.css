@@ -30,7 +30,7 @@
    class, so the only way not to hijack that is not to have one. */
 
 /* While the export is being prepared the container is in the live <body>, with
-   the deck's cells inside it, and on a deck with myWebPage() embeds it stays
+   the deck's cells inside it, and on a deck with webpage() embeds it stays
    there for as long as those iframes take to reload. Cover the window with it
    rather than leave the gutted notebook on show - and cover it VISIBLY, on top
    of everything: a browser does not paint a layer it considers invisible, and

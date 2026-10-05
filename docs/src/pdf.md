@@ -55,7 +55,7 @@ slide_mode_settings(pdf_aspect=16/9)
 ## Known limitations
 
 - Each slide prints fully revealed: [`pause`](@ref) steps are not split into pages.
-- [`myWebPage`](@ref) embeds restart when the pages are built, so the export waits a few
+- [`webpage`](@ref) embeds restart when the pages are built, so the export waits a few
   seconds for them ("Preparing PDF…"); one that refuses to be framed, or that draws itself
   late, prints blank. Firefox's print *preview* can show an embed empty even when the saved
   PDF has it -- trust the file, not the preview.
