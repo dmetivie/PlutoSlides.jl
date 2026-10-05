@@ -12,7 +12,7 @@ hero:
         link: "#Quick-start"
       - theme: brand
         text: See an example deck
-        link: https://pluto.land/n/8ysfskpg
+        link: https://pluto.land/n/9gl42vym
       - theme: alt
         text: View on GitHub
         link: https://github.com/dmetivie/PlutoSlides.jl
@@ -188,14 +188,6 @@ It is a rewrite of `ShortCodes.webpage` (see [Credits](@ref)) and keeps that nam
 spelling `myWebPage` still works but is deprecated.
 
 Embeds also print; see [PDF export](@ref) for the caveats.
-
-## Next steps
-
-- [Try it!](@ref): the example deck, right in the browser.
-- [Style and themes](@ref): fonts, themes, colors, bands and logos.
-- [PDF export](@ref): print the deck.
-- [Suggested workflow](@ref): editing and checking a deck efficiently.
-- [API](@ref): every function and keyword.
 
 ## Credits
 

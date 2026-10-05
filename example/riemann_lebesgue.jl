@@ -41,13 +41,13 @@ fontsize = 22
 slide_mode_settings(footer_left="David Métivier", footer_center=md"The Riemann–Lebesgue lemma", font_size=fontsize, color_subtitle_bg = "#9558B2")
 
 # ╔═╡ d2d1585d-22fd-4152-9791-ddd9d5554a0b
-slide_mode_button(start_in_slide_mode_html=true)
+slide_mode_button(start_in_slide_mode_html=true, start_slide = 1)
 
 # ╔═╡ cbad79ce-fa05-4d39-a5bc-825a3bfa53b5
 slide_mode_title(
     title=html"""<span style="font-size:1em;">The Riemann–Lebesgue lemma</span><br><span style="font-size:0.7em;">or why marathoners running in circles end up evenly spread</span>""",
     author="David Métivier",
-    footnote=md"Made with [Pluto.jl](https://github.com/fonsp/Pluto.jl), [PlutoSlides.jl](https://github.com/dmetivie/PlutoSlides.jl), and [Makie.jl](https://docs.makie.org).",
+    footnote=md"Made with [Julia](https://julialang.org/), [Pluto.jl](https://github.com/fonsp/Pluto.jl), [PlutoSlides.jl](https://github.com/dmetivie/PlutoSlides.jl), and [Makie.jl](https://docs.makie.org).",
     color = "#9558B2", 
     figures=[
         Resource("https://www.science-accueil.org/wp-content/uploads/2021/11/Logo-INRAE_Transparent-1536x406.png", :width => 420),
@@ -203,10 +203,9 @@ $(pause())
 
 The kinetic density ``f`` itself never relaxes: it filaments in phase space and converges only weakly. 
 This *phase mixing* is the mechanism behind Landau damping (Mouhot & Villani, 2011) a damping without dissipation (energy is conserved).
-"""
 
-# ╔═╡ 52e8fe33-cbbc-4e18-b329-9ead4697692f
-mywebpage("https://link.springer.com/article/10.1007/s11511-011-0068-9")
+$(webpage("https://arxiv.org/pdf/0904.2760", ratio = "20%", offset = 65))
+"""
 
 # ╔═╡ cc942ad9-c709-4aa5-937e-1d86b809175e
 md"""
@@ -303,7 +302,8 @@ For each speed, the solution is a **traveling wave**: ``f(t, \theta, v) = f(0, \
 
 $(pause())
 
-… so does the crowd ``\rho(t, \theta) = \int f(t, \theta, v)\, \mathrm{d}v`` spread evenly around the track? And **how fast**?
+1. What does happen to ``f(t, \theta, v)`` ? 
+2. Does the crowd ``\rho(t, \theta) = \int f(t, \theta, v)\, \mathrm{d}v`` spread evenly around the track? And **how fast**?
 """
 
 # ╔═╡ 6290e61b-ce0b-44f3-87f7-9ccdea719151
@@ -530,7 +530,7 @@ WGLMakie = "276b4fcb-3e11-5398-bf8b-a0c2d153d008"
 CairoMakie = "~0.15.15"
 Distributions = "~0.25.131"
 LaTeXStrings = "~1.4.1"
-PlutoSlides = "~0.3.1"
+PlutoSlides = "~0.3.3"
 PlutoUI = "~0.7.83"
 WGLMakie = "~0.13.15"
 """
@@ -541,7 +541,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.13.1"
 manifest_format = "2.1"
-project_hash = "dfb9ed35effe715b0bf6f954fe19419abdfd55e4"
+project_hash = "0b07173a3cd9b77244c25234b011420c35cc1193"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -1825,10 +1825,10 @@ version = "1.5.0"
 
 [[deps.PlutoSlides]]
 deps = ["Base64", "HypertextLiteral", "MIMEs", "PlutoUI", "Printf"]
-git-tree-sha1 = "10d7ebd3f0f92b132991ed0da16b4c88f10175c8"
+git-tree-sha1 = "efb94c8e9a22bed19adbbf44e929ad4740aa66e7"
 registries = "dev_pkg"
 uuid = "ccaada3e-fbb3-407e-96e9-78c3ad6e4026"
-version = "0.3.1"
+version = "0.3.3"
 
 [[deps.PlutoUI]]
 deps = ["AbstractPlutoDingetjes", "Base64", "ColorTypes", "Dates", "Downloads", "FixedPointNumbers", "Hyperscript", "HypertextLiteral", "IOCapture", "InteractiveUtils", "Logging", "MIMEs", "Markdown", "Random", "Reexport", "URIs", "UUIDs"]
@@ -2567,7 +2567,6 @@ uuid = "6e172099-2da4-46e7-8c3f-eb5f14eb67c6"
 # ╟─a8bb6fc9-c225-449e-ad6c-54304bb735ea
 # ╟─d8e9ca61-ef3c-4844-82b7-ff462326f54c
 # ╟─96d5975c-7465-4017-aedb-eea994e05e7a
-# ╠═52e8fe33-cbbc-4e18-b329-9ead4697692f
 # ╟─cc942ad9-c709-4aa5-937e-1d86b809175e
 # ╟─83713237-5973-4c51-853a-876654cf193b
 # ╟─eddaeb02-5570-4a51-8737-14bfb08686dd

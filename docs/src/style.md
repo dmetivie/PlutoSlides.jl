@@ -7,8 +7,6 @@ CurrentModule = PlutoSlides
 Everything on this page is a keyword of [`slide_mode_settings`](@ref). The style also
 applies to the notebook outside slide mode, so what you edit looks like what you present.
 
-To see these options on a real deck, see [Try it!](@ref).
-
 ## Layout and fonts
 
 ```julia
