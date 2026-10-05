@@ -1,0 +1,9 @@
+[deps]
+PlutoSlides = "ccaada3e-fbb3-407e-96e9-78c3ad6e4026"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[sources]
+PlutoSlides = {path = ".."}
+
+[compat]
+Test = "1"

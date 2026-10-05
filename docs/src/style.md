@@ -50,7 +50,8 @@ sets.
 | block | `:Rochester`, `:Frankfurt` | no headline, one solid band for the frame title |
 | dark | `:Dracula`, `:Dark` | dark slide surface with light text |
 
-`theme` also accepts a `NamedTuple` or `Dict` of keywords, as a reusable custom theme:
+`theme` also accepts a `NamedTuple` or `Dict` of any keywords, as a reusable custom theme;
+an unknown key errors instead of being ignored:
 
 ```julia
 my_theme = (color_subtitle_bg="#0F766E", band_radius="12px", band_shadow="none")
@@ -64,14 +65,16 @@ slide_mode_settings(theme=my_theme)
 ## Colors
 
 Setting the structural color `color_subtitle_bg` is usually enough. The other bands derive
-from it by mixing with black ([`mix_black`](@ref)), as in Beamer:
+from it by mixing with black ([`mix_black`](@ref)) or, for the pale block behind an
+`h3`, with white ([`mix_white`](@ref)), as in Beamer:
 
 | keyword | default |
 |:--|:--|
 | `color_subtitle_bg` | `"#3333B3"` |
 | `color_title_bg` (top-left band) | `mix_black(color_subtitle_bg, 0.5)` |
 | `color_title_right_bg`, `color_controls_bg`, `color_footer_right_bg` | `color_subtitle_bg` |
-| `color_footer_center_bg`, `color_h3_bg` | `mix_black(color_footer_right_bg, 0.25)` |
+| `color_footer_center_bg` | `mix_black(color_footer_right_bg, 0.25)` |
+| `color_h3_bg` | `mix_white(color_footer_right_bg, 0.85)` |
 | `color_footer_left_bg` | `mix_black(color_footer_right_bg, 0.5)` |
 | `color_band_text` | `"#ffffff"` |
 | `color_title_text`, `color_subtitle_text`, `color_footer_text` | `color_band_text` |
@@ -120,7 +123,7 @@ slide_mode_settings(
 | `logo_position` | an anchor, or CSS coordinates (see below); default `"top-right"` |
 | `logo_height` | height, e.g. `48` or `"3em"` |
 | `logo_opacity` | `0` to `1` |
-| `logo_offset_x`, `logo_offset_y` | move an anchored logo away from its corner |
+| `logo_offset_x`, `logo_offset_y` | move an anchored logo away from its edge; on `"top-center"`/`"bottom-center"`, `logo_offset_x` slides it along the band |
 
 The anchors are `"top-left"`, `"top-right"`, `"bottom-left"`, `"bottom-right"`,
 `"top-center"` and `"bottom-center"`. For anything else, give coordinates with the keys

@@ -284,15 +284,19 @@ body.slide-mode #slide-logo-layer {
     left: var(--ps-logo-x, 0.6em);
 }
 
+/* The centred anchors read --ps-logo-x as a shift along the band rather than a
+   distance from an edge: `left: 50%` is the anchor, the offset moves the logo
+   right (or left, negative) of it. Without the calc the variable was simply
+   ignored here, so logo_offset_x silently did nothing on these two. */
 .ps-logo.pos-top-center {
     top: var(--ps-logo-y, 0.4em);
-    left: 50%;
+    left: calc(50% + var(--ps-logo-x, 0px));
     transform: translateX(-50%);
 }
 
 .ps-logo.pos-bottom-center {
     bottom: var(--ps-logo-y, 2.4em);
-    left: 50%;
+    left: calc(50% + var(--ps-logo-x, 0px));
     transform: translateX(-50%);
 }
 

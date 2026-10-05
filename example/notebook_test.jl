@@ -87,6 +87,11 @@ md"""
 Max Width  $(@bind max_width PlutoUI.Slider(70:100, default=98, show_value=true))%
 """
 
+# ╔═╡ 83c6c2d1-2308-4950-a9ba-7aeeb44ce85d
+md"""
+`###` on its own slide $(@bind h3_title_mode CheckBox(default=true))
+"""
+
 # ╔═╡ 6f314bab-3738-47ea-919e-98ed049a38ac
 md"""
 !!! note "Riemann-Lebesgue lemma: Same theorem different fonts!"
@@ -103,9 +108,6 @@ md"""
 md"""
 ## Slide mode
 """
-
-# ╔═╡ 57b56690-aef9-4a0f-bc2c-c29fc9481872
-
 
 # ╔═╡ 620103da-14c3-43ba-8d9c-25722f18426c
 md"""
@@ -163,6 +165,29 @@ md"""
 # ╔═╡ 30c727be-321e-474d-a277-14c9221e1f62
 myWebPage("https://julialang.org/")
 
+# ╔═╡ 1afccc5a-88fe-450f-9463-ce6a0067a962
+md"""
+### Web page, cropped
+"""
+
+# ╔═╡ 55c54e19-6963-4aa4-87c2-6322b7678e26
+myWebPage("https://julialang.org/"; width="90%", ratio="45%", offset=90)
+
+# ╔═╡ b408e5f7-d6bf-41a2-bc7e-1229972f1668
+md"""
+##
+"""
+
+# ╔═╡ 4831fde9-1f34-41ce-a96b-2940930e9fe5
+md"""
+###
+"""
+
+# ╔═╡ 91ffe4f8-38ab-43f4-982b-a03aa0dec236
+md"""
+Slide without title
+"""
+
 # ╔═╡ 33bcdc05-83ed-4071-bbe9-e93753de3b92
 md"""
 ## Pause feature
@@ -172,7 +197,7 @@ md"""
 md"""
 $(pause(3))
 
-When doing presentations,
+**When doing presentations,** (added with `💲(pause(3))`)
 
 $(pause(0))
 
@@ -187,66 +212,30 @@ $(pause(2))
 to highlight the chain of thoughts.
 """
 
-# ╔═╡ b19406af-c48c-4f39-9ae9-be79070b2d4a
+# ╔═╡ 36c05bb2-0787-4789-a209-26c455abf94b
 md"""
-# Example
+## A slide title long enough to wrap onto two lines in the band, so the content below it has to move down
 """
 
-# ╔═╡ 06b554bc-5b6f-49c4-8f45-90b5fee60d8b
+# ╔═╡ f80c5f57-f93f-4ba6-b106-10bec8631d08
 md"""
-## Image with pause
+The content keeps the same gap under the band, whatever the `font_size` and however many lines the title takes.
 """
 
-# ╔═╡ 4db8ab89-aa29-4b3a-94e6-bc24b84b732b
-Columns(
-    md"""
-    - **Extremes and risks:**  
-      impact on agriculture, health, energy...
-    - **Climate change:**  
-      changes in frequency, intensity,...
-
-    \
-
-    \
-
-    \
-
-    \
-
-    **Can we estimate (future) risks quantitatively?**
-    Examples:
-    - Large-scale extremes (heatwaves)     
-      or local (`RainMaker.jl` challenge 😉)
-    - Compound extremes e.g. high temperature + humidity
-    - Long-lasting events (e.g. droughts)
-    """,
-    md"""
-    $(Resource("https://i.imgur.com/bcO30aD.png", :width => "90%"))
-    """;
-    widths=[45, 55], gap=10
-)
-
-# ╔═╡ 6b23b3a9-fd43-4b80-92b7-c03e8f935e7a
-md"""$(pause()) ⟶ **Need** weather generators to estimate probabilities of rare events"""
-
-# ╔═╡ 4eb97dfc-5791-41a2-b898-a9b1e2af2ff4
+# ╔═╡ 2ab16d1e-8b4f-491e-85a4-d55d5575f73b
 md"""
-## Combining with PlutoTeachingTools.jl
+## Section split into sub-slides
 """
 
-# ╔═╡ 458dd18c-1cf5-4e90-92fa-d2b15a276d0f
-blockquote(
-    md"""
-    We are power **Matlab** users. Some of us are **Lisp** hackers. Some are **Pythonistas**, others **Rubyists**, still others **Perl** hackers. There are those of us who used **Mathematica** before we could grow facial hair. There are those who still can't grow facial hair. We've generated more **R** plots than any sane person should. **C** is our desert island programming language.
+# ╔═╡ 4228aacc-56e6-4d04-b019-aa9f5d6ca087
+md"""
+### First sub-slide
+"""
 
-    **We love all of these languages**; they are wonderful and powerful. For the work we do — **scientific computing, machine learning, data mining, large-scale linear algebra, distributed and parallel computing** — each one is perfect for some aspects of the work and terrible for others. **Each one is a trade-off**.
-
-    **We are greedy: we want more.**
-    """,
-    md"""
-    [Why we created Julia](https://julialang.org/blog/2012/02/why-we-created-julia/) -- Jeff Bezanson, Stefan Karpinski, Viral B. Shah, and Alan Edelman
-    """
-)
+# ╔═╡ f6c23f4d-da73-40af-9d9d-b225f9ce4ed5
+md"""
+A `##` whose next cell is a `###` shares this slide: no blank page in between.
+"""
 
 # ╔═╡ 38eaf5f1-c8f8-4371-8f12-7505eb7c1ace
 md"""
@@ -289,8 +278,8 @@ Font Family $(@bind font_family Select(COMMON_FONT_STACKS))
 
 # ╔═╡ ea9e8cfe-402d-4d9e-95b1-147615196a79
 PlutoSlides.slide_mode_settings(
-    footer_left="Authors", footer_center=md"PlutoSlides.jl", max_width=string(max_width, "%"), font_family=font_family, font_size=fontsize_html, h3_title=true,
-    pdf_aspect="a4", pdf_stretch=0.80,#1.0495,
+    footer_left="Authors", footer_center=md"PlutoSlides.jl", max_width=string(max_width, "%"), font_family=font_family, font_size=fontsize_html, h3_title=h3_title_mode,
+    pdf_aspect="a4", pdf_stretch=0.800,#1.0495,
     logo = [Resource("https://raw.githubusercontent.com/dmetivie/PlutoSlides.jl/master/assets/logo_pluto_slides.svg")],
     logo_position = [(bottom="3.5%", right="0.5%")],
     logo_height = ["50px"],
@@ -337,9 +326,6 @@ A = rand(n, 5)
 # ╔═╡ 795ef7d5-e187-4c38-938a-a08c9c354c30
 A*B
 
-# ╔═╡ f6efe2bb-afd9-4150-b4bb-b4c0e00fa9ef
-
-
 # ╔═╡ ec081723-d982-4a2a-937c-816f0979d422
 HiddenDocs(mod, name) = details(
 	@htl("Show docstring for <code>$name</code>"), 
@@ -375,7 +361,7 @@ CairoMakie = "~0.15.15"
 HypertextLiteral = "~1.0.0"
 MarkdownLiteral = "~0.1.5"
 PlutoLinks = "~0.1.8"
-PlutoSlides = "~0.3.0"
+PlutoSlides = "~0.3.1"
 PlutoTeachingTools = "~0.4.7"
 PlutoUI = "~0.7.83"
 """
@@ -386,7 +372,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.13.1"
 manifest_format = "2.1"
-project_hash = "ece213ef30a9f26962527d4f51f9ff3b9a7ba85c"
+project_hash = "5d930b20f02c15c11556e971bdb0e6ae343dc264"
 
 [[deps.AbstractFFTs]]
 deps = ["LinearAlgebra"]
@@ -1689,7 +1675,7 @@ version = "0.1.8"
 deps = ["Base64", "HypertextLiteral", "MIMEs", "PlutoUI", "Printf"]
 path = "C:\\Users\\metivier\\.julia\\dev\\PlutoSlides"
 uuid = "ccaada3e-fbb3-407e-96e9-78c3ad6e4026"
-version = "0.3.0"
+version = "0.3.1"
 
 [[deps.PlutoTeachingTools]]
 deps = ["Downloads", "HypertextLiteral", "Latexify", "Markdown", "PlutoUI"]
@@ -2393,9 +2379,9 @@ uuid = "23338594-aafe-5451-b93e-139f81909106"
 # ╟─7f62e6ef-edc0-42cd-971d-38b94d9635ee
 # ╟─7c4d1dd2-12bb-4905-94e5-916f6c73a9f8
 # ╟─82a9cdbc-ec90-4e19-8338-4d031b1dcc73
+# ╟─83c6c2d1-2308-4950-a9ba-7aeeb44ce85d
 # ╟─6f314bab-3738-47ea-919e-98ed049a38ac
 # ╟─6d981650-6ec6-4324-8c9c-ca0fd10e0401
-# ╟─57b56690-aef9-4a0f-bc2c-c29fc9481872
 # ╟─e737be8e-6980-44ed-aaa9-030477561837
 # ╟─620103da-14c3-43ba-8d9c-25722f18426c
 # ╠═b54106f9-1885-4ae5-8f35-46edc2718806
@@ -2418,18 +2404,21 @@ uuid = "23338594-aafe-5451-b93e-139f81909106"
 # ╠═795ef7d5-e187-4c38-938a-a08c9c354c30
 # ╟─dad08817-7cce-47dc-bd3f-703b3d257470
 # ╠═30c727be-321e-474d-a277-14c9221e1f62
+# ╟─1afccc5a-88fe-450f-9463-ce6a0067a962
+# ╠═55c54e19-6963-4aa4-87c2-6322b7678e26
+# ╟─b408e5f7-d6bf-41a2-bc7e-1229972f1668
+# ╟─4831fde9-1f34-41ce-a96b-2940930e9fe5
+# ╟─91ffe4f8-38ab-43f4-982b-a03aa0dec236
 # ╟─33bcdc05-83ed-4071-bbe9-e93753de3b92
 # ╟─816aa436-b68a-4af9-8ebe-b825e3b9a7ca
-# ╟─b19406af-c48c-4f39-9ae9-be79070b2d4a
-# ╟─06b554bc-5b6f-49c4-8f45-90b5fee60d8b
-# ╟─4db8ab89-aa29-4b3a-94e6-bc24b84b732b
-# ╟─6b23b3a9-fd43-4b80-92b7-c03e8f935e7a
-# ╟─4eb97dfc-5791-41a2-b898-a9b1e2af2ff4
-# ╟─458dd18c-1cf5-4e90-92fa-d2b15a276d0f
+# ╟─36c05bb2-0787-4789-a209-26c455abf94b
+# ╟─f80c5f57-f93f-4ba6-b106-10bec8631d08
+# ╟─2ab16d1e-8b4f-491e-85a4-d55d5575f73b
+# ╟─4228aacc-56e6-4d04-b019-aa9f5d6ca087
+# ╟─f6c23f4d-da73-40af-9d9d-b225f9ce4ed5
 # ╟─38eaf5f1-c8f8-4371-8f12-7505eb7c1ace
 # ╠═756fe1d4-a59d-4a7d-98cd-8c375a547623
 # ╠═2ddc54a2-ea61-4372-a205-dc2a5d97a391
-# ╠═f6efe2bb-afd9-4150-b4bb-b4c0e00fa9ef
 # ╠═ec081723-d982-4a2a-937c-816f0979d422
 # ╠═ff29ed8f-1060-4b1d-a3ea-bba35ea55a75
 # ╟─00000000-0000-0000-0000-000000000001

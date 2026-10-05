@@ -45,6 +45,16 @@ CurrentModule = PlutoSlides
     Pluto has its own [presentation mode](https://plutojl.org/en/docs/presentation/).
     PlutoSlides is a separate, experimental take on it. A refresh (`F5`) sometimes helps.
 
+!!! warning "Written with LLM assistance"
+    I had no prior knowledge of JavaScript and only the basics of HTML and CSS, so most of
+    the JavaScript and CSS in PlutoSlides was written with the help of AI/LLM coding
+    assistants. In short: this package is very much vibe coded.
+
+    I did read the code and tried to understand it, but I cannot vouch for it the way I
+    would for Julia code. If you spot something wrong, please
+    [open an issue or a PR](https://github.com/dmetivie/PlutoSlides.jl/issues) — that is
+    exactly the kind of feedback this package needs.
+
 ## Installation
 
 PlutoSlides is not in the General registry yet. Either point the notebook environment to
@@ -115,6 +125,9 @@ Slides are cut at headings, like in Pluto's presentation mode:
 | `## Slide` | a new slide | the title band |
 | `### Sub-slide` | a new slide (unless `h3_title=false`) | a band under the `##` title |
 
+A `##` whose very next cell is a `###` shares that slide, so a section split into
+sub-slides does not open on a blank page.
+
 !!! warning "One heading per cell"
     A heading is only well detected when it is **alone** in its markdown cell:
     ```julia
@@ -163,12 +176,18 @@ Step 2
 
 ### Embedding web pages
 
-[`myWebPage`](@ref) shows a live web page in an `<iframe>`. `offset` crops the top of the
-page, for example to hide a site's navigation bar:
+[`webpage`](@ref) shows a live web page in an `<iframe>`. `offset` crops the top of the
+page, for example to hide a site's navigation bar; a negative one pushes the page down
+instead:
 
 ```julia
-myWebPage("https://julialang.org"; width="90%", ratio="45%", offset=80)
+webpage("https://julialang.org"; width="90%", ratio="45%", offset=80)
 ```
+
+It is a rewrite of `ShortCodes.webpage` (see [Credits](@ref)) and keeps that name; the old
+spelling `myWebPage` still works but is deprecated.
+
+Embeds also print; see [PDF export](@ref) for the caveats.
 
 ## Next steps
 
@@ -177,3 +196,16 @@ myWebPage("https://julialang.org"; width="90%", ratio="45%", offset=80)
 - [PDF export](@ref): print the deck.
 - [Suggested workflow](@ref): editing and checking a deck efficiently.
 - [API](@ref): every function and keyword.
+
+## Credits
+
+- [PlutoReport.jl](https://github.com/DhruvaSambrani/PlutoReport.jl) by Dhruva Sambrani gave
+  the initial motivation. I used it before writing this package, and it is what convinced me
+  a Pluto notebook could be presented as a slideshow. PlutoSlides does not reuse its code and
+  does not go for the same look — the goal here was something closer to Beamer — but it very
+  likely would not exist otherwise.
+- [`webpage`](@ref) is a rewrite of `ShortCodes.webpage` from
+  [ShortCodes.jl](https://github.com/hellemo/ShortCodes.jl) (MIT, © 2020 Lars Hellemo), whose
+  name and one-call `<iframe>` short code it keeps. This version sizes the frame with a
+  responsive aspect-ratio box instead of fixed pixel `height`/`width`, and adds `offset` and
+  `center`.

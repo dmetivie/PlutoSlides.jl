@@ -189,15 +189,40 @@ function available_themes(; descriptions::Bool=false)
     return descriptions ? [t => get(THEME_DESCRIPTIONS, t, "") for t in names] : names
 end
 
+# The keywords a theme may set: exactly the keywords of `slide_mode_settings`,
+# read off the method itself so the two cannot drift apart. Computed on first
+# use rather than at load time, since this file is included before the function
+# it describes, and cached because every keyword default resolves its theme.
+const _SETTINGS_KEYWORDS = Ref{Vector{Symbol}}(Symbol[])
+function _settings_keywords()
+    if isempty(_SETTINGS_KEYWORDS[])
+        kws = reduce(vcat, Base.kwarg_decl.(methods(slide_mode_settings)); init=Symbol[])
+        _SETTINGS_KEYWORDS[] = sort!(unique!(filter(!=(:theme), kws)))
+    end
+    return _SETTINGS_KEYWORDS[]
+end
+
+# A key a theme sets but no keyword reads is silently dropped, which turns a
+# typo -- or a reasonable-looking `(max_width = "1200px",)` -- into a theme that
+# quietly does nothing. Say so instead.
+function _check_theme_keys(nt::NamedTuple)
+    allowed = _settings_keywords()
+    unknown = filter(k -> !(k in allowed), collect(keys(nt)))
+    isempty(unknown) && return nt
+    throw(ArgumentError(
+        "Unknown theme key(s): $(join(repr.(unknown), ", ")). A theme may set any keyword of " *
+        "slide_mode_settings: $(join(allowed, ", "))."))
+end
+
 # Resolve a theme spec to a NamedTuple of overrides (or an empty NamedTuple).
 # `theme` may be `nothing`, a `Symbol`, a `String`, or a `NamedTuple`/`Dict`
 # (allowing fully custom inline themes).
 function _resolve_theme(theme)
     isnothing(theme) && return (;)
     if theme isa NamedTuple
-        return theme
+        return _check_theme_keys(theme)
     elseif theme isa AbstractDict
-        return NamedTuple(Symbol(k) => v for (k, v) in theme)
+        return _check_theme_keys(NamedTuple(Symbol(k) => v for (k, v) in theme))
     else
         key = theme isa Symbol ? theme : Symbol(theme)
         haskey(THEMES, key) || throw(ArgumentError(

@@ -12,5 +12,6 @@ pause
 myWebPage
 available_themes
 mix_black
+mix_white
 PlutoUI.LocalResource(::AbstractString, ::AbstractString, ::Pair...)
 ```

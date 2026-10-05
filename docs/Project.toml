@@ -6,3 +6,8 @@ PlutoSlides = "ccaada3e-fbb3-407e-96e9-78c3ad6e4026"
 
 [sources]
 PlutoSlides = {path = ".."}
+
+[compat]
+Documenter = "1"
+DocumenterCodeBlocks = "1"
+DocumenterLandingPage = "0.2"

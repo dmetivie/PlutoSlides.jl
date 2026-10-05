@@ -25,7 +25,9 @@ Install the PlutoSlides style and scripts in the notebook. Call it once, in its 
 **PDF export**
 - `pdf_aspect="a4"`: printed slide shape (width/height): a number, `"16:9"`, `(297, 210)`,
   `"a4"`, `"letter"` or `"screen"` (the browser window's ratio).
-- `pdf_stretch=0.8`: multiplier on the printed slide height only.
+- `pdf_stretch=0.8`: multiplier on the printed slide height only. A printed slide is never
+  shorter than the live one, whatever these two work out to: it is laid out at the window's
+  width, so a shorter page would cut its bottom off rather than scale it down.
 
 **Logos** (slide mode only)
 - `logo`: one item or a vector: URL/path `String`, `Resource`, `LocalResource`, `md"..."`, HTML...
@@ -39,24 +41,30 @@ Install the PlutoSlides style and scripts in the notebook. Call it once, in its 
 `color_title_bg`, `color_title_right_bg`, `color_controls_bg`, `color_footer_left_bg`,
 `color_footer_center_bg`, `color_footer_right_bg`, `color_h1`, `color_h3`, `color_h3_border`,
 `color_h3_bg`, `color_title_text`, `color_subtitle_text`, `color_footer_text`,
-`color_page_bg`, `color_text`. Unset ones derive from `color_subtitle_bg` via [`mix_black`](@ref).
+`color_page_bg`, `color_text`. Unset ones derive from `color_subtitle_bg` via [`mix_black`](@ref)
+(and, for `color_h3_bg`, [`mix_white`](@ref)).
 
 **Band style**: `band_overlay` (CSS gradient over every band), `band_radius`, `band_shadow`,
 `subtitle_border`, `footer_border`, `subtitle_align` (`"left"`/`"center"`),
 `show_title_band=true`.
 
-# Examples
+**Examples**
 ```julia
 slide_mode_settings(footer_left="Jane Doe", footer_center=md"My talk")
 slide_mode_settings(theme=:Warsaw, band_radius="10px", band_shadow="none")
 slide_mode_settings(logo=["uni.png", "lab.svg"], logo_position=["top-right", "bottom-left"])
 ```
 """
-function slide_mode_settings(; theme=nothing, h3_title=true, footer_left=" ", footer_center="", max_width="98%",
-    pdf_aspect="a4", pdf_stretch=0.8,
+function slide_mode_settings(; theme=nothing,
+    h3_title::Bool=_theme_get(theme, :h3_title, true),
+    footer_left=_theme_get(theme, :footer_left, " "),
+    footer_center=_theme_get(theme, :footer_center, ""),
+    max_width=_theme_get(theme, :max_width, "98%"),
+    pdf_aspect=_theme_get(theme, :pdf_aspect, "a4"), pdf_stretch=_theme_get(theme, :pdf_stretch, 0.8),
     font_family=_theme_get(theme, :font_family, nothing), font_size=_theme_get(theme, :font_size, 19),
-    logo=nothing, logo_position="top-right", logo_height=nothing, logo_opacity=nothing,
-    logo_offset_x=nothing, logo_offset_y=nothing,
+    logo=_theme_get(theme, :logo, nothing), logo_position=_theme_get(theme, :logo_position, "top-right"),
+    logo_height=_theme_get(theme, :logo_height, nothing), logo_opacity=_theme_get(theme, :logo_opacity, nothing),
+    logo_offset_x=_theme_get(theme, :logo_offset_x, nothing), logo_offset_y=_theme_get(theme, :logo_offset_y, nothing),
     color_subtitle_bg=_theme_get(theme, :color_subtitle_bg, "#3333B3"),
     color_band_text=_theme_get(theme, :color_band_text, "#ffffff"),
     color_title_bg=_theme_get(theme, :color_title_bg, mix_black(color_subtitle_bg, 0.50)),
@@ -67,7 +75,10 @@ function slide_mode_settings(; theme=nothing, h3_title=true, footer_left=" ", fo
     color_footer_left_bg=_theme_get(theme, :color_footer_left_bg, mix_black(color_footer_right_bg, 0.50)),
     color_h1=_theme_get(theme, :color_h1, "#000000"), color_h3=_theme_get(theme, :color_h3, "#333333"),
     color_h3_border=_theme_get(theme, :color_h3_border, color_subtitle_bg),
-    color_h3_bg=_theme_get(theme, :color_h3_bg, mix_black(color_footer_right_bg, 0.25)),
+    # A pale tint of the palette, not a darkened one: `color_h3` is dark text
+    # (#333333 by default), so darkening an already dark band color put dark on
+    # dark. Matches the light fallback the same rule carries in css/slidecss.css.
+    color_h3_bg=_theme_get(theme, :color_h3_bg, mix_white(color_footer_right_bg, 0.85)),
     color_title_text=_theme_get(theme, :color_title_text, color_band_text),
     color_subtitle_text=_theme_get(theme, :color_subtitle_text, color_band_text),
     color_footer_text=_theme_get(theme, :color_footer_text, color_band_text),
@@ -129,7 +140,7 @@ function slide_mode_settings(; theme=nothing, h3_title=true, footer_left=" ", fo
         --ps-color-h3: $(color_h3);
         --ps-color-h3-border: $(color_h3_border);
         --ps-color-h3-bg: $(color_h3_bg);
-$(theme_vars)    }
+$(isnothing(font_family) ? "" : "        --ps-font-family: $(font_family);\n")$(theme_vars)    }
     $(isnothing(font_family) ? "" : "body, main, .markdown, pluto-output, html, h1, h2, h3, h4, h5, h6, #slide-footer-band, .my-title-slide { font-family: $(font_family) !important; }")
     $(isnothing(font_size) ? "" : "body, main, .markdown, pluto-output, html { font-size: $(font_size)px; }")
     """
@@ -201,9 +212,14 @@ const PDF_ASPECTS = Dict{String,Union{Nothing,Float64}}(
 )
 
 # Normalize `pdf_aspect` to a width/height number, or `nothing` for "follow the browser
-# window" (the default, and the only value that reproduces the live slide exactly).
+# window" -- the only value that reproduces the live slide exactly, and what
+# `pdf_aspect="screen"` asks for. (The default is "a4".)
 _pdf_aspect(::Nothing) = nothing
 _pdf_aspect(x::Tuple{Real,Real}) = _pdf_aspect(x[1] / x[2])
+
+# `Bool <: Real`, and `pdf_aspect=true` meaning "a square slide" helps nobody.
+_pdf_aspect(x::Bool) = throw(ArgumentError(
+    "pdf_aspect must be a ratio, a \"w:h\" string, a (w, h) tuple or a page name, got $(x)."))
 
 function _pdf_aspect(x::Real)
     isfinite(x) && x > 0 || throw(ArgumentError("pdf_aspect must be a positive ratio, got $(x)."))
@@ -391,18 +407,28 @@ function slide_mode_button(; start_in_slide_mode_html=false, start_in_slide_mode
     """)
 end
 
+# `webpage` is a rewrite of `ShortCodes.webpage` from ShortCodes.jl
+# (MIT, Copyright (c) 2020 Lars Hellemo), whose name and one-call `<iframe>` short code
+# it keeps: https://github.com/hellemo/ShortCodes.jl/blob/main/src/misc.jl
 """
-    myWebPage(url; width="75%", ratio="50%", title="", offset=0, center=true)
+    webpage(url; width="75%", ratio="50%", title="", offset=0, center=true)
 
 Embed the web page at `url` in an `<iframe>`. `ratio` is the box height as a fraction of its
-width, `offset` crops that many px (or a CSS length) off the top of the page, and `center`
-centers it horizontally.
+width, `offset` crops that many px (or a CSS length) off the top of the page -- a negative
+`offset` instead pushes the page down, leaving a gap -- and `center` centers it horizontally.
+
+Named after `ShortCodes.webpage` from
+[ShortCodes.jl](https://github.com/hellemo/ShortCodes.jl) (MIT, (c) 2020 Lars Hellemo),
+which this rewrites: the frame is sized by a responsive aspect-ratio box instead of fixed
+pixel `height`/`width`, and `offset`/`center` are new.
 """
-function myWebPage(url::AbstractString; width="75%", ratio="50%", title="", offset=0, center=true)
+function webpage(url::AbstractString; width="75%", ratio="50%", title="", offset=0, center=true)
     # Normalize offset to a CSS length
-    offset_css = offset isa AbstractString ? offset : string(offset, "px")
-    # Use a negative value to shift content up by `offset`
-    neg_offset = startswith(offset_css, '-') ? offset_css : "-" * offset_css
+    offset_css = _css_len(offset)
+    # Scroll the page up by `offset`, i.e. crop that much off its top. Negating,
+    # not forcing a minus sign: a negative offset used to be stripped back to a
+    # positive one, so there was no way to shift the page down.
+    neg_offset = startswith(offset_css, '-') ? offset_css[2:end] : "-" * offset_css
     # Increase iframe height if offset is numeric to avoid cropping
     height_style = offset isa Real ? "calc(100% + $(abs(offset))px)" : "100%"
     # Center horizontally using left+transform, or align to left edge
@@ -427,6 +453,18 @@ function myWebPage(url::AbstractString; width="75%", ratio="50%", title="", offs
         </iframe> 
     </div>
     """
+end
+
+"""
+    myWebPage(url; kwargs...)
+
+Deprecated alias for [`webpage`](@ref).
+"""
+function myWebPage(url::AbstractString; kwargs...)
+    # `force=true`: Julia (and so Pluto) runs with `--depwarn=no` by default, which
+    # makes a plain `depwarn` silent -- exactly where the warning is needed.
+    Base.depwarn("`myWebPage` is deprecated, use `webpage` instead.", :myWebPage; force=true)
+    return webpage(url; kwargs...)
 end
 
 """
@@ -503,11 +541,6 @@ function slide_mode_title(; title=nothing,
     	flex: 1 1 calc(100% / $(nfigs) - 1em);
     	min-width: 140px;
     }
-    .credit {
-    	font-size: 0.9rem;
-    	color: #888;
-    	margin-top: 1em;
-    }
     .hidden-h1 { display: none; }
     </style>
     <h1 class="hidden-h1">$title</h1>
@@ -583,6 +616,6 @@ function pause(n::Integer)
     return @htl("<span class='pause-marker' data-fragment='$(n)' style='display:none;'></span>")
 end
 
-export slide_mode_title, slide_mode_button, slide_mode_settings, myWebPage, pause, available_themes
+export slide_mode_title, slide_mode_button, slide_mode_settings, webpage, myWebPage, pause, available_themes
 
 end
