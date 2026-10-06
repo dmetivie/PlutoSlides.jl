@@ -12,20 +12,25 @@ can change the code during the talk and everything that depends on it updates.
 | tool | how it works | interactivity during the talk |
 | :-- | :-- | :-- |
 | LaTeX Beamer, Typst | write, compile, present the PDF | none: static pages (at best a GIF or a video) |
-| PowerPoint | edit and present in the same app | animations and edits, but no code |
-| Quarto (reveal.js) | write, render to HTML, present | the code ran at render time; some widgets, but you cannot change and rerun code live |
-| Pluto's [presentation mode](https://plutojl.org/en/docs/presentation/) | the notebook, one section per slide | full, but a plain look: no title/subtitle bands, footer or slide numbers, no pauses, no PDF export, and harder to present from an HTML export |
-| PlutoSlides | the Pluto notebook *is* the deck | full: edit any cell, move a slider, and every slide using it updates; Beamer-like bands, footer and slide numbers, `pause`, PDF export, and an HTML export that presents as is |
+| PowerPoint | write and present the PPT or PDF | animations and edits, but no code |
+| Quarto (reveal.js) | write, compile, present the HTML | the code ran at render time; some widgets, but you cannot change and rerun code live |
+| Pluto's [presentation mode](https://plutojl.org/en/docs/presentation/) | write and present the notebook (live or HTML) | full, but a plain look: no title/subtitle bands, footer or slide numbers, no pauses, no PDF export |
+| PlutoSlides.jl | write and present the notebook (live, HTML or PDF) | full: edit any cell, move a slider, and every slide using it updates; Beamer-like bands, footer and slide numbers, `pause`, PDF export |
 
 Because Pluto is reactive, a slide can hold a live computation: change a parameter and
 the figures, numbers and text that depend on it update on every slide, while the deck
 keeps its Beamer-like layout.
 
 The package started because Pluto's own
-[presentation mode](https://plutojl.org/en/docs/presentation/) did not look like a usual
+[presentation's mode](https://plutojl.org/en/docs/presentation/) did not look like a usual
 Beamer deck, and changing it is not straightforward: it involves layout choices that
 depend on the screen ([see this discussion](https://github.com/fonsp/Pluto.jl/discussions/3226)).
 There is plenty of room for improvement: issues and PRs are welcome.
+
+!!! note
+    Pluto notebooks created for Pluto's presentation mode can be used almost as-is with `PlutoSlides.jl`. The only requirement is that `h1` (#), `h2` (##) and `h3` (###) titles are in separate markdown cells without any other content and adding `slide_mode_button(...)`, `slide_mode_settings(...)`, `title_slide(...)` and `pause()` where you want them. See [Style and themes](@ref) for the style keywords.
+
+    Regular Pluto notebooks can also be used with the same requirements with `PlutoSlides.jl`
 
 ## Edit the file, watch the notebook
 

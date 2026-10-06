@@ -90,7 +90,7 @@ slide_mode_button()
 ```
 
 Click **⧉ Slide Mode**, then move with the arrow keys or by clicking the left/right side
-of the screen. Or use the escape key to escape the slide mode. 
+of the screen. Or use the escape key to escape the slide mode.
 The HTML export of the notebook keeps the button, so a deck shared on
 [pluto.land](https://pluto.land/n/k1hq5qtm) can be presented from the browser.
 
@@ -100,7 +100,7 @@ By default a notebook opens as a notebook, and you enter slide mode with the but
 keywords of [`slide_mode_button`](@ref) open it directly in slide mode instead:
 
 | keyword | default | opens in slide mode... |
-|:--|:--|:--|
+| :-- | :-- | :-- |
 | `start_in_slide_mode_html` | `false` | the notebook's HTML export (a file, pluto.land, an `<iframe>`...) |
 | `start_in_slide_mode_notebook` | `false` | the notebook running in Pluto |
 
@@ -120,7 +120,7 @@ does not toggle it again, and the button still leaves and re-enters slide mode.
 Slides are cut at headings, like in Pluto's presentation mode:
 
 | heading | becomes | shown in |
-|:--|:--|:--|
+| :-- | :-- | :-- |
 | `# Section` | a section slide | the thin top band of the following slides |
 | `## Slide` | a new slide | the title band |
 | `### Sub-slide` | a new slide (unless `h3_title=false`) | a band under the `##` title |
@@ -184,20 +184,11 @@ instead:
 webpage("https://julialang.org"; width="90%", ratio="45%", offset=80)
 ```
 
-It is a rewrite of `ShortCodes.webpage` (see [Credits](@ref)) and keeps that name; the old
-spelling `myWebPage` still works but is deprecated.
+It is a rewrite of `ShortCodes.webpage` (see [Credits](@ref)) and keeps that name; the old spelling `myWebPage` still works but is deprecated.
 
 Embeds also print; see [PDF export](@ref) for the caveats.
 
 ## Credits
 
-- [PlutoReport.jl](https://github.com/DhruvaSambrani/PlutoReport.jl) by Dhruva Sambrani gave
-  the initial motivation. I used it before writing this package, and it is what convinced me
-  a Pluto notebook could be presented as a slideshow. PlutoSlides does not reuse its code and
-  does not go for the same look — the goal here was something closer to Beamer — but it very
-  likely would not exist otherwise.
-- [`webpage`](@ref) is a rewrite of `ShortCodes.webpage` from
-  [ShortCodes.jl](https://github.com/hellemo/ShortCodes.jl) (MIT, © 2020 Lars Hellemo), whose
-  name and one-call `<iframe>` short code it keeps. This version sizes the frame with a
-  responsive aspect-ratio box instead of fixed pixel `height`/`width`, and adds `offset` and
-  `center`.
+- [PlutoReport.jl](https://github.com/DhruvaSambrani/PlutoReport.jl) gave the initial motivation. I used it before writing this package.
+- [`webpage`](@ref) is a rewrite of `ShortCodes.webpage` from [ShortCodes.jl](https://github.com/hellemo/ShortCodes.jl), whose name and one-call `<iframe>` short code it keeps. This version sizes the frame with a responsive aspect-ratio box instead of fixed pixel `height`/`width`, and adds `offset` and `center`.

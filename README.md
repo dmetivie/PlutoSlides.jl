@@ -5,8 +5,8 @@
 [![Docs](https://img.shields.io/badge/docs-dev-blue.svg)](https://dmetivie.github.io/PlutoSlides.jl)
 
 Who doesn't love [Pluto.jl](https://plutojl.org/)? Coding, and seeing the results immediately thanks to reactivity...
-Who doesn't love a nicely formatted slideshow like Beamer or reveal.js used by Quarto?
-This package aims to combine the two! Gets Pluto with a slideshow format.
+Who doesn't do presentation with nicely formatted slideshow like Beamer, Quarto/reveal.js or others slideshows ?
+This package aims to combine the two! Gets Pluto with a slideshow format. Or the said the other way around: a slideshow with live code and results.
 
 ![Example](https://raw.githubusercontent.com/dmetivie/PlutoSlides.jl/master/assets/example.gif)
 
@@ -142,11 +142,6 @@ I was not completely satisfied by the look of the [presentation mode of Pluto](h
 Modifying this classic presentation mode is not completely straightforward, because it requires some choice, might depend on the size of your screen and so on ([see here](https://github.com/fonsp/Pluto.jl/discussions/3226)).
 However, I still wanted to try and end up creating this package in case you find it useful.
 There is a lot of room for improvement, and better ways to do things, so feel free to open an issue or a PR.
-
-## Credits
-
-- [PlutoReport.jl](https://github.com/DhruvaSambrani/PlutoReport.jl) gave the initial motivation. I used it before writing this package.
-- `webpage` is a rewrite of `ShortCodes.webpage` from [ShortCodes.jl](https://github.com/hellemo/ShortCodes.jl), whose name and one-call `<iframe>` short code it keeps. This version sizes the frame with a responsive aspect-ratio box instead of fixed pixel `height`/`width`, and adds `offset` and `center`.
 
 ## TODO
 
