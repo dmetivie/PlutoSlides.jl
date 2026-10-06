@@ -1,21 +1,22 @@
 name = "PlutoSlides"
 uuid = "ccaada3e-fbb3-407e-96e9-78c3ad6e4026"
+version = "0.3.3"
 authors = ["David Métivier <david.metivier@inrae.fr>"]
-version = "0.1.0"
+
+[workspace]
+projects = ["docs", "test"]
 
 [deps]
+Base64 = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
 HypertextLiteral = "ac1192a8-f4b3-4bfe-ba22-af5b92cd3ab2"
+MIMEs = "6c6e2e6c-3030-632d-7369-2d6c69616d65"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 
 [compat]
-HypertextLiteral = "0.9.5"
-PlutoUI = "0.7.71"
-Printf = "1.11.0"
-julia = "1.11"
-
-[extras]
-Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
-
-[targets]
-test = ["Test"]
+Base64 = "1"
+HypertextLiteral = "0.9, 1"
+MIMEs = "1"
+PlutoUI = "0.7"
+Printf = "1"
+julia = "1.12"

@@ -1,0 +1,17 @@
+/* Landing page colors: the dusk gradient of plutojl.org
+   (navy, steel blue, dusty pink, peach). */
+:root {
+    --landing-name-color: transparent;
+    /* Pink and peach slightly darker than Pluto's, to stay readable on white. */
+    --landing-name-background: linear-gradient(120deg, hsl(235, 19%, 16%), hsl(210, 37%, 40%) 35%, hsl(329, 27%, 56%) 70%, hsl(33, 74%, 58%));
+    --landing-glow: linear-gradient(-45deg, hsla(329, 27%, 64%, 0.5) 50%, hsla(33, 74%, 71%, 0.5) 50%);
+}
+
+/* Dark themes: drop the navy (invisible on a dark background) and lighten. */
+html.theme--documenter-dark,
+html.theme--catppuccin-frappe,
+html.theme--catppuccin-macchiato,
+html.theme--catppuccin-mocha {
+    --landing-name-background: linear-gradient(120deg, hsl(210, 45%, 65%), hsl(329, 40%, 72%) 50%, hsl(33, 74%, 71%));
+    --landing-glow: linear-gradient(-45deg, hsla(329, 27%, 64%, 0.5) 50%, hsla(33, 74%, 71%, 0.5) 50%);
+}

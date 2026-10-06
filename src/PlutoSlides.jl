@@ -3,66 +3,127 @@ module PlutoSlides
 using HypertextLiteral: @htl, @htl_str
 using PlutoUI
 using Printf
+import Base64
+import MIMEs
 include("colors.jl")
+include("themes.jl")
 
 """
-    slide_mode_settings(; h3_title=true, footer_left=" ", footer_center="", max_width="100%", font_family=nothing, font_size=nothing,
-    color_subtitle_bg="#3333B3", color_band_text="#ffffff",
-    color_title_bg=mix_black(color_subtitle_bg, 0.50), 
-    color_title_right_bg=color_subtitle_bg,
-    color_controls_bg=color_subtitle_bg,
-    color_footer_right_bg=color_subtitle_bg,
-    color_footer_center_bg=mix_black(color_footer_right_bg, 0.25),
-    color_footer_left_bg=mix_black(color_footer_right_bg, 0.50),
-    color_h1="#000000", color_h3="#333333", color_h3_border=color_subtitle_bg, color_h3_bg=mix_black(color_footer_right_bg, 0.25))
+    slide_mode_settings(; theme=nothing, footer_left=" ", footer_center="", kwargs...)
 
-Configure slide mode for PlutoSlides presentations.
+Install the PlutoSlides style and scripts in the notebook. Call it once, in its own cell.
 
-**Arguments**
-- `footer_left`: Text to display in the left footer section
-- `footer_center`: Text to display in the center footer section
-- `max_width`: Maximum width of the notebook content (default: "100%")
-- `font_family`: Optional CSS font-family stack to use everywhere (e.g., "'Fira Sans', Helvetica, Arial, sans-serif")
-- `font_size`: Optional base font size in pixels; affects rem/em-based sizing (e.g., 16, 18, 20)
-- `color_*`: Palette colors for bands and headings. By default, the footer center and left colors are derived from the right color using Beamer-like mixes with black:
-    - center = mix_black(right, 0.25)
-    - left   = mix_black(right, 0.50)
+**General**
+- `theme`: a built-in theme name (see [`available_themes`](@ref)) or a `NamedTuple`/`Dict`
+  of keyword overrides. Explicit keywords always win over the theme.
+- `footer_left`, `footer_center`: footer contents.
+- `h3_title=true`: give `###` headings their own slide.
+- `max_width="98%"`: maximum width of the notebook content.
+- `font_family=nothing`: CSS font-family stack applied everywhere.
+- `font_size=19`: base font size in px (everything scales with it); `nothing` keeps Pluto's.
+
+**PDF export**
+- `pdf_aspect="a4"`: printed slide shape (width/height): a number, `"16:9"`, `(297, 210)`,
+  `"a4"`, `"letter"` or `"screen"` (the browser window's ratio).
+- `pdf_stretch=0.8`: multiplier on the printed slide height only. A printed slide is never
+  shorter than the live one, whatever these two work out to: it is laid out at the window's
+  width, so a shorter page would cut its bottom off rather than scale it down.
+
+**Logos** (slide mode only)
+- `logo`: one item or a vector: URL/path `String`, `Resource`, `LocalResource`, `md"..."`, HTML...
+- `logo_position="top-right"`: `"top-left"`, `"top-right"`, `"bottom-left"`, `"bottom-right"`,
+  `"top-center"`, `"bottom-center"`, or manual coordinates `(top="15%", left="4em")`
+  (keys `top`, `bottom`, `left`, `right`, `transform`; `(x, y)` means `(left=x, top=y)`).
+- `logo_height`, `logo_opacity`, `logo_offset_x`, `logo_offset_y`: scalar or one per logo.
+  Numbers are px. Offsets only apply to anchored logos.
+
+**Colors**: `color_subtitle_bg="#3333B3"` (structural color), `color_band_text`,
+`color_title_bg`, `color_title_right_bg`, `color_controls_bg`, `color_footer_left_bg`,
+`color_footer_center_bg`, `color_footer_right_bg`, `color_h1`, `color_h3`, `color_h3_border`,
+`color_h3_bg`, `color_title_text`, `color_subtitle_text`, `color_footer_text`,
+`color_page_bg`, `color_text`. Unset ones derive from `color_subtitle_bg` via [`mix_black`](@ref)
+(and, for `color_h3_bg`, [`mix_white`](@ref)).
+
+**Band style**: `band_overlay` (CSS gradient over every band), `band_radius`, `band_shadow`,
+`subtitle_border`, `footer_border`, `subtitle_align` (`"left"`/`"center"`),
+`show_title_band=true`.
 
 **Examples**
 ```julia
-# Basic usage (full width)
-slide_mode_settings(footer_left="My Presentation", footer_center="Conference 2025")
-
-# Custom width for wider screens
-slide_mode_settings(footer_left="My Presentation", footer_center="Conference 2025", max_width="1800px")
-
-# Narrow width for smaller screens or projectors
-slide_mode_settings(footer_left="My Presentation", footer_center="Conference 2025", max_width="1200px")
-
-# Set typography globally
-slide_mode_settings(footer_left="My Presentation", footer_center="Conference 2025", font_family="'Fira Sans', Helvetica, Arial, sans-serif", font_size=18)
-
-# Customize palette (set right; others derive automatically like Beamer)
-slide_mode_settings(color_footer_right_bg="#ff7f50")
+slide_mode_settings(footer_left="Jane Doe", footer_center=md"My talk")
+slide_mode_settings(theme=:Warsaw, band_radius="10px", band_shadow="none")
+slide_mode_settings(logo=["uni.png", "lab.svg"], logo_position=["top-right", "bottom-left"])
 ```
 """
-function slide_mode_settings(; h3_title=true, footer_left=" ", footer_center="", max_width="100%", font_family=nothing, font_size=nothing,
-    color_subtitle_bg="#3333B3", color_band_text="#ffffff",
-    color_title_bg=mix_black(color_subtitle_bg, 0.50), 
-    color_title_right_bg=color_subtitle_bg,
-    color_controls_bg=color_subtitle_bg,
-    color_footer_right_bg=color_subtitle_bg,
-    color_footer_center_bg=mix_black(color_footer_right_bg, 0.25),
-    color_footer_left_bg=mix_black(color_footer_right_bg, 0.50),
-    color_h1="#000000", color_h3="#333333", color_h3_border=color_subtitle_bg, color_h3_bg=mix_black(color_footer_right_bg, 0.25))
+function slide_mode_settings(; theme=nothing,
+    h3_title::Bool=_theme_get(theme, :h3_title, true),
+    footer_left=_theme_get(theme, :footer_left, " "),
+    footer_center=_theme_get(theme, :footer_center, ""),
+    max_width=_theme_get(theme, :max_width, "98%"),
+    pdf_aspect=_theme_get(theme, :pdf_aspect, "a4"), pdf_stretch=_theme_get(theme, :pdf_stretch, 0.8),
+    font_family=_theme_get(theme, :font_family, nothing), font_size=_theme_get(theme, :font_size, 19),
+    logo=_theme_get(theme, :logo, nothing), logo_position=_theme_get(theme, :logo_position, "top-right"),
+    logo_height=_theme_get(theme, :logo_height, nothing), logo_opacity=_theme_get(theme, :logo_opacity, nothing),
+    logo_offset_x=_theme_get(theme, :logo_offset_x, nothing), logo_offset_y=_theme_get(theme, :logo_offset_y, nothing),
+    color_subtitle_bg=_theme_get(theme, :color_subtitle_bg, "#3333B3"),
+    color_band_text=_theme_get(theme, :color_band_text, "#ffffff"),
+    color_title_bg=_theme_get(theme, :color_title_bg, mix_black(color_subtitle_bg, 0.50)),
+    color_title_right_bg=_theme_get(theme, :color_title_right_bg, color_subtitle_bg),
+    color_controls_bg=_theme_get(theme, :color_controls_bg, color_subtitle_bg),
+    color_footer_right_bg=_theme_get(theme, :color_footer_right_bg, color_subtitle_bg),
+    color_footer_center_bg=_theme_get(theme, :color_footer_center_bg, mix_black(color_footer_right_bg, 0.25)),
+    color_footer_left_bg=_theme_get(theme, :color_footer_left_bg, mix_black(color_footer_right_bg, 0.50)),
+    color_h1=_theme_get(theme, :color_h1, "#000000"), color_h3=_theme_get(theme, :color_h3, "#333333"),
+    color_h3_border=_theme_get(theme, :color_h3_border, color_subtitle_bg),
+    # A pale tint of the palette, not a darkened one: `color_h3` is dark text
+    # (#333333 by default), so darkening an already dark band color put dark on
+    # dark. Matches the light fallback the same rule carries in css/slidecss.css.
+    color_h3_bg=_theme_get(theme, :color_h3_bg, mix_white(color_footer_right_bg, 0.85)),
+    color_title_text=_theme_get(theme, :color_title_text, color_band_text),
+    color_subtitle_text=_theme_get(theme, :color_subtitle_text, color_band_text),
+    color_footer_text=_theme_get(theme, :color_footer_text, color_band_text),
+    color_page_bg=_theme_get(theme, :color_page_bg, nothing),
+    color_text=_theme_get(theme, :color_text, nothing),
+    band_overlay=_theme_get(theme, :band_overlay, nothing),
+    band_radius=_theme_get(theme, :band_radius, nothing),
+    band_shadow=_theme_get(theme, :band_shadow, nothing),
+    subtitle_align=_theme_get(theme, :subtitle_align, nothing),
+    subtitle_border=_theme_get(theme, :subtitle_border, nothing),
+    footer_border=_theme_get(theme, :footer_border, nothing),
+    show_title_band=_theme_get(theme, :show_title_band, true))
     css_code = read(joinpath(@__DIR__, "..", "css", "always.css"), String)
     css_code_slide = read(joinpath(@__DIR__, "..", "css", "slidecss.css"), String)
+    css_code_print = read(joinpath(@__DIR__, "..", "css", "print.css"), String)
     # Add custom max-width styling
     custom_width = """
     main {
         max-width: $(max_width) !important;
+        margin-left: 1%;
+        margin-right: 2% !important;
     }
     """
+
+    # Structural theme hooks (see src/themes.jl). Every rule that reads one of these
+    # in css/slidecss.css and css/print.css carries the historical value as its var()
+    # fallback, so a variable is only written out when it was actually asked for: a
+    # deck that names no theme gets exactly the CSS it got before themes could change
+    # anything but color.
+    _theme_var(name, value) = isnothing(value) ? "" : "        $(name): $(value);\n"
+    theme_vars = string(
+        _theme_var("--ps-color-title-text", color_title_text),
+        _theme_var("--ps-color-subtitle-text", color_subtitle_text),
+        _theme_var("--ps-color-footer-text", color_footer_text),
+        _theme_var("--ps-color-page-bg", color_page_bg),
+        _theme_var("--ps-band-overlay", band_overlay),
+        _theme_var("--ps-band-radius", band_radius),
+        # One keyword, both bands: they differ only in the depth of their default
+        # shadow, and a theme that sets the shadow at all means it for the pair.
+        _theme_var("--ps-title-shadow", band_shadow),
+        _theme_var("--ps-subtitle-shadow", band_shadow),
+        _theme_var("--ps-subtitle-align", subtitle_align),
+        _theme_var("--ps-subtitle-border", subtitle_border),
+        _theme_var("--ps-footer-border", footer_border),
+    )
 
     # Optional font overrides via CSS variables
     custom_fonts = """
@@ -79,53 +140,295 @@ function slide_mode_settings(; h3_title=true, footer_left=" ", footer_center="",
         --ps-color-h3: $(color_h3);
         --ps-color-h3-border: $(color_h3_border);
         --ps-color-h3-bg: $(color_h3_bg);
-    }
+$(isnothing(font_family) ? "" : "        --ps-font-family: $(font_family);\n")$(theme_vars)    }
     $(isnothing(font_family) ? "" : "body, main, .markdown, pluto-output, html, h1, h2, h3, h4, h5, h6, #slide-footer-band, .my-title-slide { font-family: $(font_family) !important; }")
     $(isnothing(font_size) ? "" : "body, main, .markdown, pluto-output, html { font-size: $(font_size)px; }")
     """
+
+    # Dropping the headline cannot go through a variable: which bands are shown is
+    # decided per slide in js/slidework.js, which writes `display` as an inline style
+    # (a title slide hides them), and only !important beats that.
+    hide_title_band = show_title_band ? "" : """
+    #slide-title-band, #slide-title-band-right,
+    .pdf-title-band, .pdf-title-band-right {
+        display: none !important;
+    }
+    """
+
+    # Dark themes repaint the slide surface. Scoped to slide mode -- which the PDF
+    # export turns on as well, so the printed pages match -- leaving the Pluto editor
+    # alone. h1 and h3 are left out on purpose: they have their own color keywords.
+    dark_surface = string(
+        isnothing(color_page_bg) ? "" : "body.slide-mode { background: $(color_page_bg) !important; }\n",
+        isnothing(color_text) ? "" : """
+    body.slide-mode pluto-output,
+    body.slide-mode pluto-output .markdown,
+    body.slide-mode pluto-output p,
+    body.slide-mode pluto-output li,
+    body.slide-mode pluto-output td,
+    body.slide-mode pluto-output th,
+    body.slide-mode pluto-output h2,
+    body.slide-mode pluto-output h4,
+    body.slide-mode pluto-output h5,
+    body.slide-mode pluto-output h6 {
+        color: $(color_text) !important;
+    }
+    """)
+
+    logo_block = _logo_block(; logo, logo_position, logo_height, logo_opacity, logo_offset_x, logo_offset_y)
+    aspect = _pdf_aspect(pdf_aspect)
+    stretch = _pdf_stretch(pdf_stretch)
 
     return @htl("""
      <div id="slide-config" 
           data-footer-left="$(footer_left)" 
           data-footer-center="$(footer_center)"
           data-h3-title="$(h3_title)" 
+          data-pdf-aspect="$(isnothing(aspect) ? "" : aspect)"
+          data-pdf-stretch="$(stretch)"
           style="display: none;"></div>
      <style>
      $(css_code_slide)
      $(css_code)
+     $(css_code_print)
      $(custom_width)
      $(custom_fonts)
+     $(hide_title_band)
+     $(dark_surface)
 
      </style>
-  $(PlutoUI.LocalResource(joinpath(@__DIR__, "..", "js", "slidework.js")))
+  $(logo_block)
+  $(_local_resource(joinpath(@__DIR__, "..", "js", "slidework.js")))
+  $(_local_resource(joinpath(@__DIR__, "..", "js", "print.js")))
      """)
 end
 
-function slide_mode_button()
+# Named page shapes for `pdf_aspect`, as width / height. Landscape, because the PDF
+# export asks the browser for landscape whenever a slide is wider than it is tall.
+const PDF_ASPECTS = Dict{String,Union{Nothing,Float64}}(
+    "screen" => nothing,
+    "a4" => 297 / 210,
+    "letter" => 11 / 8.5,
+)
+
+# Normalize `pdf_aspect` to a width/height number, or `nothing` for "follow the browser
+# window" -- the only value that reproduces the live slide exactly, and what
+# `pdf_aspect="screen"` asks for. (The default is "a4".)
+_pdf_aspect(::Nothing) = nothing
+_pdf_aspect(x::Tuple{Real,Real}) = _pdf_aspect(x[1] / x[2])
+
+# `Bool <: Real`, and `pdf_aspect=true` meaning "a square slide" helps nobody.
+_pdf_aspect(x::Bool) = throw(ArgumentError(
+    "pdf_aspect must be a ratio, a \"w:h\" string, a (w, h) tuple or a page name, got $(x)."))
+
+function _pdf_aspect(x::Real)
+    isfinite(x) && x > 0 || throw(ArgumentError("pdf_aspect must be a positive ratio, got $(x)."))
+    return float(x)
+end
+
+function _pdf_aspect(x::Union{Symbol,AbstractString})
+    s = lowercase(strip(String(x)))
+    haskey(PDF_ASPECTS, s) && return PDF_ASPECTS[s]
+    parts = split(s, r"[:/x]")
+    if length(parts) == 2
+        w, h = tryparse(Float64, parts[1]), tryparse(Float64, parts[2])
+        !isnothing(w) && !isnothing(h) && h > 0 && return _pdf_aspect(w / h)
+    end
+    throw(ArgumentError(
+        "Unknown pdf_aspect $(repr(String(x))). Use a number like 16/9, a ratio like " *
+        "\"16:9\", a tuple like (297, 210), or one of $(sort(collect(keys(PDF_ASPECTS))))."))
+end
+
+# Validate `pdf_stretch`: a multiplier on the printed slide's height, and on nothing
+# else -- the width has to stay put, since that is what fixes the content's scale.
+function _pdf_stretch(x::Real)
+    isfinite(x) && x > 0 || throw(ArgumentError("pdf_stretch must be a positive multiplier, got $(x)."))
+    return float(x)
+end
+
+# Normalize a value to a CSS length: numbers become pixels, everything else is
+# passed through unchanged (so "60px", "4em", "10%" all work).
+_css_len(x::Real) = string(x, "px")
+_css_len(x) = string(x)
+
+# Treat a single logo / option as a 1-element vector; pass arrays through.
+_as_vec(x) = x isa AbstractArray ? collect(x) : Any[x]
+
+# Recycle a scalar option to length `n` so per-logo options can also be given as
+# a single shared value.
+function _recycle(x, n)
+    v = _as_vec(x)
+    length(v) == n && return v
+    length(v) == 1 && return fill(v[1], n)
+    throw(ArgumentError("expected 1 or $n values, got $(length(v))"))
+end
+
+# Normalize one logo to content that actually renders.
+#
+# `PlutoUI.Resource` guesses its MIME type from the file *extension*, so a
+# perfectly good image URL without one (e.g. "https://example.org/logo", or a
+# CMS route that serves a PNG) falls back to an empty `<data>` element and the
+# logo silently disappears. To avoid that trap, plain strings and resources with
+# an unusable MIME type are rendered as a plain `<img>`; everything else
+# (Markdown, raw HTML, an inline `<svg>`, an `<iframe>`, ...) is passed through
+# untouched.
+_is_media_mime(m) = !isnothing(m) && any(p -> startswith(string(m), p), ("image/", "video/", "audio/"))
+
+_logo_content(x::AbstractString) = isfile(x) ? _logo_content(_local_resource(x)) : @htl("<img src=$(x)>")
+_logo_content(r::PlutoUI.Resource) = _is_media_mime(r.mime) ? r : @htl("<img src=$(r.src)>")
+_logo_content(x) = x
+
+# Predefined placement anchors; each has a matching `.ps-logo.pos-*` rule in
+# css/slidecss.css and is nudged by `logo_offset_x` / `logo_offset_y`.
+const LOGO_ANCHORS = ("top-right", "top-left", "bottom-right", "bottom-left",
+    "top-center", "bottom-center")
+
+# Resolve one `logo_position` entry into (css class, inline placement rules).
+#
+# A `String` picks one of `LOGO_ANCHORS`. A `NamedTuple` / `Dict` / `(x, y)` tuple
+# instead places the logo by hand: `top`, `bottom`, `left`, `right` and `transform`
+# are written straight into the element's style. Manual placement is absolute, so
+# `logo_offset_x` / `logo_offset_y` (which only nudge an anchor) no longer apply --
+# put the offset in the coordinate itself.
+function _logo_placement(p::AbstractString)
+    s = String(p)
+    s in LOGO_ANCHORS || throw(ArgumentError(
+        "Unknown logo_position $(repr(s)). Use one of $(LOGO_ANCHORS), or place the " *
+        "logo by hand with e.g. logo_position = (top = \"15%\", left = \"4em\")."))
+    return ("pos-$(s)", "")
+end
+
+function _logo_placement(p::Union{NamedTuple,AbstractDict})
+    allowed = (:top, :bottom, :left, :right, :transform)
+    rules = IOBuffer()
+    seen = Symbol[]
+    for (k, v) in pairs(p)
+        key = Symbol(k)
+        key in allowed || throw(ArgumentError(
+            "Unknown logo_position key $(repr(key)). Allowed keys: $(allowed)."))
+        isnothing(v) && continue
+        push!(seen, key)
+        print(rules, key, ":", key === :transform ? string(v) : _css_len(v), ";")
+    end
+    # Pin whichever axis the caller left out, so placement never falls back to the
+    # element's static position. Only one edge per axis is ever emitted: setting
+    # both `top` and `bottom` on a fixed-height box makes the browser drop one.
+    (:top in seen || :bottom in seen) || print(rules, "top:0;")
+    (:left in seen || :right in seen) || print(rules, "left:0;")
+    return ("pos-custom", String(take!(rules)))
+end
+
+# `(x, y)` shorthand for `(left = x, top = y)`.
+_logo_placement(p::Tuple{Any,Any}) = _logo_placement((left=p[1], top=p[2]))
+
+# Build the hidden logo holder. Each logo is arbitrary HTML-able content
+# (`Resource`, `LocalResource`, `md"..."`, raw HTML, ...). slidework.js relocates
+# these nodes into a fixed `#slide-logo-layer` that is only visible in slide mode.
+function _logo_block(; logo=nothing, logo_position="top-right", logo_height=nothing,
+    logo_opacity=nothing, logo_offset_x=nothing, logo_offset_y=nothing)
+    isnothing(logo) && return nothing
+    logos = _as_vec(logo)
+    n = length(logos)
+    pos = _recycle(logo_position, n)
+    hgt = _recycle(logo_height, n)
+    opa = _recycle(logo_opacity, n)
+    ox = _recycle(logo_offset_x, n)
+    oy = _recycle(logo_offset_y, n)
+    items = map(1:n) do i
+        cls, placement = _logo_placement(pos[i])
+        style = string(
+            placement,
+            isnothing(hgt[i]) ? "" : "--ps-logo-height:$(_css_len(hgt[i]));",
+            isnothing(opa[i]) ? "" : "--ps-logo-opacity:$(opa[i]);",
+            isnothing(ox[i]) ? "" : "--ps-logo-x:$(_css_len(ox[i]));",
+            isnothing(oy[i]) ? "" : "--ps-logo-y:$(_css_len(oy[i]));",
+        )
+        @htl("""<div class="ps-logo $(cls)" style="$(style)">$(_logo_content(logos[i]))</div>""")
+    end
+    return @htl("""<div id="slide-logo-source" style="display:none">$(items...)</div>""")
+end
+
+"""
+    slide_mode_button(; start_in_slide_mode_html=false, start_in_slide_mode_notebook=false, start_slide=0)
+
+A button that toggles slide mode on and off. Needs [`slide_mode_settings`](@ref) in the notebook.
+
+Set `start_in_slide_mode_html=true` to open the notebook's HTML export directly in slide
+mode, and `start_in_slide_mode_notebook=true` to do the same when it runs in Pluto.
+`start_slide` is the slide they open on, numbered as in the slide counter (`0` = first).
+"""
+function slide_mode_button(; start_in_slide_mode_html=false, start_in_slide_mode_notebook=false, start_slide=0)
+    start_slide isa Integer && start_slide >= 0 ||
+        throw(ArgumentError("start_slide must be a non-negative integer, got $(repr(start_slide))."))
     return @htl("""
-    <span>
-        <input id="toggle_slide_input" type="checkbox">
+    <span class="pluto-slides-toggle">
         <button>⧉ Slide Mode</button>
-        
+
         <script>
         const span = currentScript.parentElement
-        const checkbox = span.querySelector("input")
         const button = span.querySelector("button")
-        
+
+        // Drive the toggle through the stable global exposed by slidework.js.
+        // This handler is re-attached every time the cell renders, so the button
+        // keeps working even after the cell is re-executed (no F5 needed).
         button.addEventListener("click", () => {
-            checkbox.click()
+            const tryToggle = (tries) => {
+                if (window.PlutoSlides && typeof window.PlutoSlides.toggle === "function") {
+                    window.PlutoSlides.toggle()
+                } else if (tries > 0) {
+                    // slidework.js may still be loading; retry briefly.
+                    setTimeout(() => tryToggle(tries - 1), 50)
+                } else {
+                    // Last resort: notify whenever the script finishes loading.
+                    document.dispatchEvent(new CustomEvent("pluto-slides-toggle"))
+                }
+            }
+            tryToggle(20)
         })
+
+        // Optionally start in slide mode, once per page load (re-running this
+        // cell must not toggle again). Static HTML exports set `pluto_statefile`.
+        const is_export = Boolean(window.pluto_statefile)
+        const start = is_export ? $(start_in_slide_mode_html) : $(start_in_slide_mode_notebook)
+        if (start && !window.__plutoSlidesAutoStarted) {
+            window.__plutoSlidesAutoStarted = true
+            const tryStart = (tries) => {
+                if (typeof window.PlutoSlides?.startInSlideMode === "function") {
+                    window.PlutoSlides.startInSlideMode($(start_slide))
+                } else if (tries > 0) {
+                    // slidework.js comes with slide_mode_settings, which may render later.
+                    setTimeout(() => tryStart(tries - 1), 100)
+                }
+            }
+            tryStart(100)
+        }
         </script>
     </span>
     """)
 end
-function myWebPage(url::AbstractString; width="75%", ratio="55%", title="", offset=0)
+
+# `webpage` is a rewrite of `ShortCodes.webpage` from ShortCodes.jl
+# (MIT, Copyright (c) 2020 Lars Hellemo), whose name and one-call `<iframe>` short code
+# it keeps: https://github.com/hellemo/ShortCodes.jl/blob/main/src/misc.jl
+"""
+    webpage(url; width="75%", ratio="50%", title="", offset=0, center=true)
+
+Embed the web page at `url` in an `<iframe>`. `ratio` is the box height as a fraction of its
+width, `offset` crops that many px (or a CSS length) off the top of the page -- a negative
+`offset` instead pushes the page down, leaving a gap -- and `center` centers it horizontally.
+"""
+function webpage(url::AbstractString; width="75%", ratio="50%", title="", offset=0, center=true)
     # Normalize offset to a CSS length
-    offset_css = offset isa AbstractString ? offset : string(offset, "px")
-    # Use a negative value to shift content up by `offset`
-    neg_offset = startswith(offset_css, '-') ? offset_css : "-" * offset_css
+    offset_css = _css_len(offset)
+    # Scroll the page up by `offset`, i.e. crop that much off its top. Negating,
+    # not forcing a minus sign: a negative offset used to be stripped back to a
+    # positive one, so there was no way to shift the page down.
+    neg_offset = startswith(offset_css, '-') ? offset_css[2:end] : "-" * offset_css
     # Increase iframe height if offset is numeric to avoid cropping
     height_style = offset isa Real ? "calc(100% + $(abs(offset))px)" : "100%"
+    # Center horizontally using left+transform, or align to left edge
+    left_style = center ? "50%" : "0%"
+    transform_style = center ? "translateX(-50%)" : "none"
 
     return htl"""
     <div style="position: relative; padding-top: $(ratio); overflow: hidden;">
@@ -134,7 +437,8 @@ function myWebPage(url::AbstractString; width="75%", ratio="55%", title="", offs
             style="
                 position: absolute;
                 top: $(neg_offset);
-                left: 0%;
+                left: $(left_style);
+                transform: $(transform_style);
                 width: $(width);
                 height: $(height_style);
                 border: none;
@@ -147,34 +451,44 @@ function myWebPage(url::AbstractString; width="75%", ratio="55%", title="", offs
 end
 
 """
-    slide_mode_title(; title, author, figures, footnote=nothing)
+    myWebPage(url; kwargs...)
 
-Display a formatted title slide for a Pluto presentation.
+Deprecated alias for [`webpage`](@ref).
+"""
+function myWebPage(url::AbstractString; kwargs...)
+    # `force=true`: Julia (and so Pluto) runs with `--depwarn=no` by default, which
+    # makes a plain `depwarn` silent -- exactly where the warning is needed.
+    Base.depwarn("`myWebPage` is deprecated, use `webpage` instead.", :myWebPage; force=true)
+    return webpage(url; kwargs...)
+end
 
-# Arguments
-- `title`: String, HTML, Markdown, etc. content for the main title.
-- `author`: String, HTML, Markdown, etc. content for the author and affiliation.
-- `figures`: Array of `Resource` objects for logos or images.
-- `footnote`: Optional Markdown or HTML footnote.
+"""
+    slide_mode_title(; title=nothing, author=nothing, figures=nothing, footnote=nothing, color=nothing)
+
+A title slide. `title`, `author` and `footnote` accept any displayable content (`String`,
+`md"..."`, HTML...); `figures` is one item or a vector (e.g. `Resource`s) shown in a row.
+`color` sets the title band background (default: the theme's structural color).
 
 # Example
-slide_mode_title(
-    title=html"<b>My Presentation</b>",
-    author=html"<center>Jane Doe</center>",
-    figures=[Resource("logo.png", :width => 100)]
-)
+```julia
+slide_mode_title(title="My talk", author=md"Jane Doe -- *INRAE*",
+    figures=[Resource("https://example.org/logo.png", :width => 100)])
+```
 """
 function slide_mode_title(; title=nothing,
     author=nothing,
     footnote=nothing,
     figures=nothing,
-    color="#3333B3")
+    color=nothing)
     if isa(figures, AbstractArray)
         figs = [@htl("<div>$f</div>") for f in figures]
     else
         figs = isnothing(figures) ? nothing : [@htl("<div>$figures</div>")]
     end
     nfigs = isnothing(figs) ? 1 : max(length(figs), 1)
+    # Follow the palette installed by `slide_mode_settings` (and therefore the
+    # active theme) unless the caller pinned an explicit color.
+    band_color = isnothing(color) ? "var(--ps-color-subtitle-bg, #3333B3)" : color
     figures_block = isnothing(figs) ? nothing : @htl("<div class='figures'>$(figs...)</div>")
     author_block = isnothing(author) ? nothing : @htl("<div class='author'>$author</div>")
     footnote_block = isnothing(footnote) ? nothing : @htl("<div class='footnote'>$footnote</div>")
@@ -189,7 +503,7 @@ function slide_mode_title(; title=nothing,
     	padding: 2em;
     }
     .title-band {
-    	background-color: $(color);
+    	background-color: $(band_color);
     	color: var(--ps-color-band-text, white);
     	padding: 1em 2em;
     	font-size: 2rem;
@@ -222,11 +536,6 @@ function slide_mode_title(; title=nothing,
     	flex: 1 1 calc(100% / $(nfigs) - 1em);
     	min-width: 140px;
     }
-    .credit {
-    	font-size: 0.9rem;
-    	color: #888;
-    	margin-top: 1em;
-    }
     .hidden-h1 { display: none; }
     </style>
     <h1 class="hidden-h1">$title</h1>
@@ -239,17 +548,26 @@ function slide_mode_title(; title=nothing,
     """)
 end
 
+# Same as `PlutoUI.LocalResource(path, html_attributes...)`, except that the MIME type
+# is guessed from the file extension alone: PlutoUI parses the whole path as a URI,
+# which throws on any path containing a space (e.g. `C:\Users\Jane Doe\...`).
+function _local_resource(path::AbstractString, html_attributes::Pair...)
+    mime = MIMEs.mime_from_extension(lowercase(splitext(path)[2]), nothing)
+    src = "data:$(something(mime, ""));base64,$(Base64.base64encode(read(path)))"
+    return PlutoUI.Resource(src, mime, html_attributes)
+end
+
 """
-	PlutoUI.LocalResource(dir::AbstractString, path::AbstractString, html_attributes::Pair...)
-Search recursively for `path` inside directory `dir` (including all subdirectories) and return `PlutoUI.LocalResource(joinpath(found_dir, path))` for the first match.
-Throws an ArgumentError if not found.
-Remember that to share your notebook it is best to have online resources.
+    PlutoUI.LocalResource(dir, path, html_attributes::Pair...)
+
+`LocalResource` for the first file matching `path` found in `dir` or any of its
+subdirectories. Throws an `ArgumentError` if none is found.
 """
 function PlutoUI.LocalResource(dir::AbstractString, path::AbstractString, html_attributes::Pair...)
     # Quick direct check (path may already include subfolders)
     direct = joinpath(dir, path)
     if isfile(direct)
-        return PlutoUI.LocalResource(direct)
+        return _local_resource(direct, html_attributes...)
     end
 
     roots = String[]
@@ -264,42 +582,35 @@ function PlutoUI.LocalResource(dir::AbstractString, path::AbstractString, html_a
         throw(ArgumentError("File '$path' not found under directory '$dir'"))
     end
 
-    return PlutoUI.LocalResource(joinpath(roots[idx], path), html_attributes...)
+    return _local_resource(joinpath(roots[idx], path), html_attributes...)
 end
 
 """
     pause()
+    pause(n::Integer)
 
-Creates an invisible pause marker for incremental slide reveals.
-Use this between content elements in your Pluto cells to create step-by-step reveals.
+Invisible marker for step-by-step reveals: content after it appears on the next step, or
+from step `n` onwards (like Beamer's `\\pause[n]`). Experimental.
+
+# Example
+```julia
+md\"""
+Always visible
+
+\$(pause(1))
+
+Shown from step 1
+\"""
+```
 """
 function pause()
     return @htl("<span class='pause-marker' style='display:none;'></span>")
 end
 
-"""
-    pause(n::Integer)
-
-Creates an invisible numbered pause marker for incremental slide reveals.
-Mimics beamer's \\pause[n] behavior - content after this marker will be visible
-starting from fragment n.
-
-# Arguments
-- `n`: Fragment number (1-based) when this content should become visible
-
-# Example
-```julia
-md"First content is always visible"
-pause(2)
-md"This appears on fragment 2"
-pause(4) 
-md"This appears on fragment 4"
-```
-"""
 function pause(n::Integer)
     return @htl("<span class='pause-marker' data-fragment='$(n)' style='display:none;'></span>")
 end
 
-export slide_mode_title, slide_mode_button, slide_mode_settings, myWebPage, notebook_font_size, pause
+export slide_mode_title, slide_mode_button, slide_mode_settings, webpage, myWebPage, pause, available_themes
 
 end

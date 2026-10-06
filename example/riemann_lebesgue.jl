@@ -16,354 +16,523 @@ macro bind(def, element)
     #! format: on
 end
 
-# ╔═╡ beab077f-c8e2-47fa-a4c6-50e0b25f8aff
+# ╔═╡ e153e577-0ff7-4cd6-a728-c586e1c64937
 using PlutoUI
 
-# ╔═╡ 46eda44d-f80e-42d9-b935-6022136cdf02
-using PlutoLinks
+# ╔═╡ ed856626-3a67-4341-8060-c40564d2dbef
+using PlutoSlides
 
-# ╔═╡ 69e29989-1adb-4b06-b77b-5dd15997df2e
-using PlutoTeachingTools
-
-# ╔═╡ ffb95f3b-7c02-47c5-ab02-a59fe9019f05
-@revise using PlutoSlides
-
-# ╔═╡ 538e71c7-e425-466e-b004-5e4ed4bf026c
-using HypertextLiteral
-
-# ╔═╡ b54106f9-1885-4ae5-8f35-46edc2718806
+# ╔═╡ f5922967-97a1-475f-8052-fd5512b9755d
 using CairoMakie
 
-# ╔═╡ e719a33e-13f8-449e-a8f3-3f16c5ecbed0
-import MarkdownLiteral: @markdown
+# ╔═╡ 71f76fc0-8001-41fd-b044-d130a92029d9
+using LaTeXStrings
 
-# ╔═╡ 2aff06d6-cf3c-4bc9-bfdc-ca3f9e24ed09
-md"""
-Authors PlutoSlides.jl
-"""
+# ╔═╡ b878812c-5265-4c0c-8fb3-d1f49ec711a5
+using Distributions
 
-# ╔═╡ 19b05b91-1e11-43dd-ae84-5e064e7466d3
-slide_mode_button(start_in_slide_mode_html=true)
+# ╔═╡ 1b03a513-8dbe-4198-83ae-0110cb2fea7f
+import WGLMakie
 
-# ╔═╡ a8750d23-8b47-4314-970d-865673c82b21
-md"""
-# Features
-"""
+# ╔═╡ d1da20ec-2310-459d-ad22-96ecb428139c
+fontsize = 22
 
-# ╔═╡ a27a9dc4-58c1-4703-8e4a-f6e8eed6080a
-md"""
-## Appearance
-"""
+# ╔═╡ 484abb49-ace1-40c0-95b9-6bc286c5b828
+slide_mode_settings(footer_left="David Métivier", footer_center=md"The Riemann–Lebesgue lemma", font_size=fontsize, color_subtitle_bg = "#9558B2")
 
-# ╔═╡ 484dbfc7-a76f-4556-815a-ba647c593b21
-md"""
-Play with the appearance of your slides, themes, colors, fonts, logos, and more.
-"""
+# ╔═╡ d2d1585d-22fd-4152-9791-ddd9d5554a0b
+slide_mode_button(start_in_slide_mode_html=true, start_slide = 1)
 
-# ╔═╡ 350c3667-787f-4d4c-85fd-691c22e83e88
-md"""Choose your Pluto Slides color theme $(@bind main_color ColorStringPicker(default = "#3333B3")) override the theme color $(@bind custom_color CheckBox(default = false))"""
-
-# ╔═╡ 2fc6ee50-10ad-4356-a963-d646559231ae
+# ╔═╡ cbad79ce-fa05-4d39-a5bc-825a3bfa53b5
 slide_mode_title(
-    title="PlutoSlides.jl: the Pluto slideshow!",
+    title=html"""<span style="font-size:1em;">The Riemann–Lebesgue lemma</span><br><span style="font-size:0.7em;">or why marathoners running in circles end up evenly spread</span>""",
     author="David Métivier",
-	color = custom_color ? main_color : nothing,
-    footnote=md"[^Note]: This is not an official Pluto Project",
-    figures=[Resource("https://raw.githubusercontent.com/dmetivie/PlutoSlides.jl/refs/heads/master/assets/logo_pluto_slides.svg", :with => "100%")]
+    footnote=md"Made with [Julia](https://julialang.org/), [Pluto.jl](https://github.com/fonsp/Pluto.jl), [PlutoSlides.jl](https://github.com/dmetivie/PlutoSlides.jl), and [Makie.jl](https://docs.makie.org).",
+    color = "#9558B2", 
+    figures=[
+        Resource("https://www.science-accueil.org/wp-content/uploads/2021/11/Logo-INRAE_Transparent-1536x406.png", :width => 420),
+        Resource("http://davidmetivier.mistea.inrae.fr/pic/logo/logo-en-mistea-couleur.svg", :width => 300)
+    ],
 )
 
-# ╔═╡ d172b63a-e8b5-4e65-a776-5b445a9943c4
+# ╔═╡ fa100183-1b31-4546-9841-65d06496129d
 md"""
-Theme $(@bind theme_name Select([t => string(t,": ", d) for (t, d) in available_themes(; descriptions=true)], default = :Madrid))
+# The lemma
 """
 
-# ╔═╡ 7c4d1dd2-12bb-4905-94e5-916f6c73a9f8
+# ╔═╡ b930ec93-044a-415b-9e66-cf0a01f450ef
 md"""
-Font size $(@bind fontsize_html NumberField(1:100, default=19))
+## Statement
 """
 
-# ╔═╡ 82a9cdbc-ec90-4e19-8338-4d031b1dcc73
+# ╔═╡ ea71ecdd-f732-47d7-8d3d-f3db85d059a6
 md"""
-Max Width  $(@bind max_width PlutoUI.Slider(70:100, default=98, show_value=true))%
+!!! note "Lemma (Riemann–Lebesgue)"
+    Let ``f \in L^1(\mathbb{R})`` and define its Fourier transform
+    ```math
+    \hat f(\xi) = \int_{\mathbb{R}} f(x)\, e^{-i \xi x}\, \mathrm{d}x, \qquad \xi \in \mathbb{R}.
+    ```
+    Then ``\hat f`` is continuous and **vanishes at infinity**: ``\hat f(\xi) \to 0`` as ``|\xi| \to \infty``.
+
+$(pause())
+
+- Same statement on ``\mathbb{R}^n``, and on the circle: Fourier coefficients ``\hat f(k) \to 0`` as ``|k| \to \infty``.
+
+$(pause())
+
+- Intuition: against a fixed integrable ``f``, the fast oscillations ``e^{-i\xi x}`` **cancel out**.
+
+$(pause())
+
+- No rate in general: ``\hat f`` can go to ``0`` arbitrarily slowly. A **rate** needs **regularity** of ``f``.
 """
 
-# ╔═╡ 83c6c2d1-2308-4950-a9ba-7aeeb44ce85d
+# ╔═╡ 5cfec84f-ca82-4966-b0af-3afdff9306c4
 md"""
-`###` on its own slide $(@bind h3_title_mode CheckBox(default=true))
+## Intuition: Oscillations cancel out
 """
 
-# ╔═╡ 6f314bab-3738-47ea-919e-98ed049a38ac
+# ╔═╡ f30f52a3-fd4d-42ff-97b6-11e3dab09c42
 md"""
-!!! note "Riemann-Lebesgue lemma: Same theorem different fonts!"
-    Let ``f\in L^1(\mathbb{R}^n)`` be an integrable function, i.e. ``f\colon\mathbb{R}^n \rightarrow \mathbb{C}`` is a [measurable function](https://en.wikipedia.org/wiki/Measurable_function) such that
-    :``\|f\|_{L^1} = \int_{\mathbb{R}^n} |f(x)| \mathrm{d}x < \infty, ``
-    and let ``\hat{f}`` be the Fourier transform of ``f``, i.e.
-    :
-    ``\hat{f}\colon\mathbb{R}^n \rightarrow \mathbb{C}, \ \xi\mapsto \int_{\mathbb{R}^n} f(x) \mathrm{e}^{-\mathrm{i}x\cdot\xi}\mathrm{d}x.``
-
-    Then ``\hat{f}`` vanishes at infinity: ``|\hat{f}(\xi)| \to 0`` as `` |\xi| \to\infty ``.
+## Proof
 """
 
-# ╔═╡ 6d981650-6ec6-4324-8c9c-ca0fd10e0401
+# ╔═╡ b3769bce-3eea-4521-86c9-b05eb06a487f
 md"""
-## Slide mode
+**Step 1 — indicators.** For ``f = \mathbf{1}_{[a,b]}``,
+```math
+\hat f(\xi) = \int_a^b e^{-i\xi x}\,\mathrm{d}x = \frac{e^{-i\xi a} - e^{-i\xi b}}{i\xi},
+\qquad\text{so}\qquad
+|\hat f(\xi)| \le \frac{2}{|\xi|} \xrightarrow[|\xi|\to\infty]{} 0.
+```
+
+$(pause())
+
+**Step 2 — step functions.** By linearity, the same holds for every step function ``\varphi = \sum_{j=1}^m c_j \mathbf{1}_{[a_j, b_j]}``.
+
+$(pause())
+
+**Step 3 — density.** Step functions are dense in ``L^1(\mathbb{R})``: for ``\varepsilon > 0``, pick ``\varphi`` with ``\|f - \varphi\|_{L^1} < \varepsilon``. Since ``|\hat f(\xi) - \hat \varphi(\xi)| \le \|f - \varphi\|_{L^1}`` for every ``\xi``,
+```math
+\limsup_{|\xi| \to \infty} |\hat f(\xi)| \le \varepsilon + \lim_{|\xi|\to\infty} |\hat\varphi(\xi)| = \varepsilon.
+```
+As ``\varepsilon`` is arbitrary, ``\hat f(\xi) \to 0``. ``\blacksquare``
 """
 
-# ╔═╡ 620103da-14c3-43ba-8d9c-25722f18426c
+# ╔═╡ 62ad715c-c31a-44f2-b9be-329f7961186a
 md"""
-## Plotting
+### A one-line proof
 """
 
-# ╔═╡ c9a502d8-7856-46ca-bc47-5566c29908ed
+# ╔═╡ 49d43b6b-ab3d-43ff-9505-ea134bfdf01a
 md"""
-## Subsubtitles
+Shifting by half a period flips the sign of the wave, ``e^{-i\xi (x + \pi/\xi)} = -e^{-i\xi x}``, hence
+```math
+\hat f(\xi) = -\int_{\mathbb{R}} f\big(x + \tfrac{\pi}{\xi}\big)\, e^{-i\xi x}\,\mathrm{d}x
+\quad\Longrightarrow\quad
+|\hat f(\xi)| \le \frac12 \Big\| f - f\big(\cdot + \tfrac{\pi}{\xi}\big) \Big\|_{L^1} \xrightarrow[|\xi|\to\infty]{} 0
+```
+by continuity of translations in ``L^1``. ``\blacksquare``
+
+$(pause())
+
+**Bonus: a rate for free.** If ``f`` has [bounded variation](https://en.wikipedia.org/wiki/Total_variation), ``\|f - f(\cdot + h)\|_{L^1} \le |h|\, \mathrm{TV}(f)``, so
+```math
+|\hat f(\xi)| \le \frac{\pi\, \mathrm{TV}(f)}{2\,|\xi|}.
+```
 """
 
-# ╔═╡ 4cf38fc9-e6f8-45cd-a874-7afdf307f59a
+# ╔═╡ 20770594-03de-4076-bf84-155529040565
 md"""
-!!! warning
-	Currently, for correct display of titles, you need to write `h1`, `h2`, and `h3` titles in separate markdown cells without any other content.
-    See [Readme.md](https://github.com/dmetivie/PlutoSlides.jl/blob/52f94096e63040da44db79b8bca8e773eceb406e/README.md) for more details.
+## Regularity ⟹ decay
 """
 
-# ╔═╡ a12e0d99-3f30-4fd0-81b0-78153cf6ed4c
+# ╔═╡ c8d52c2c-a68c-4e95-8b0f-32d84fa7e63d
 md"""
-This `h2` slides can be divided into two `h3`!
+# Example: the marathon
 """
 
-# ╔═╡ e08a2697-bf8f-40b9-8fbe-50ff6544d4b7
-1+1
-
-# ╔═╡ 0ba7fe0b-3a5f-4a68-a13c-3f1bfabffb53
+# ╔═╡ 5f543e4c-ee29-4609-8b67-fbd1d33505ad
 md"""
-### Subsub title 1
+## The model
 """
 
-# ╔═╡ bcd56f3e-be12-478c-bc40-5d41de133a89
+# ╔═╡ 01d56b72-8d1a-4b85-a82f-b963ad25e3a4
 md"""
-The other matrix:
+## Let's race!
 """
 
-# ╔═╡ 38b39ef6-b0ac-4964-8262-d7c8afc3db01
-B = rand(5, 5)
-
-# ╔═╡ b27c5860-a6ec-4c74-bdb5-b7f2b605dbf4
+# ╔═╡ d38d5089-8720-4fcd-bc20-c1d9a3b5b5f9
 md"""
-### Subsub title 2
+$(pause())
+
+Uniform law: the slowest and fastest runners keep a **sharp edge** in ``\rho`` that only shrinks like ``1/t``. Gaussian law: ``\rho`` is flat within a few laps. Meanwhile ``g(v)``, the other marginal, never moves.
 """
 
-# ╔═╡ da8b64ed-3e26-4739-bc74-1a45e067da29
+# ╔═╡ a8bb6fc9-c225-449e-ad6c-54304bb735ea
 md"""
-Final matrix multiplication:
+## Mixing is Riemann–Lebesgue
 """
 
-# ╔═╡ dad08817-7cce-47dc-bd3f-703b3d257470
+# ╔═╡ d8e9ca61-ef3c-4844-82b7-ff462326f54c
 md"""
-### Other subsection with webpage
+```math
+\partial_t f + v\, \partial_\theta f = 0, \qquad f(0, \theta, v) = \delta_0(\theta)\, g(v),\qquad \rho(t, \theta) = \int f(t, \theta, v)\, \mathrm{d}v
+```
 """
 
-# ╔═╡ 30c727be-321e-474d-a277-14c9221e1f62
-webpage("https://julialang.org/")
-
-# ╔═╡ 1afccc5a-88fe-450f-9463-ce6a0067a962
+# ╔═╡ 96d5975c-7465-4017-aedb-eea994e05e7a
 md"""
-### Web page, cropped
+Fourier coefficients of the crowd on the circle:
+```math
+c_k(t) = \int_{\mathbb{T}} \rho(t, \theta)\, e^{-ik\theta}\, \mathrm{d}\theta
+= \mathbb{E}\big[e^{-ik v t}\big]
+= \int_{\mathbb{R}} g(v)\, e^{-i (k t) v}\, \mathrm{d}v
+= \hat g(k t).
+```
+
+$(pause())
+
+Hence ``\rho(t, \theta) = \frac{1}{2\pi}\Big(1 + \sum_{k \ne 0} \hat g(kt)\, e^{ik\theta}\Big)``, and by **Riemann–Lebesgue** every mode dies: ``\rho(t, \cdot) \rightharpoonup \frac{1}{2\pi}``. The crowd spreads out evenly.
+
+$(pause())
+
+**The mixing rate is the decay rate of ``\hat g``, i.e. the regularity of the speed distribution:** jump ``\Rightarrow t^{-1}``, discontinuous first derivative ``\Rightarrow t^{-2}``, …, Gaussian ``\Rightarrow e^{-\sigma^2 t^2/2}``.
+
+$(pause())
+
+The kinetic density ``f`` itself never relaxes: it filaments in phase space and converges only weakly. 
+This *phase mixing* is the mechanism behind Landau damping (Mouhot & Villani, 2011) a damping without dissipation (energy is conserved).
+
+$(webpage("https://arxiv.org/pdf/0904.2760", ratio = "20%", offset = 65))
 """
 
-# ╔═╡ 55c54e19-6963-4aa4-87c2-6322b7678e26
-webpage("https://julialang.org/"; width="90%", ratio="45%", offset=90)
-
-# ╔═╡ b408e5f7-d6bf-41a2-bc7e-1229972f1668
+# ╔═╡ cc942ad9-c709-4aa5-937e-1d86b809175e
 md"""
-##
+## How fast? Theory vs. the race
 """
 
-# ╔═╡ 4831fde9-1f34-41ce-a96b-2940930e9fe5
+# ╔═╡ e1d583a7-7ac3-4420-ba1a-207e0dfa90c3
 md"""
-###
+Solid: ``|\hat g(t)|``, exact (`cf` from Distributions.jl). Dashed: its asymptotic envelope ``C\, t^{-k}``. Black: ``\big|\frac1N \sum_j e^{i\theta_j(t)}\big|`` measured on the race above.
+
+$(pause())
+
+The race follows the theory until it hits the **noise floor** ``1/\sqrt{N}``: a finite crowd is never perfectly mixed.
 """
 
-# ╔═╡ 91ffe4f8-38ab-43f4-982b-a03aa0dec236
+# ╔═╡ 0b5298bf-4b9f-49d4-8a1e-a810e4000e54
 md"""
-Slide without title
+## Take-home message
 """
 
-# ╔═╡ 33bcdc05-83ed-4071-bbe9-e93753de3b92
+# ╔═╡ 1b058177-0002-426b-942e-15eb737e300e
 md"""
-## Pause feature
-"""
-
-# ╔═╡ 816aa436-b68a-4af9-8ebe-b825e3b9a7ca
-md"""
-$(pause(3))
-
-**When doing presentations,** (added with `💲(pause(3))`)
-
-$(pause(0))
-
-I like to present stuff,
+1. **Riemann–Lebesgue:** for ``f \in L^1``, ``\hat f(\xi) \to 0``. Oscillations cancel against integrable functions, but at no guaranteed rate.
 
 $(pause(1))
 
-with pauses,
+2. **Regularity ⟹ decay:** every derivative in ``L^1`` buys a factor ``|\xi|^{-1}``; analytic ``\Rightarrow`` exponential decay.
 
 $(pause(2))
 
-to highlight the chain of thoughts.
+3. **Marathon:** free transport moves each speed class as a traveling wave, yet the crowd mixes, with Fourier modes ``\hat g(kt)``. The smoother the speed distribution, the faster the mixing. This mechanism stabilizes plasma, this is the core of Landau damping!
+
+!!! note "Fun fact"
+    This mechanism is used in one of my work regarding [Power of Ensemble Diversity and Randomization for Energy Aggregation](https://www.nature.com/articles/s41598-019-41515-4) (Métivier et al., 2019, *Scientific Reports*). An ensemble of thermostatically controlled loads e.g. air conditioners turn on/off depending on the temperature. Their distribution actually help mixing them to stabilize the total energy of the ensemble.
+    $(Resource("https://media.springernature.com/full/springer-static/image/art%3A10.1038%2Fs41598-019-41515-4/MediaObjects/41598_2019_41515_Fig2_HTML.png", :width => 600))
+    $(Resource("https://media.springernature.com/full/springer-static/image/art%3A10.1038%2Fs41598-019-41515-4/MediaObjects/41598_2019_41515_Fig1_HTML.png", :width => 500))
 """
 
-# ╔═╡ 36c05bb2-0787-4789-a209-26c455abf94b
+# ╔═╡ f2bf9c55-0358-4832-8488-dfbc8c1582bb
 md"""
-## A slide title long enough to wrap onto two lines in the band, so the content below it has to move down
+# Appendix: code
 """
 
-# ╔═╡ f80c5f57-f93f-4ba6-b106-10bec8631d08
+# ╔═╡ e30d4588-ed33-4560-bc8c-7f9b9477a724
+spread = 0.5 # standard deviation of every speed law
+
+# ╔═╡ 4c19bcf2-711f-40f7-8c5c-bf831b4ab07d
 md"""
-The content keeps the same gap under the band, whatever the `font_size` and however many lines the title takes.
+Integrating by parts ``k`` times (if ``f, f', \dots, f^{(k)} \in L^1``):
+```math
+\widehat{f^{(k)}}(\xi) = (i\xi)^k\, \hat f(\xi)
+\quad\Longrightarrow\quad
+|\hat f(\xi)| = \frac{|\widehat{f^{(k)}}(\xi)|}{|\xi|^k} = o\big(|\xi|^{-k}\big)
+\quad \text{(Riemann–Lebesgue for } f^{(k)}\text{)}.
+```
+
+$(pause())
+
+A jump in ``f^{(k)}`` gives exactly ``|\hat f(\xi)| \asymp |\xi|^{-(k+1)}``. Our test densities, all with standard deviation $(spread):
+
+| ``g(x)`` on its support | regularity | decay of ``\hat g(\xi)`` |
+|:--- |:--- |:--- |
+| Uniform ``\propto 1`` | jump | ``\xi^{-1}`` |
+| Epanechnikov ``\propto 1 - x^2`` | ``C^0``, kink | ``\xi^{-2}`` |
+| Biweight ``\propto (1 - x^2)^2`` | ``C^1`` | ``\xi^{-3}`` |
+| Triweight ``\propto (1 - x^2)^3`` | ``C^2`` | ``\xi^{-4}`` |
+| Gaussian ``\propto e^{-x^2/2\sigma^2}`` | analytic | ``e^{-\sigma^2 \xi^2/2}`` |
+
+$(pause())
+
+*Fun fact:* ``(1-x^2)^k`` on ``[-1,1]`` is the density (up to a constant) of the median of ``2k+1`` independent uniform variables on ``[-1, 1]``.
 """
 
-# ╔═╡ 2ab16d1e-8b4f-491e-85a4-d55d5575f73b
+# ╔═╡ f2c17a53-99e2-4d57-a0cf-a8a8b66e4448
+mean_speed = 4.0 # in radians per unit time: one lap takes ≈ 1.6
+
+# ╔═╡ 68c70420-2c5b-4d3c-91e6-d7bb2355055c
 md"""
-## Section split into sub-slides
+``N`` runners on a circular track ``\mathbb{T} = \mathbb{R}/2\pi\mathbb{Z}``, all starting at ``\theta = 0``. Runner ``j`` keeps a constant speed ``v_j``, drawn independently from a density ``g`` (mean $(mean_speed), standard deviation $(spread)):
+```math
+\theta_j(t) = v_j\, t \mod 2\pi.
+```
+
+$(pause())
+
+**Kinetic view.** The density ``f(t, \theta, v)`` of runners at position ``\theta`` with speed ``v`` solves the free transport (advection) equation
+```math
+\partial_t f + v\, \partial_\theta f = 0, \qquad f(0, \theta, v) = \delta_0(\theta)\, g(v).
+```
+
+$(pause())
+
+For each speed, the solution is a **traveling wave**: ``f(t, \theta, v) = f(0, \theta - v t, v)``. Runners with the same speed stay together forever…
+
+$(pause())
+
+1. What does happen to ``f(t, \theta, v)`` ? 
+2. Does the crowd ``\rho(t, \theta) = \int f(t, \theta, v)\, \mathrm{d}v`` spread evenly around the track? And **how fast**?
 """
 
-# ╔═╡ 4228aacc-56e6-4d04-b019-aa9f5d6ca087
-md"""
-### First sub-slide
-"""
-
-# ╔═╡ f6c23f4d-da73-40af-9d9d-b225f9ce4ed5
-md"""
-A `##` whose next cell is a `###` shares this slide: no blank page in between.
-"""
-
-# ╔═╡ 38eaf5f1-c8f8-4371-8f12-7505eb7c1ace
-md"""
-# Stuff you wanna hide
-"""
-
-# ╔═╡ 756fe1d4-a59d-4a7d-98cd-8c375a547623
-const COMMON_FONT_STACKS = [
-    "Default",
-    # Sans-serif
-    "Computer Modern Sans",
-    "Computer Modern Sans, Fira Sans, Helvetica Neue, Arial, sans-serif",
-    "Fira Sans, Helvetica, Arial, sans-serif",
-    "Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji",
-    "Helvetica Neue, Helvetica, Arial, sans-serif",
-    "Arial, Helvetica, sans-serif",
-    "system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji",
-    "Open Sans, Helvetica Neue, Arial, sans-serif",
-    "Roboto, Helvetica Neue, Arial, sans-serif",
-    "Noto Sans, Arial, sans-serif",
-    "Source Sans Pro, Helvetica, Arial, sans-serif",
-
-    # Serif
-    "Georgia, Times New Roman, Times, serif",
-    "Times New Roman, Times, Georgia, serif",
-    "PT Serif, Georgia, Times New Roman, serif",
-    "Computer Modern, Latin Modern Roman, Times New Roman, serif",
-
-    # Monospace (for code blocks or UI)
-    "JuliaMono, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace",
-    "Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace",
-    "JetBrains Mono, Menlo, Consolas, monospace",
-    "Fira Code, Consolas, Menlo, monospace",
+# ╔═╡ 6290e61b-ce0b-44f3-87f7-9ccdea719151
+LAWS = [
+    (name="Uniform (jump)", tex=L"\text{Uniform (jump)}",
+        dist=Uniform(-sqrt(3) * spread, sqrt(3) * spread)),
+    (name="Epanechnikov (C⁰)", tex=L"\text{Epanechnikov } (C^0)",
+        dist=Epanechnikov(0.0, sqrt(5) * spread)),
+    (name="Biweight (C¹)", tex=L"\text{Biweight } (C^1)",
+        dist=Biweight(0.0, sqrt(7) * spread)),
+    (name="Triweight (C²)", tex=L"\text{Triweight } (C^2)",
+        dist=Triweight(0.0, 3 * spread)),
+    (name="Gaussian (analytic)", tex=L"\text{Gaussian (analytic)}",
+        dist=Normal(0.0, spread)),
 ]
 
-# ╔═╡ 7f62e6ef-edc0-42cd-971d-38b94d9635ee
+# ╔═╡ 72bcd85e-f28d-417f-966f-221a87929670
 md"""
-Font Family $(@bind font_family Select(COMMON_FONT_STACKS))
+Take for ``f`` a probability density ``g`` $(@bind demo_law Select([law.dist => law.name for law in LAWS])) ``\quad`` frequency ``\xi =`` $(@bind ξ PlutoUI.Slider(0:0.1:30; default=3.0, show_value=true))
 """
 
-# ╔═╡ ea9e8cfe-402d-4d9e-95b1-147615196a79
-PlutoSlides.slide_mode_settings(
-    footer_left="Authors", footer_center=md"PlutoSlides.jl", max_width=string(max_width, "%"), font_family=font_family, font_size=fontsize_html, h3_title=h3_title_mode,
-    pdf_aspect="a4", pdf_stretch=0.800,#1.0495,
-    logo = [Resource("https://raw.githubusercontent.com/dmetivie/PlutoSlides.jl/master/assets/logo_pluto_slides.svg")],
-    logo_position = [(bottom="3.5%", right="0.5%")],
-    logo_height = ["50px"],
-    theme=theme_name;
-    (custom_color ? (; color_subtitle_bg=main_color) : (;))...)
+# ╔═╡ 56cca026-5ef4-4a0c-bf22-37737fc19691
+begin
+    cancel_law = Observable{Any}(LAWS[1].dist)
+    cancel_ξ = Observable(3.0)
+    cancel_fig = with_theme(theme_latexfonts(), fontsize=fontsize) do
+        WGLMakie.activate!()
+        x = range(-2.2, 2.2; length=2000)
+        ξs = range(0, 30; length=1500)
+        g = @lift pdf.($cancel_law, x)
+        y = @lift $g .* cos.($cancel_ξ .* x)
+        ĝ = @lift real(cf($cancel_law, $cancel_ξ))
 
-# ╔═╡ 2ddc54a2-ea61-4372-a205-dc2a5d97a391
-aa = @bind n NumberField(2:1000, default = 100)
+        fig = Figure(size=(1200, 500))
+        ax1 = Axis(fig[1, 1]; xlabel=L"x", limits=(-2.2, 2.2, -0.85, 0.85),
+            title=@lift(latexstring(raw"\int g(x) \cos(\xi x) \, dx = \hat{g}(\xi) = ", round($ĝ; digits=3))))
+        band!(ax1, x, zeros(length(x)), @lift(max.($y, 0)); color=(:royalblue, 0.45))
+        band!(ax1, x, @lift(min.($y, 0)), zeros(length(x)); color=(:crimson, 0.45))
+        lines!(ax1, x, g; color=:black, linestyle=:dash)
+        lines!(ax1, x, @lift(-$g); color=:black, linestyle=:dash)
+        lines!(ax1, x, y; color=:black)
 
-# ╔═╡ 4076b62d-c325-4c3f-9f8c-67c313d1f7e7
-@markdown("""
-``n = `` $(aa)
-""")
-
-# ╔═╡ 4d3381a4-2e3b-458e-96ec-c70febb2a019
-x = range(0, 10, length=n)
-
-# ╔═╡ 2ec9713f-dad8-4eb3-af26-5523905b0f41
-y = sin.(x)
-
-# ╔═╡ 846deb1e-ba12-4815-acb0-8ade3bff4e2b
-y_noisy = @. sin(x) + 0.1 * randn()
-
-# ╔═╡ 8b3bd7f0-6a04-42e9-a113-0e5466e22c68
-Columns(md"""
-A plot in Julia with `Plots.jl`
-""",
-    begin
-        fig, ax, plt = plot(x, y, label="sin(x)")
-        plot!(ax, x, y_noisy, label="data")
-        axislegend(ax)
+        ax2 = Axis(fig[1, 2]; xlabel=L"\xi", title=L"|\hat{g}(\xi)| \to 0", limits=(0, 30, -0.02, 1.05))
+        lines!(ax2, ξs, @lift(abs.(cf.($cancel_law, ξs))); color=:royalblue)
+        scatter!(ax2, @lift([Point2f($cancel_ξ, abs($ĝ))]); color=:crimson, markersize=14)
         fig
-    end)
+    end
+end
 
-# ╔═╡ f1a98bbb-8474-4da8-94ef-229c1a52ef17
-@markdown("""
-By the way that's the same ``n`` as before ``n = `` $(aa). 
-Changing it here updates every other slide using ``n`` (I mean that's just Pluto) without affecting the slide display (that's the hardest part to do).
-""")
+# ╔═╡ 8e859c56-236a-4932-b83d-3cbfce19d248
+# The widgets only push their value into an Observable: WGLMakie updates the figure in place.
+cancel_law[] = demo_law;
 
-# ╔═╡ 5fe14d97-497d-40ae-8066-fed7dcd18927
-A = rand(n, 5)
+# ╔═╡ 45b61862-7559-48db-bd3c-7a315780f47b
+cancel_ξ[] = ξ;
 
-# ╔═╡ 795ef7d5-e187-4c38-938a-a08c9c354c30
-A*B
+# ╔═╡ e1ed4670-60a6-4760-9757-26b41d237df9
+md"""
+Speed law $(@bind speed_law Select([law.dist => law.name for law in LAWS])) ``\quad N =`` $(@bind n_runners PlutoUI.Slider([30, 100, 300, 1000, 3000, 10000, 10^5, 4*10^5]; default=3000, show_value=true)) ``\quad`` exact ``\rho`` $(@bind show_exact CheckBox(default=true))
 
-# ╔═╡ ec081723-d982-4a2a-937c-816f0979d422
-HiddenDocs(mod, name) = details(
-	@htl("Show docstring for <code>$name</code>"), 
-	@htl """
-	<div class="pluto-docs-binding">
-	<span id="$(name)">$(name)</span>
-	$(Base.Docs.doc(Base.Docs.Binding(mod, name)))
-	</div>
-	""")
+Time ``t =`` $(@bind t_race PlutoUI.Slider(0:0.005:40; default=0.0, show_value=true))
+"""
 
-# ╔═╡ ff29ed8f-1060-4b1d-a3ea-bba35ea55a75
-HiddenDocs(name::Symbol) = HiddenDocs(PlutoSlides, name)
+# ╔═╡ 83713237-5973-4c51-853a-876654cf193b
+md"""
+Show $(@bind shown_laws MultiCheckBox([law.name for law in LAWS]; default=[law.name for law in LAWS]))
+"""
 
-# ╔═╡ e737be8e-6980-44ed-aaa9-030477561837
-HiddenDocs(:slide_mode_settings)
+# ╔═╡ 73e670e6-3619-4567-abe7-2b109a123793
+LAW_COLORS = Makie.wong_colors()
+
+# ╔═╡ 58249123-4004-4489-97c5-1475184ed390
+speeds = sort!(mean_speed .+ rand(speed_law, n_runners)) # sorted: index = speed rank
+
+# ╔═╡ 14a6e7e6-ff56-439d-b432-49fd8ab6043e
+# Interval holding (essentially) all the mass of `d`: its support if bounded, else mean ± nσ std.
+function support_window(d; nσ=8)
+    isfinite(minimum(d)) && isfinite(maximum(d)) && return (minimum(d), maximum(d))
+    return (mean(d) - nσ * std(d), mean(d) + nσ * std(d))
+end
+
+# ╔═╡ dbce1cd0-0720-4009-9fbb-fd2344792651
+# Exact crowd density on the circle. θ = v t mod 2π with v = v̄ + X, X ~ d, so summing
+# over the laps m: ρ(t, θ) = Σₘ pdf_X((θ + 2πm)/t - v̄) / t.
+function circle_density(d, t, θs; v̄=mean_speed)
+    t > 0 || return zeros(length(θs))
+    lo, hi = v̄ .+ support_window(d)
+    laps = (floor(Int, lo*t/2π)-1):ceil(Int, hi*t/2π)
+    return [sum(m -> pdf(d, (θ + 2π * m) / t - v̄), laps) / t for θ in θs]
+end
+
+# ╔═╡ 783e04b3-b234-423e-bc14-db687c0dbc2f
+# Histogram of `v` on the bins `edges`, normalized as a density.
+function hist_pdf(v, edges)
+    counts = zeros(length(edges) - 1)
+    for x in v
+        i = searchsortedlast(edges, x)
+        1 ≤ i < length(edges) && (counts[i] += 1)
+    end
+    return counts ./ (length(v) * step(edges))
+end
+
+# ╔═╡ 8bb7d35e-a20c-4893-8c34-f7d78219f5c0
+begin
+    race_time = Observable(0.0)
+    race_data = Observable{Any}((law=LAWS[1].dist, v=sort!(mean_speed .+ rand(LAWS[1].dist, 1000))))
+    race_show_exact = Observable(true)
+    race_fig = with_theme(theme_latexfonts(), fontsize=fontsize) do
+        WGLMakie.activate!()
+        vlims = (mean_speed - 2, mean_speed + 2)
+        edges = range(vlims...; length=49)
+        centers = edges[1:(end-1)] .+ step(edges) / 2
+        vs = range(vlims...; length=400)
+        θs = range(0, 2π; length=400)
+
+        # Each lift below reads `race_data` / `race_time` directly, or `θ` (created first),
+        # so no lift ever sees an old and a new sample at the same time.
+        θ = @lift mod2pi.($race_data.v .* $race_time)
+        speed_color = @lift $race_data.v
+        crange = @lift extrema($race_data.v)
+
+        fig = Figure(size=(1100, 480))
+
+        # the track, seen from above (lane = speed rank: slow inside, fast outside)
+        ax_track = Axis(fig[1:2, 1]; aspect=DataAspect(), limits=(-11, 11, -11, 11),
+            title=@lift(latexstring("t = ", round($race_time; digits=2), raw"\qquad |c_1(t)| = ",
+                round(abs(sum(cis, $θ)) / length($θ); digits=3))))
+        hidedecorations!(ax_track)
+        hidespines!(ax_track)
+        arc!(ax_track, Point2f(0, 0), 4.6, 0, 2π; color=:gray70)
+        arc!(ax_track, Point2f(0, 0), 10.4, 0, 2π; color=:gray70)
+        linesegments!(ax_track, [Point2f(4.6, 0), Point2f(10.4, 0)]; color=:black, linewidth=3)
+        track = @lift begin
+            n = length($θ)
+            lane = 5 .+ 5 .* (1:n) ./ n
+            Point2f.(lane .* cos.($θ), lane .* sin.($θ))
+        end
+        scatter!(ax_track, track; marker=('π'), markersize=12,
+            color=speed_color, colorrange=crange, colormap=:viridis)
+
+        # phase space (θ, v): every speed is a traveling wave, the start line shears
+        ax_phase = Axis(fig[1, 2]; ylabel=L"v", limits=(0, 2π, vlims...), xticklabelsvisible=false,
+            title=L"f(t, \theta, v) = f(0, \theta - vt, v)")
+        scatter!(ax_phase, @lift(Point2f.($θ, $race_data.v)); markersize=4,
+            color=speed_color, colorrange=crange, colormap=:viridis)
+
+        # its two marginals: the speeds g(v) never change...
+        ax_speed = Axis(fig[1, 3]; xlabel=L"g(v)", limits=(0, 1, vlims...), yticklabelsvisible=false)
+        barplot!(ax_speed, centers, @lift(hist_pdf($race_data.v, edges)); direction=:x, gap=0,
+            color=centers, colorrange=crange, colormap=:viridis)
+        lines!(ax_speed, @lift(Point2f.(pdf.($race_data.law, vs .- mean_speed), vs)); color=:black)
+
+        # ...while the positions ρ(t, θ) mix
+        ax_rho = Axis(fig[2, 2]; xlabel=L"\theta", ylabel=L"\rho(t, \theta)", limits=(0, 2π, 0, 1))
+        stephist!(ax_rho, θ; bins=range(0, 2π; length=64), normalization=:pdf,
+            color=:gray30, label=L"\text{race}")
+        lines!(ax_rho, θs, @lift(circle_density($race_data.law, $race_time, θs)); visible=race_show_exact,
+            color=:royalblue, linewidth=2, label=L"\text{exact}")
+        hlines!(ax_rho, 1 / 2π; color=:orange, linestyle=:dash, label=L"1/2\pi")
+        Legend(fig[2, 3], ax_rho; framevisible=false)
+
+        colsize!(fig.layout, 1, Relative(0.38))
+        colsize!(fig.layout, 3, Relative(0.14))
+        fig
+    end
+end
+
+# ╔═╡ c662c7e4-204e-484e-8b1d-6a34c38edfcb
+# The widgets only push their value into an Observable: WGLMakie updates the figure in place.
+race_time[] = t_race;
+
+# ╔═╡ ec8071d2-2fec-4971-a4bf-0cea389deb78
+race_data[] = (law=speed_law, v=speeds);
+
+# ╔═╡ ef0d43bf-f1f8-4418-b328-4b04a540c69d
+race_show_exact[] = show_exact;
+
+# ╔═╡ 88c4ee1d-092e-4d1f-b4c6-612e712b3476
+# Asymptotic envelopes of |ĝ(ξ)| = |cf(d, ξ)|: leading terms of the exact formulas.
+begin
+    envelope(d::Uniform, ξ) = 1 / (d.b * ξ)
+    envelope(d::Epanechnikov, ξ) = 3 / (d.σ * ξ)^2
+    envelope(d::Biweight, ξ) = 15 / (d.σ * ξ)^3
+    envelope(d::Triweight, ξ) = 105 / (d.σ * ξ)^4
+    envelope(d::Normal, ξ) = exp(-(d.σ * ξ)^2 / 2)
+end
+
+# ╔═╡ eddaeb02-5570-4a51-8737-14bfb08686dd
+let
+    CairoMakie.activate!(px_per_unit=2)
+    ts = 10 .^ range(-0.5, 2.5; length=800)
+    N = length(speeds)
+    with_theme(theme_latexfonts(), fontsize=fontsize) do
+        fig = Figure(size=(1000, 430))
+        ax = Axis(fig[1, 1]; xscale=log10, yscale=log10, xlabel=L"t", ylabel=L"|c_1(t)| = |\hat{g}(t)|",
+            limits=(ts[1], ts[end], 1e-5, 1.5), xticks=([1, 10, 100], [L"1", L"10", L"100"]))
+        for (i, law) in enumerate(LAWS)
+            law.name in shown_laws || continue
+            lines!(ax, ts, max.(abs.(cf.(law.dist, ts)), 1e-12); color=LAW_COLORS[i], label=law.tex)
+            law.dist isa Normal || lines!(ax, ts, envelope.(law.dist, ts); color=LAW_COLORS[i], linestyle=:dash)
+        end
+        race = [abs(sum(v -> cis(v * t), speeds)) / N for t in ts]
+        lines!(ax, ts, max.(race, 1e-12); color=(:black, 0.7), linewidth=1,
+            label=latexstring(raw"\text{our race, } N = ", N))
+        hlines!(ax, 1 / sqrt(N); color=:gray50, linestyle=:dot)
+        text!(ax, 1.2 * ts[1], 1 / sqrt(N); text=L"\text{noise floor } 1/\sqrt{N}",
+            align=(:left, :bottom), color=:gray50)
+        Legend(fig[1, 2], ax; framevisible=false)
+        fig
+    end
+end
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
 CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
-HypertextLiteral = "ac1192a8-f4b3-4bfe-ba22-af5b92cd3ab2"
-MarkdownLiteral = "736d6165-7244-6769-4267-6b50796e6954"
-PlutoLinks = "0ff47ea0-7a50-410d-8455-4348d5de0420"
+Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
+LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
 PlutoSlides = "ccaada3e-fbb3-407e-96e9-78c3ad6e4026"
-PlutoTeachingTools = "661c6b06-c737-4d37-b85c-46df65de6f69"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
-
-[sources]
-PlutoSlides = {path = "C:\\Users\\metivier\\.julia\\dev\\PlutoSlides"}
+WGLMakie = "276b4fcb-3e11-5398-bf8b-a0c2d153d008"
 
 [compat]
 CairoMakie = "~0.15.15"
-HypertextLiteral = "~1.0.0"
-MarkdownLiteral = "~0.1.5"
-PlutoLinks = "~0.1.8"
-PlutoSlides = "~0.3.1"
-PlutoTeachingTools = "~0.4.7"
+Distributions = "~0.25.131"
+LaTeXStrings = "~1.4.1"
+PlutoSlides = "~0.3.3"
 PlutoUI = "~0.7.83"
+WGLMakie = "~0.13.15"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
@@ -372,7 +541,13 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.13.1"
 manifest_format = "2.1"
-project_hash = "5d930b20f02c15c11556e971bdb0e6ae343dc264"
+project_hash = "0b07173a3cd9b77244c25234b011420c35cc1193"
+
+[[deps.ANSIColoredPrinters]]
+git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
+registries = "General"
+uuid = "a4c015fc-c6ff-483c-b24f-f7ea428134e9"
+version = "0.0.1"
 
 [[deps.AbstractFFTs]]
 deps = ["LinearAlgebra"]
@@ -494,6 +669,20 @@ registries = "General"
 uuid = "18cc8868-cbac-4acf-b575-c8ff214dc66f"
 version = "1.4.0"
 
+[[deps.Bonito]]
+deps = ["ANSIColoredPrinters", "Base64", "CodecZlib", "Colors", "CommonMark", "Dates", "Deno_jll", "HTTP", "Hyperscript", "JSON", "LinearAlgebra", "Markdown", "MbedTLS", "MsgPack", "Observables", "OrderedCollections", "PrecompileTools", "Random", "RelocatableFolders", "SHA", "Scratch", "Sockets", "Tables", "ThreadPools", "URIs", "UUIDs", "WidgetsBase"]
+git-tree-sha1 = "f947a8b5967714bf5b7d82070b647631de1f10d9"
+registries = "General"
+uuid = "824d6782-a2ef-11e9-3a09-e5662e0c26f8"
+version = "5.2.0"
+
+    [deps.Bonito.extensions]
+    BonitoDocumenterExt = ["Documenter", "MarkdownAST"]
+
+    [deps.Bonito.weakdeps]
+    Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+    MarkdownAST = "d0879d2d-cac2-40c8-9cee-1863dc0c7391"
+
 [[deps.Bzip2_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
 git-tree-sha1 = "1b96ea4a01afe0ea4090c5c8039690672dd13f2e"
@@ -541,10 +730,10 @@ version = "0.15.15"
 
 [[deps.Cairo_jll]]
 deps = ["Artifacts", "Bzip2_jll", "CompilerSupportLibraries_jll", "Fontconfig_jll", "FreeType2_jll", "Glib_jll", "JLLWrappers", "Libdl", "Pixman_jll", "Xorg_libXext_jll", "Xorg_libXrender_jll", "Zlib_jll", "libpng_jll"]
-git-tree-sha1 = "1fa950ebc3e37eccd51c6a8fe1f92f7d86263522"
+git-tree-sha1 = "7b841680738c19948120f6e4cf8d0200518bd564"
 registries = "General"
 uuid = "83423d85-b0ee-5818-9007-b63ccbeb887a"
-version = "1.18.7+0"
+version = "1.18.8+0"
 
 [[deps.ChainRulesCore]]
 deps = ["Compat", "LinearAlgebra"]
@@ -557,12 +746,12 @@ weakdeps = ["SparseArrays"]
     [deps.ChainRulesCore.extensions]
     ChainRulesCoreSparseArraysExt = "SparseArrays"
 
-[[deps.CodeTracking]]
-deps = ["InteractiveUtils", "REPL", "UUIDs"]
-git-tree-sha1 = "cfb7a2e89e245a9d5016b70323db412b3a7438d5"
+[[deps.CodecZlib]]
+deps = ["TranscodingStreams", "Zlib_jll"]
+git-tree-sha1 = "970758a3d591a2a5c2a907c53f2e2f8c1b1d3537"
 registries = "General"
-uuid = "da1fd8a2-8d9e-5ec2-8556-3022fb5608a2"
-version = "3.0.2"
+uuid = "944b1d66-785c-5afd-91f1-9de20f533193"
+version = "0.7.9"
 
 [[deps.CodecZstd]]
 deps = ["TranscodingStreams", "Zstd_jll"]
@@ -646,12 +835,6 @@ weakdeps = ["Dates", "LinearAlgebra"]
 
     [deps.Compat.extensions]
     CompatLinearAlgebraExt = "LinearAlgebra"
-
-[[deps.Compiler]]
-git-tree-sha1 = "382d79bfe72a406294faca39ef0c3cef6e6ce1f1"
-registries = "General"
-uuid = "807dbc54-b67e-4c79-8afb-eafe4df6f2e1"
-version = "0.1.1"
 
 [[deps.CompilerSupportLibraries_jll]]
 deps = ["Artifacts", "Libdl"]
@@ -738,6 +921,13 @@ registries = "General"
 uuid = "927a84f5-c5f4-47a5-9785-b46e178433df"
 version = "1.6.7"
 
+[[deps.Deno_jll]]
+deps = ["Artifacts", "JLLWrappers", "Libdl"]
+git-tree-sha1 = "cd6756e833c377e0ce9cd63fb97689a255f12323"
+registries = "General"
+uuid = "04572ae6-984a-583e-9378-9577a1c2574d"
+version = "1.33.4+0"
+
 [[deps.Distributed]]
 deps = ["Random", "Serialization", "Sockets"]
 uuid = "8ba89e20-285c-5b6f-9357-94700520ee1b"
@@ -820,12 +1010,10 @@ git-tree-sha1 = "6621fef488e496356c9c9625d0562c12a6070819"
 registries = "General"
 uuid = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
 version = "1.20.0"
+weakdeps = ["HTTP"]
 
     [deps.FileIO.extensions]
     HTTPExt = "HTTP"
-
-    [deps.FileIO.weakdeps]
-    HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
 
 [[deps.FilePaths]]
 deps = ["FilePathsBase", "MacroTools", "Reexport"]
@@ -953,13 +1141,6 @@ registries = "General"
 uuid = "b0724c58-0f36-5564-988d-3bb0596ebc4a"
 version = "0.22.4+0"
 
-[[deps.Ghostscript_jll]]
-deps = ["Artifacts", "JLLWrappers", "JpegTurbo_jll", "Libdl", "Zlib_jll"]
-git-tree-sha1 = "38044a04637976140074d0b0621c1edf0eb531fd"
-registries = "General"
-uuid = "61579ee1-b43e-5ca0-a5da-69d92c66a64b"
-version = "9.55.1+0"
-
 [[deps.Giflib_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
 git-tree-sha1 = "a3efbbc027441271444dcd0c0a46f2d119dc4329"
@@ -994,6 +1175,13 @@ git-tree-sha1 = "ef70da5e123a06a29e2d6ddff0f09985bc226491"
 registries = "General"
 uuid = "3955a311-db13-416c-9275-1d80ed98e5e9"
 version = "0.11.3"
+
+[[deps.HTTP]]
+deps = ["Base64", "CodecZlib", "Dates", "EnumX", "Logging", "PrecompileTools", "Random", "Reseau", "SHA", "URIs", "UUIDs", "Zlib_jll"]
+git-tree-sha1 = "ed18c529d170d8431c9d91537520b6d3dec052ca"
+registries = "General"
+uuid = "cd3eb016-35fb-5094-929b-558a96fad6f3"
+version = "2.9.0"
 
 [[deps.HarfBuzz_jll]]
 deps = ["Artifacts", "Cairo_jll", "Fontconfig_jll", "FreeType2_jll", "Glib_jll", "Graphite2_jll", "JLLWrappers", "Libdl", "Libffi_jll"]
@@ -1140,20 +1328,17 @@ version = "1.0.12"
     SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 
 [[deps.IntervalSets]]
-git-tree-sha1 = "79d6bd28c8d9bccc2229784f1bd637689b256377"
+git-tree-sha1 = "0db6aea5b64caa1c47e9fdd27394f0296f05e8bf"
 registries = "General"
 uuid = "8197267c-284f-5f27-9208-e0e47529a953"
-version = "0.7.14"
+version = "0.7.15"
+weakdeps = ["Makie", "Random", "RecipesBase", "Statistics"]
 
     [deps.IntervalSets.extensions]
+    IntervalSetsMakieExt = "Makie"
     IntervalSetsRandomExt = "Random"
     IntervalSetsRecipesBaseExt = "RecipesBase"
     IntervalSetsStatisticsExt = "Statistics"
-
-    [deps.IntervalSets.weakdeps]
-    Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
-    RecipesBase = "3cdcf5f2-1ef4-517c-9805-6587b60abb01"
-    Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 
 [[deps.InverseFunctions]]
 git-tree-sha1 = "a779299d77cd080bf77b97535acecd73e1c5e5cb"
@@ -1225,13 +1410,6 @@ registries = "General"
 uuid = "aacddb02-875f-59d6-b918-886e6ef4fbf8"
 version = "3.2.0+1"
 
-[[deps.JuliaInterpreter]]
-deps = ["CodeTracking", "InteractiveUtils", "Random"]
-git-tree-sha1 = "24a00d415eac260385b0f260340457664a7b2bca"
-registries = "General"
-uuid = "aa1ae85d-cabe-5617-a682-6adf51b2e16a"
-version = "0.11.5"
-
 [[deps.JuliaSyntaxHighlighting]]
 deps = ["StyledStrings"]
 uuid = "ac6e5ff7-fb65-4e79-a425-ec3bc9c03011"
@@ -1270,25 +1448,6 @@ git-tree-sha1 = "f88f3ccef05a6a72a0cf0ed417c8fd68530f4ab2"
 registries = "General"
 uuid = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
 version = "1.4.1"
-
-[[deps.Latexify]]
-deps = ["Format", "Ghostscript_jll", "InteractiveUtils", "LaTeXStrings", "MacroTools", "Markdown", "OrderedCollections", "Requires"]
-git-tree-sha1 = "df7566479bd64f20bd16b09960145e70160ffb3b"
-registries = "General"
-uuid = "23fbe1c1-3f47-55db-b15f-69d7ec21a316"
-version = "0.16.12"
-
-    [deps.Latexify.extensions]
-    DataFramesExt = "DataFrames"
-    SparseArraysExt = "SparseArrays"
-    SymEngineExt = "SymEngine"
-    TectonicExt = "tectonic_jll"
-
-    [deps.Latexify.weakdeps]
-    DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
-    SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
-    SymEngine = "123dc426-2d89-5057-bbad-38513e3affd8"
-    tectonic_jll = "d7dd28d6-a5e6-559c-9131-7eb760cdacc5"
 
 [[deps.LazyModules]]
 git-tree-sha1 = "a560dd966b386ac9ae60bdd3a3d3a326062d3c3e"
@@ -1393,13 +1552,6 @@ version = "1.0.2"
 uuid = "56ddb016-857b-54e1-b83d-db4d58db5568"
 version = "1.11.0"
 
-[[deps.LoweredCodeUtils]]
-deps = ["CodeTracking", "Compiler", "JuliaInterpreter"]
-git-tree-sha1 = "e16fd69604bef06cb3fe9da09b315005c9c34564"
-registries = "General"
-uuid = "6f1432cf-f94c-5a45-995e-cdbf5db27b0b"
-version = "3.9.0"
-
 [[deps.MIMEs]]
 git-tree-sha1 = "c64d943587f7187e751162b3b84445bbbd79f691"
 registries = "General"
@@ -1436,19 +1588,26 @@ deps = ["Base64", "JuliaSyntaxHighlighting", "StyledStrings"]
 uuid = "d6f4376e-aef5-505a-96c1-9c027394607a"
 version = "1.11.0"
 
-[[deps.MarkdownLiteral]]
-deps = ["CommonMark", "HypertextLiteral"]
-git-tree-sha1 = "e88f9af659a0cc9326fa464427f71ae6c9a83381"
-registries = "General"
-uuid = "736d6165-7244-6769-4267-6b50796e6954"
-version = "0.1.5"
-
 [[deps.MathTeXEngine]]
 deps = ["AbstractTrees", "Automa", "DataStructures", "FreeTypeAbstraction", "GeometryBasics", "LaTeXStrings", "REPL", "RelocatableFolders", "UnicodeFun"]
 git-tree-sha1 = "aa1078778be5a8e5259ff04fbc3d258b3e78d464"
 registries = "General"
 uuid = "0a4f8689-d25c-4efe-a92b-7142dfc1aa53"
 version = "0.6.9"
+
+[[deps.MbedTLS]]
+deps = ["Dates", "MbedTLS_jll", "MozillaCACerts_jll", "NetworkOptions", "Random", "Sockets"]
+git-tree-sha1 = "8785729fa736197687541f7053f6d8ab7fc44f92"
+registries = "General"
+uuid = "739be429-bea8-5141-9913-cc70e7f3736d"
+version = "1.1.10"
+
+[[deps.MbedTLS_jll]]
+deps = ["Artifacts", "JLLWrappers", "Libdl"]
+git-tree-sha1 = "ff69a2b1330bcb730b9ac1ab7dd680176f5896b8"
+registries = "General"
+uuid = "c8ffd9c3-330d-5841-b78e-0817d7145fa1"
+version = "2.28.1010+0"
 
 [[deps.Missings]]
 deps = ["DataAPI"]
@@ -1471,6 +1630,13 @@ version = "0.3.4"
 [[deps.MozillaCACerts_jll]]
 uuid = "14a3606d-f60d-562e-9121-12d972cd8159"
 version = "2026.8.13"
+
+[[deps.MsgPack]]
+deps = ["Serialization"]
+git-tree-sha1 = "f5db02ae992c260e4826fe78c942954b48e1d9c2"
+registries = "General"
+uuid = "99f44e22-a591-53d1-9472-aa23ef4bd671"
+version = "1.2.1"
 
 [[deps.MuladdMacro]]
 deps = ["PrecompileTools"]
@@ -1541,10 +1707,10 @@ version = "0.3.3"
 
 [[deps.OpenEXR_jll]]
 deps = ["Artifacts", "Imath_jll", "JLLWrappers", "Libdl", "Zlib_jll"]
-git-tree-sha1 = "1bcebd887dd33f1108210b3954049b1bb8af0e7a"
+git-tree-sha1 = "e9ae72527609bb66882d38ad009ffd47ca5713fb"
 registries = "General"
 uuid = "18a262bb-aa17-5467-a713-aee519bc75cb"
-version = "3.4.15+0"
+version = "3.4.16+0"
 
 [[deps.OpenLibm_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "Libdl"]
@@ -1571,10 +1737,10 @@ uuid = "91d4177d-7536-5919-b921-800302f37372"
 version = "1.6.1+0"
 
 [[deps.OrderedCollections]]
-git-tree-sha1 = "05f45c2e0de6259db764adbfd2f1dc6d3f8de13c"
+git-tree-sha1 = "f9b03759e9ef463718934fbed30820b39997511e"
 registries = "General"
 uuid = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
-version = "2.0.1"
+version = "2.0.2"
 
 [[deps.PCRE2_jll]]
 deps = ["Artifacts", "Libdl"]
@@ -1657,32 +1823,12 @@ registries = "General"
 uuid = "995b91a9-d308-5afd-9ec6-746e21dbc043"
 version = "1.5.0"
 
-[[deps.PlutoHooks]]
-deps = ["InteractiveUtils", "Markdown", "UUIDs"]
-git-tree-sha1 = "844a829c8dc9fd0fe62eced22bc2d0dfd66a3f51"
-registries = "General"
-uuid = "0ff47ea0-7a50-410d-8455-4348d5de0774"
-version = "0.1.0"
-
-[[deps.PlutoLinks]]
-deps = ["FileWatching", "InteractiveUtils", "Markdown", "PlutoHooks", "Revise", "UUIDs"]
-git-tree-sha1 = "aea4eede5ab3ee188906d0cf3bbfa36eb543dccc"
-registries = "General"
-uuid = "0ff47ea0-7a50-410d-8455-4348d5de0420"
-version = "0.1.8"
-
 [[deps.PlutoSlides]]
 deps = ["Base64", "HypertextLiteral", "MIMEs", "PlutoUI", "Printf"]
-path = "C:\\Users\\metivier\\.julia\\dev\\PlutoSlides"
+git-tree-sha1 = "efb94c8e9a22bed19adbbf44e929ad4740aa66e7"
+registries = "dev_pkg"
 uuid = "ccaada3e-fbb3-407e-96e9-78c3ad6e4026"
-version = "0.3.1"
-
-[[deps.PlutoTeachingTools]]
-deps = ["Downloads", "HypertextLiteral", "Latexify", "Markdown", "PlutoUI"]
-git-tree-sha1 = "90b41ced6bacd8c01bd05da8aed35c5458891749"
-registries = "General"
-uuid = "661c6b06-c737-4d37-b85c-46df65de6f69"
-version = "0.4.7"
+version = "0.3.3"
 
 [[deps.PlutoUI]]
 deps = ["AbstractPlutoDingetjes", "Base64", "ColorTypes", "Dates", "Downloads", "FixedPointNumbers", "Hyperscript", "HypertextLiteral", "IOCapture", "InteractiveUtils", "Logging", "MIMEs", "Markdown", "Random", "Reexport", "URIs", "UUIDs"]
@@ -1783,6 +1929,13 @@ weakdeps = ["FixedPointNumbers"]
     [deps.Ratios.extensions]
     RatiosFixedPointNumbersExt = "FixedPointNumbers"
 
+[[deps.RecipesBase]]
+deps = ["PrecompileTools"]
+git-tree-sha1 = "0c0dcffc464cda2ff33fc8ffc1dd1bdd53cd98be"
+registries = "General"
+uuid = "3cdcf5f2-1ef4-517c-9805-6587b60abb01"
+version = "1.4.0"
+
 [[deps.Reexport]]
 git-tree-sha1 = "45e428421666073eab6f2da5c9d310d99bb12f9b"
 registries = "General"
@@ -1803,16 +1956,12 @@ registries = "General"
 uuid = "ae029012-a4dd-5104-9daa-d747884805df"
 version = "1.3.1"
 
-[[deps.Revise]]
-deps = ["CRC32c", "CodeTracking", "FileWatching", "JuliaInterpreter", "LibGit2", "LoweredCodeUtils", "OrderedCollections", "Preferences", "REPL", "UUIDs"]
-git-tree-sha1 = "82ac67271b84f674fccccbc9f92b106941fb8c65"
+[[deps.Reseau]]
+deps = ["NetworkOptions", "OpenSSL_jll", "PrecompileTools", "Random", "SHA"]
+git-tree-sha1 = "3c8cb8ecab28eec47a02d56a44d4929b85fbab55"
 registries = "General"
-uuid = "295af30f-e4ad-537b-8983-00126c2a3abe"
-version = "3.17.1"
-weakdeps = ["Distributed"]
-
-    [deps.Revise.extensions]
-    DistributedExt = "Distributed"
+uuid = "802f3686-a58f-41ce-bb0c-3c43c75bba36"
+version = "1.6.0"
 
 [[deps.Rmath]]
 deps = ["Random", "Rmath_jll"]
@@ -1830,10 +1979,10 @@ version = "0.5.2+0"
 
 [[deps.Roots]]
 deps = ["Accessors", "CommonSolve", "Printf"]
-git-tree-sha1 = "4db094d5e079abbda658acfe1c4d098430417717"
+git-tree-sha1 = "971f04b3780c0da4edf230573fc1aadc2c6e649e"
 registries = "General"
 uuid = "f2b01f46-fcfa-551c-844a-d8ac1e96c665"
-version = "3.0.8"
+version = "3.0.10"
 
     [deps.Roots.extensions]
     RootsChainRulesCoreExt = "ChainRulesCore"
@@ -1907,10 +2056,10 @@ version = "0.9.6"
 
 [[deps.Sixel]]
 deps = ["Dates", "FileIO", "ImageCore", "IndirectArrays", "OffsetArrays", "REPL", "libsixel_jll"]
-git-tree-sha1 = "0494aed9501e7fb65daba895fb7fd57cc38bc743"
+git-tree-sha1 = "2c79185e5261b159474903598c571ddd9f12ff7b"
 registries = "General"
 uuid = "45858cf5-a6b0-47a3-bbea-62219f50df47"
-version = "0.1.5"
+version = "0.1.6"
 
 [[deps.Sockets]]
 uuid = "6462fe0b-24de-5631-8697-dd941f90decc"
@@ -2091,6 +2240,13 @@ deps = ["InteractiveUtils", "Logging", "Random", "Serialization"]
 uuid = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 version = "1.11.0"
 
+[[deps.ThreadPools]]
+deps = ["Printf", "RecipesBase", "Statistics"]
+git-tree-sha1 = "50cb5f85d5646bc1422aa0238aa5bfca99ca9ae7"
+registries = "General"
+uuid = "b189fb0b-2eb5-4ed4-bc0c-d34c51242431"
+version = "2.1.1"
+
 [[deps.TiffImages]]
 deps = ["CodecZstd", "ColorTypes", "DataStructures", "DocStringExtensions", "FileIO", "FixedPointNumbers", "IndirectArrays", "Inflate", "Mmap", "OffsetArrays", "PkgVersion", "PrecompileTools", "ProgressMeter", "SIMD", "UUIDs"]
 git-tree-sha1 = "9ca5f1f2d42f80df4b8c9f6ab5a64f438bbd9976"
@@ -2162,12 +2318,26 @@ version = "1.29.0"
     NaNMath = "77ba4419-2d1f-58cd-9bb1-8ffee604a2e3"
     Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 
+[[deps.WGLMakie]]
+deps = ["Bonito", "Colors", "FileIO", "FreeTypeAbstraction", "GeometryBasics", "Hyperscript", "LinearAlgebra", "Makie", "Observables", "PNGFiles", "PrecompileTools", "RelocatableFolders", "ShaderAbstractions", "StaticArrays"]
+git-tree-sha1 = "11f06206295b2b216aa420afee1efa285008fd8b"
+registries = "General"
+uuid = "276b4fcb-3e11-5398-bf8b-a0c2d153d008"
+version = "0.13.15"
+
 [[deps.WebP]]
 deps = ["CEnum", "ColorTypes", "FileIO", "FixedPointNumbers", "ImageCore", "libwebp_jll"]
 git-tree-sha1 = "aa1ca3c47f119fbdae8770c29820e5e6119b83f2"
 registries = "General"
 uuid = "e3aaa7dc-3e4b-44e0-be63-ffb868ccd7c1"
 version = "0.1.3"
+
+[[deps.WidgetsBase]]
+deps = ["Observables"]
+git-tree-sha1 = "30a1d631eb06e8c868c559599f915a62d55c2601"
+registries = "General"
+uuid = "eead4739-05f7-45a1-878c-cee36b57321c"
+version = "0.1.4"
 
 [[deps.WoodburyMatrices]]
 deps = ["LinearAlgebra", "SparseArrays"]
@@ -2298,17 +2468,17 @@ version = "2.0.4+0"
 
 [[deps.libpng_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Zlib_jll"]
-git-tree-sha1 = "e51150d5ab85cee6fc36726850f0e627ad2e4aba"
+git-tree-sha1 = "32781be40fe86735af02eae0dd22754e4b5f779d"
 registries = "General"
 uuid = "b53b4c65-9356-5827-b1ea-8c7a1a84506f"
-version = "1.6.58+0"
+version = "1.6.59+0"
 
 [[deps.libsixel_jll]]
 deps = ["Artifacts", "JLLWrappers", "JpegTurbo_jll", "Libdl", "libpng_jll"]
-git-tree-sha1 = "c1733e347283df07689d71d61e14be986e49e47a"
+git-tree-sha1 = "e067c8bae65bb40866552296a2d5b4dc65b8928f"
 registries = "General"
 uuid = "075b6546-f08a-558a-be8f-8157d0f608a5"
-version = "1.10.5+0"
+version = "1.80.702+0"
 
 [[deps.libva_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Xorg_libX11_jll", "Xorg_libXext_jll", "Xorg_libXfixes_jll", "libdrm_jll"]
@@ -2358,68 +2528,65 @@ version = "4.1.0+0"
 [registries.General]
 url = "https://github.com/JuliaRegistries/General.git"
 uuid = "23338594-aafe-5451-b93e-139f81909106"
+
+[registries.dev_pkg]
+url = "https://github.com/dmetivie/LocalRegistry"
+uuid = "6e172099-2da4-46e7-8c3f-eb5f14eb67c6"
 """
 
 # ╔═╡ Cell order:
-# ╠═beab077f-c8e2-47fa-a4c6-50e0b25f8aff
-# ╠═46eda44d-f80e-42d9-b935-6022136cdf02
-# ╠═69e29989-1adb-4b06-b77b-5dd15997df2e
-# ╠═ffb95f3b-7c02-47c5-ab02-a59fe9019f05
-# ╠═e719a33e-13f8-449e-a8f3-3f16c5ecbed0
-# ╠═538e71c7-e425-466e-b004-5e4ed4bf026c
-# ╠═ea9e8cfe-402d-4d9e-95b1-147615196a79
-# ╟─2aff06d6-cf3c-4bc9-bfdc-ca3f9e24ed09
-# ╠═19b05b91-1e11-43dd-ae84-5e064e7466d3
-# ╟─2fc6ee50-10ad-4356-a963-d646559231ae
-# ╟─a8750d23-8b47-4314-970d-865673c82b21
-# ╟─a27a9dc4-58c1-4703-8e4a-f6e8eed6080a
-# ╟─484dbfc7-a76f-4556-815a-ba647c593b21
-# ╟─350c3667-787f-4d4c-85fd-691c22e83e88
-# ╟─d172b63a-e8b5-4e65-a776-5b445a9943c4
-# ╟─7f62e6ef-edc0-42cd-971d-38b94d9635ee
-# ╟─7c4d1dd2-12bb-4905-94e5-916f6c73a9f8
-# ╟─82a9cdbc-ec90-4e19-8338-4d031b1dcc73
-# ╟─83c6c2d1-2308-4950-a9ba-7aeeb44ce85d
-# ╟─6f314bab-3738-47ea-919e-98ed049a38ac
-# ╟─6d981650-6ec6-4324-8c9c-ca0fd10e0401
-# ╟─e737be8e-6980-44ed-aaa9-030477561837
-# ╟─620103da-14c3-43ba-8d9c-25722f18426c
-# ╠═b54106f9-1885-4ae5-8f35-46edc2718806
-# ╟─4076b62d-c325-4c3f-9f8c-67c313d1f7e7
-# ╠═4d3381a4-2e3b-458e-96ec-c70febb2a019
-# ╠═2ec9713f-dad8-4eb3-af26-5523905b0f41
-# ╠═846deb1e-ba12-4815-acb0-8ade3bff4e2b
-# ╟─8b3bd7f0-6a04-42e9-a113-0e5466e22c68
-# ╟─c9a502d8-7856-46ca-bc47-5566c29908ed
-# ╟─4cf38fc9-e6f8-45cd-a874-7afdf307f59a
-# ╟─a12e0d99-3f30-4fd0-81b0-78153cf6ed4c
-# ╟─f1a98bbb-8474-4da8-94ef-229c1a52ef17
-# ╠═5fe14d97-497d-40ae-8066-fed7dcd18927
-# ╠═e08a2697-bf8f-40b9-8fbe-50ff6544d4b7
-# ╟─0ba7fe0b-3a5f-4a68-a13c-3f1bfabffb53
-# ╟─bcd56f3e-be12-478c-bc40-5d41de133a89
-# ╠═38b39ef6-b0ac-4964-8262-d7c8afc3db01
-# ╟─b27c5860-a6ec-4c74-bdb5-b7f2b605dbf4
-# ╟─da8b64ed-3e26-4739-bc74-1a45e067da29
-# ╠═795ef7d5-e187-4c38-938a-a08c9c354c30
-# ╟─dad08817-7cce-47dc-bd3f-703b3d257470
-# ╠═30c727be-321e-474d-a277-14c9221e1f62
-# ╟─1afccc5a-88fe-450f-9463-ce6a0067a962
-# ╠═55c54e19-6963-4aa4-87c2-6322b7678e26
-# ╟─b408e5f7-d6bf-41a2-bc7e-1229972f1668
-# ╟─4831fde9-1f34-41ce-a96b-2940930e9fe5
-# ╟─91ffe4f8-38ab-43f4-982b-a03aa0dec236
-# ╟─33bcdc05-83ed-4071-bbe9-e93753de3b92
-# ╟─816aa436-b68a-4af9-8ebe-b825e3b9a7ca
-# ╟─36c05bb2-0787-4789-a209-26c455abf94b
-# ╟─f80c5f57-f93f-4ba6-b106-10bec8631d08
-# ╟─2ab16d1e-8b4f-491e-85a4-d55d5575f73b
-# ╟─4228aacc-56e6-4d04-b019-aa9f5d6ca087
-# ╟─f6c23f4d-da73-40af-9d9d-b225f9ce4ed5
-# ╟─38eaf5f1-c8f8-4371-8f12-7505eb7c1ace
-# ╠═756fe1d4-a59d-4a7d-98cd-8c375a547623
-# ╠═2ddc54a2-ea61-4372-a205-dc2a5d97a391
-# ╠═ec081723-d982-4a2a-937c-816f0979d422
-# ╠═ff29ed8f-1060-4b1d-a3ea-bba35ea55a75
+# ╠═e153e577-0ff7-4cd6-a728-c586e1c64937
+# ╠═ed856626-3a67-4341-8060-c40564d2dbef
+# ╠═f5922967-97a1-475f-8052-fd5512b9755d
+# ╠═1b03a513-8dbe-4198-83ae-0110cb2fea7f
+# ╠═71f76fc0-8001-41fd-b044-d130a92029d9
+# ╠═b878812c-5265-4c0c-8fb3-d1f49ec711a5
+# ╠═484abb49-ace1-40c0-95b9-6bc286c5b828
+# ╠═d1da20ec-2310-459d-ad22-96ecb428139c
+# ╠═d2d1585d-22fd-4152-9791-ddd9d5554a0b
+# ╟─cbad79ce-fa05-4d39-a5bc-825a3bfa53b5
+# ╟─fa100183-1b31-4546-9841-65d06496129d
+# ╟─b930ec93-044a-415b-9e66-cf0a01f450ef
+# ╟─ea71ecdd-f732-47d7-8d3d-f3db85d059a6
+# ╟─5cfec84f-ca82-4966-b0af-3afdff9306c4
+# ╟─72bcd85e-f28d-417f-966f-221a87929670
+# ╟─56cca026-5ef4-4a0c-bf22-37737fc19691
+# ╟─f30f52a3-fd4d-42ff-97b6-11e3dab09c42
+# ╟─b3769bce-3eea-4521-86c9-b05eb06a487f
+# ╟─62ad715c-c31a-44f2-b9be-329f7961186a
+# ╟─49d43b6b-ab3d-43ff-9505-ea134bfdf01a
+# ╟─20770594-03de-4076-bf84-155529040565
+# ╟─4c19bcf2-711f-40f7-8c5c-bf831b4ab07d
+# ╟─c8d52c2c-a68c-4e95-8b0f-32d84fa7e63d
+# ╟─5f543e4c-ee29-4609-8b67-fbd1d33505ad
+# ╟─68c70420-2c5b-4d3c-91e6-d7bb2355055c
+# ╟─01d56b72-8d1a-4b85-a82f-b963ad25e3a4
+# ╟─e1ed4670-60a6-4760-9757-26b41d237df9
+# ╟─8bb7d35e-a20c-4893-8c34-f7d78219f5c0
+# ╟─d38d5089-8720-4fcd-bc20-c1d9a3b5b5f9
+# ╟─a8bb6fc9-c225-449e-ad6c-54304bb735ea
+# ╟─d8e9ca61-ef3c-4844-82b7-ff462326f54c
+# ╟─96d5975c-7465-4017-aedb-eea994e05e7a
+# ╟─cc942ad9-c709-4aa5-937e-1d86b809175e
+# ╟─83713237-5973-4c51-853a-876654cf193b
+# ╟─eddaeb02-5570-4a51-8737-14bfb08686dd
+# ╟─e1d583a7-7ac3-4420-ba1a-207e0dfa90c3
+# ╟─0b5298bf-4b9f-49d4-8a1e-a810e4000e54
+# ╟─1b058177-0002-426b-942e-15eb737e300e
+# ╟─f2bf9c55-0358-4832-8488-dfbc8c1582bb
+# ╠═8e859c56-236a-4932-b83d-3cbfce19d248
+# ╠═45b61862-7559-48db-bd3c-7a315780f47b
+# ╠═c662c7e4-204e-484e-8b1d-6a34c38edfcb
+# ╠═ec8071d2-2fec-4971-a4bf-0cea389deb78
+# ╠═ef0d43bf-f1f8-4418-b328-4b04a540c69d
+# ╠═e30d4588-ed33-4560-bc8c-7f9b9477a724
+# ╠═f2c17a53-99e2-4d57-a0cf-a8a8b66e4448
+# ╠═6290e61b-ce0b-44f3-87f7-9ccdea719151
+# ╠═73e670e6-3619-4567-abe7-2b109a123793
+# ╠═58249123-4004-4489-97c5-1475184ed390
+# ╠═14a6e7e6-ff56-439d-b432-49fd8ab6043e
+# ╠═dbce1cd0-0720-4009-9fbb-fd2344792651
+# ╠═783e04b3-b234-423e-bc14-db687c0dbc2f
+# ╠═88c4ee1d-092e-4d1f-b4c6-612e712b3476
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

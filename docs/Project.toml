@@ -1,3 +1,13 @@
 [deps]
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+DocumenterCodeBlocks = "b6400b83-267f-4b55-9fd8-bffc853bdfd8"
+DocumenterLandingPage = "1c52b33b-3e2f-4e99-b3b5-a6ad63f0d6d2"
 PlutoSlides = "ccaada3e-fbb3-407e-96e9-78c3ad6e4026"
+
+[sources]
+PlutoSlides = {path = ".."}
+
+[compat]
+Documenter = "1"
+DocumenterCodeBlocks = "1"
+DocumenterLandingPage = "0.2"
