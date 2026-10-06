@@ -1,5 +1,5 @@
 /* PlutoSlides base styles */
-/* Font variables will only be applied when set by slidemode() */
+/* Font variables will only be applied when set by slide_mode_settings() */
 
 main {
     margin: 0 auto;
