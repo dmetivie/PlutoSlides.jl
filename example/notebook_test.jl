@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v1.0.3
+# v1.0.4
 
 using Markdown
 using InteractiveUtils
@@ -361,7 +361,7 @@ CairoMakie = "~0.15.15"
 HypertextLiteral = "~1.0.0"
 MarkdownLiteral = "~0.1.5"
 PlutoLinks = "~0.1.8"
-PlutoSlides = "~0.3.1"
+PlutoSlides = "~0.3.4"
 PlutoTeachingTools = "~0.4.7"
 PlutoUI = "~0.7.83"
 """
@@ -372,7 +372,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.13.1"
 manifest_format = "2.1"
-project_hash = "5d930b20f02c15c11556e971bdb0e6ae343dc264"
+project_hash = "cddd339ae6c5621c04719b0c96d2318c26dce963"
 
 [[deps.AbstractFFTs]]
 deps = ["LinearAlgebra"]
@@ -1675,7 +1675,7 @@ version = "0.1.8"
 deps = ["Base64", "HypertextLiteral", "MIMEs", "PlutoUI", "Printf"]
 path = "C:\\Users\\metivier\\.julia\\dev\\PlutoSlides"
 uuid = "ccaada3e-fbb3-407e-96e9-78c3ad6e4026"
-version = "0.3.1"
+version = "0.3.4"
 
 [[deps.PlutoTeachingTools]]
 deps = ["Downloads", "HypertextLiteral", "Latexify", "Markdown", "PlutoUI"]

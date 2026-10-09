@@ -1,6 +1,6 @@
 name = "PlutoSlides"
 uuid = "ccaada3e-fbb3-407e-96e9-78c3ad6e4026"
-version = "0.3.3"
+version = "0.3.4"
 authors = ["David Métivier <david.metivier@inrae.fr>"]
 
 [workspace]

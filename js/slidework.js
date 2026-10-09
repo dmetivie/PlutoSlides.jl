@@ -617,7 +617,14 @@
         notebook.style.marginTop = `${alignedColumnMargin(
             parseFloat(notebook.style.marginTop) || 0,
             bandBottom,
-            cell.getBoundingClientRect().top,
+            // + scrollY: the bands are position:fixed, so bandBottom is a viewport
+            // constant while the cell's rect slides with the page. Measured in a
+            // scrolled frame the two disagree by exactly scrollY, and the correction
+            // then grew the margin by that much - which read as the slide jumping
+            // back to its top on its own, a reapply or two after you scrolled down.
+            // Document space (= the viewport at scroll 0) is the frame the alignment
+            // is really about, and at scroll 0 this is the same number as before.
+            cell.getBoundingClientRect().top + window.scrollY,
         )}px`;
     }
 
