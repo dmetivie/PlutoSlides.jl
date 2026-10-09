@@ -57,20 +57,7 @@ CurrentModule = PlutoSlides
 
 ## Installation
 
-PlutoSlides is not in the General registry yet. Either point the notebook environment to
-the repository (Julia ≥ 1.12, [`[sources]`](https://discourse.julialang.org/t/pluto-1-0-release/137296#p-638767-automatic-pkg-management-5)):
-
-```toml
-[sources]
-PlutoSlides = {url = "https://github.com/dmetivie/PlutoSlides.jl"}
-```
-
-or add the author's registry once, then `using PlutoSlides` as usual:
-
-```julia
-import Pkg
-Pkg.pkg"registry add https://github.com/dmetivie/LocalRegistry"
-```
+Add it to your Pluto notebook with like any other package `using PlutoSlides` in the notebook.
 
 ## Quick start
 

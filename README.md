@@ -22,35 +22,22 @@ Note that the `html` version of the Pluto notebook can activate the slide mode !
 
 ## Installation
 
-It is not yet registered in the General registry, but you can
-
-- Use the Julia 1.12 `[sources]` in the project of your notebook to specify where to find the package [see here](https://discourse.julialang.org/t/pluto-1-0-release/137296#p-638767-automatic-pkg-management-5)
-
-```julia
-[sources]
-PlutoSlides = {url = "https://github.com/dmetivie/PlutoSlides.jl"}
-```
-
-- Or install it from my local registry with
-
-```julia
-julia> import Pkg; 
-julia> Pkg.pkg"registry add https://github.com/dmetivie/LocalRegistry"
-```
-
-Then add it to your Pluto notebook with like any other package `using PlutoSlides` in the notebook.
+Add it to your Pluto notebook with like any other package `using PlutoSlides` in the notebook.
 
 ## Usage
 
 In a Pluto notebook, after installing the package, you can enable slide mode with
 
 ```julia
+# ╔═╡ c9a502d8-7856-46ca-bc47-5566c29908ed
 using PlutoSlides
 
+# ╔═╡ c9a502d8-7856-46ca-bc47-5566c29908ed
 # this will make the notebook width/font etc like the slides (check the docstring for options)
 # this is if you want to work on your notebook without the slide mode enabled but keeping same style
 slide_mode_settings(footer_left="Authors", footer_center=md"PlutoSlides.jl")
 
+# ╔═╡ c9a502d8-7856-46ca-bc47-5566c29908ed
 # you can add an (h1) title slide with
 slide_mode_title(
     title="PlutoSlides.jl: the Pluto slideshow!",
@@ -59,6 +46,7 @@ slide_mode_title(
     figures=[Resource("https://raw.githubusercontent.com/dmetivie/PlutoSlides.jl/refs/heads/master/assets/logo_pluto_slides.svg", :width => "100%")]
 )
 
+# ╔═╡ c9a502d8-7856-46ca-bc47-5566c29908ed
 # then click it to enable/disable slide mode
 slide_mode_button()
 
